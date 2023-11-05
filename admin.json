@@ -1,0 +1,89 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": { "name": "School Admin", "permissions": [5, 6, 7, 8] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": { "name": "Vendor Admin", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": { "name": "Vendor Operator", "permissions": [] }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$ebMV3GIh7yvBq7py5TmTwg$LQUA+1EYR/Nb6c3UrD3ns9v9D0d6pCtSDBmE64iJSpk=",
+      "last_login": "2023-11-03T10:52:34.724Z",
+      "is_superuser": true,
+      "username": "prashanth.b",
+      "first_name": "",
+      "last_name": "",
+      "email": "pbalakri@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-11-03T10:52:32.856Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$tbLy5WL2x4qTTByDDEUeAW$NiiX0Djfuti0E7g4PHewBRnfQAXrqk+WvHrNwvv3iWA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "vendor_admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-11-03T11:11:02.280Z",
+      "groups": [2],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$tbLy5WL2x4qTTByDDEUeAW$NiiX0Djfuti0E7g4PHewBRnfQAXrqk+WvHrNwvv3iWA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "vendor_operator",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-11-03T11:11:02.280Z",
+      "groups": [3],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$tbLy5WL2x4qTTByDDEUeAW$NiiX0Djfuti0E7g4PHewBRnfQAXrqk+WvHrNwvv3iWA=",
+      "last_login": "2023-11-03T11:23:36.006Z",
+      "is_superuser": false,
+      "username": "school_admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-11-03T11:11:02.280Z",
+      "groups": [1],
+      "user_permissions": []
+    }
+  }
+]
