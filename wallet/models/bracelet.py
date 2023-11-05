@@ -12,7 +12,7 @@ class Bracelet(models.Model):
     student_id = models.ForeignKey(
         Student, on_delete=models.RESTRICT)
     balance = models.FloatField(default=0)
-    guardian_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
+    guardian = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
         'groups__name': 'Guardian'}, blank=True, null=True)
     restrictions = models.ManyToManyField(
         'product.DietaryRestriction', blank=True)
@@ -23,7 +23,8 @@ class Bracelet(models.Model):
 
 class BraceletAdmin(admin.ModelAdmin):
     list_display = ('rfid', 'student_id', 'all_restrictions', )
-    fields = ('rfid', 'student_id', 'restrictions', 'guardian_id')
+    fields = ('rfid', 'student_id', 'restrictions', 'guardian')
+    readonly_fields = ('rfid', 'guardian')
     search_fields = ('rfid', 'student_id__first_name',
                      'student_id__last_name', 'student_id__registration_number')
 

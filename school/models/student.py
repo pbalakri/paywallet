@@ -13,7 +13,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=100)
     registration_number = models.CharField(max_length=100)
     date_of_birth = models.DateField(default=None)
-    school_id = models.ForeignKey(School, on_delete=models.RESTRICT)
+    school = models.ForeignKey(School, on_delete=models.RESTRICT)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -23,15 +23,17 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
                     'date_of_birth', 'current_status')
     fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), 'school_id')
+              ('date_of_birth', 'registration_number'), 'school')
     search_fields = ('first_name', 'last_name', 'registration_number')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
             return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        elif db_field.name == "school_id":
+        elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
                 school_admin=request.user)
+            return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        else:
             return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def current_status(self, obj):
