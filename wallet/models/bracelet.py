@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.http.request import HttpRequest
+from django.conf import settings
 
 from school.models import Student
 
@@ -11,16 +12,23 @@ class Bracelet(models.Model):
     student_id = models.ForeignKey(
         Student, on_delete=models.RESTRICT)
     balance = models.FloatField(default=0)
+    guardian_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
+        'groups__name': 'Guardian'}, blank=True, null=True)
+    restrictions = models.ManyToManyField(
+        'product.DietaryRestriction', blank=True)
 
     def __str__(self):
         return self.rfid
 
 
 class BraceletAdmin(admin.ModelAdmin):
-    list_display = ('rfid', 'student_id')
-    fields = ('rfid', 'student_id')
+    list_display = ('rfid', 'student_id', 'all_restrictions', )
+    fields = ('rfid', 'student_id', 'restrictions', 'guardian_id')
     search_fields = ('rfid', 'student_id__first_name',
                      'student_id__last_name', 'student_id__registration_number')
+
+    def all_restrictions(self, obj):
+        return ", ".join([p.name for p in obj.restrictions.all()])
 
     def get_list_display(self, request):
         if request.user.is_superuser:
