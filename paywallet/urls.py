@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 
@@ -27,4 +27,5 @@ admin.site.index_title = _("Welcome to PayWallet Portal")
 urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path("", include("school.urls")),
+    re_path(r'^rosetta/', include('rosetta.urls')),
     prefix_default_language=False)
