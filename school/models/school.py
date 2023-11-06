@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 
 class School(models.Model):
@@ -15,6 +16,10 @@ class School(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("School")
+        verbose_name_plural = _("Schools")
 
 
 class SchoolAdmin(admin.ModelAdmin):

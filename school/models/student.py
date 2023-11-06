@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
 from .school import School
+from django.utils.translation import gettext_lazy as _
 
 
 class Student(models.Model):
@@ -17,6 +18,10 @@ class Student(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
+
+    class Meta:
+        verbose_name = _("Student")
+        verbose_name_plural = _("Students")
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -118,7 +123,8 @@ class Attendance(models.Model):
         return self.student_id.first_name + " " + self.student_id.last_name + " (" + self.student_id.registration_number + ")"
 
     class Meta:
-        verbose_name_plural = "Attendance"
+        verbose_name_plural = _("Attendance")
+        verbose_name = _("Attendance")
 
 
 class AttendanceAdmin(admin.ModelAdmin):
