@@ -4,6 +4,7 @@ import uuid
 from django.contrib import admin
 from django.conf import settings
 from school.models import School
+from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
@@ -16,7 +17,8 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -53,6 +55,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -92,6 +98,10 @@ class Order(models.Model):
     def __str__(self):
         return self.id
 
+    class Meta:
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
+
 
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,
@@ -106,6 +116,10 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.id
+
+    class Meta:
+        verbose_name = _("Order Item")
+        verbose_name_plural = _("Order Items")
 
 
 class OrderItemInlines(admin.TabularInline):
