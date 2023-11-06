@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-06 09:41+0000\n"
+"POT-Creation-Date: 2023-11-06 10:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: cafe/apps.py:8
+msgid "Cafe"
+msgstr ""
+
+#: cafe/models/cafe.py:20 cafe/models/cafe.py:21
+msgid "Café"
+msgstr ""
+
+#: cafe/models/inventory.py:21 cafe/models/inventory.py:22
+msgid "Inventory"
+msgstr ""
 
 #: paywallet/settings.py:126
 msgid "English"
@@ -35,7 +47,63 @@ msgstr ""
 msgid "Welcome to PayWallet Portal"
 msgstr ""
 
-#: school/models/student.py:66
+#: product/apps.py:8 product/models.py:33 school_store/models.py:60
+msgid "Product"
+msgstr ""
+
+#: product/models.py:15 school_store/models.py:20
+msgid "Category"
+msgstr ""
+
+#: product/models.py:16 school_store/models.py:21
+msgid "Categories"
+msgstr ""
+
+#: product/models.py:34 school_store/models.py:61
+msgid "Products"
+msgstr ""
+
+#: product/models.py:54
+msgid "Dietary Restriction"
+msgstr ""
+
+#: product/models.py:55
+msgid "Dietary Restrictions"
+msgstr ""
+
+#: sales/apps.py:8 sales/models.py:26
+msgid "Sales"
+msgstr ""
+
+#: sales/models.py:25
+msgid "Sale"
+msgstr ""
+
+#: sales/models.py:44
+msgid "Sold Item"
+msgstr ""
+
+#: sales/models.py:45
+msgid "Sold Items"
+msgstr ""
+
+#: school/apps.py:8 school/models/school.py:21
+msgid "School"
+msgstr ""
+
+#: school/models/school.py:22
+msgid "Schools"
+msgstr ""
+
+#: school/models/student.py:23
+msgid "Student"
+msgstr ""
+
+#: school/models/student.py:24
+msgid "Students"
+msgstr ""
+
+#: school/models/student.py:71
 #, python-format
 msgid "%(updated_count)d/%(total_count)d student was successfully checked out."
 msgid_plural ""
@@ -43,7 +111,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: school/models/student.py:84
+#: school/models/student.py:89
 #, python-format
 msgid "%(created_count)d/%(total_count)d student was successfully checked in."
 msgid_plural ""
@@ -51,6 +119,62 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#: school/models/student.py:126 school/models/student.py:127
+msgid "Attendance"
+msgstr ""
+
 #: school_store/apps.py:9
 msgid "School Store"
+msgstr ""
+
+#: school_store/models.py:102
+msgid "Order"
+msgstr ""
+
+#: school_store/models.py:103
+msgid "Orders"
+msgstr ""
+
+#: school_store/models.py:121
+msgid "Order Item"
+msgstr ""
+
+#: school_store/models.py:122
+msgid "Order Items"
+msgstr ""
+
+#: wallet/apps.py:8
+msgid "Wallet"
+msgstr ""
+
+#: wallet/models/bracelet.py:23
+msgid "Bracelet"
+msgstr ""
+
+#: wallet/models/bracelet.py:24
+msgid "Bracelets"
+msgstr ""
+
+#: wallet/models/restrictions.py:24
+msgid "Payment Restriction"
+msgstr ""
+
+#: wallet/models/restrictions.py:25
+msgid "Payment Restrictions"
+msgstr ""
+
+#: wallet/models/restrictions.py:39
+msgid "Category Restriction"
+msgstr ""
+
+#: wallet/models/restrictions.py:40
+msgid "Category Restrictions"
+msgstr ""
+
+#: wallet/models/transaction.py:87
+msgid "Transaction"
+msgstr ""
+
+#: wallet/models/transaction.py:88
+msgid "Transactions"
 msgstr ""
