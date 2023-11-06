@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from cafe.models import Cafe
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 
 class Sale(models.Model):
@@ -21,8 +22,8 @@ class Sale(models.Model):
         max_length=10, choices=payment_choices, default='cash')
 
     class Meta:
-        verbose_name = "Sale"
-        verbose_name_plural = "Sales"
+        verbose_name = _("Sale")
+        verbose_name_plural = _("Sales")
 
     def __str__(self):
         return str(self.date) + " - " + str(self.total)
@@ -40,14 +41,16 @@ class SoldItems(models.Model):
     currency = models.CharField(max_length=10, default='KWD')
 
     class Meta:
-        verbose_name = "Sold Item"
-        verbose_name_plural = "Sold Items"
+        verbose_name = _("Sold Item")
+        verbose_name_plural = _("Sold Items")
 
     def __str__(self):
         return self.product_id.name + " - " + str(self.quantity)
 
 
 class SoldItemInlines(admin.TabularInline):
+    readonly_fields = ['product_name', 'quantity',
+                       'original_price', 'selling_price']
     model = SoldItems
     extra = 0
 
