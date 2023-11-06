@@ -7,7 +7,7 @@ from django.db.models.fields.related import ForeignKey
 from django.forms.models import ModelChoiceField
 from django.http.request import HttpRequest
 from cafe.models import Cafe
-from .restrictions import PaymentRestriction
+from .restrictions import CategoryRestriction, PaymentRestriction
 from .bracelet import Bracelet
 from django.contrib import admin
 from django.db import transaction
@@ -58,6 +58,12 @@ class Transaction(models.Model):
                     raise Exception(
                         'You have exceeded your daily transaction limit')
 
+        return True
+
+    def check_for_category_restrictions(self):
+        # Get all category restrictions for this bracelet
+        restrictions = CategoryRestriction.objects.filter(
+            bracelet=self.bracelet)
         return True
 
     def save(self, *args, **kwargs):

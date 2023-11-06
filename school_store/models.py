@@ -2,9 +2,7 @@ from typing import Any
 from django.db import models
 import uuid
 from django.contrib import admin
-from django.db.models.query import QuerySet
-from django.http.request import HttpRequest
-
+from django.conf import settings
 from school.models import School
 
 
@@ -75,3 +73,46 @@ class ProductAdmin(admin.ModelAdmin):
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class Order(models.Model):
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4,
+                          editable=False)
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
+        'groups__name': 'Guardian'}, blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    status_choices = [('Pending', 'Pending'),
+                      ('Ready for Pickup', 'Ready for Pickup'),
+                      ('Completed', 'Completed'),
+                      ('Cancelled', 'Cancelled')]
+    status = models.CharField(
+        max_length=20, choices=status_choices, default='Pending')
+
+    def __str__(self):
+        return self.id
+
+
+class OrderItem(models.Model):
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4,
+                          editable=False)
+    order = models.ForeignKey(
+        Order, on_delete=models.RESTRICT, blank=True, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.RESTRICT, blank=True, null=True)
+    quantity = models.IntegerField(default=0)
+    unit_price = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.id
+
+
+class OrderItemInlines(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ['unit_price', 'quantity', 'product']
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemInlines]

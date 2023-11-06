@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-06 09:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: paywallet/settings.py:126
+msgid "English"
+msgstr ""
+
+#: paywallet/settings.py:127
+msgid "Arabic"
+msgstr ""
+
+#: paywallet/urls.py:23 paywallet/urls.py:24
+msgid "PayWallet Admin"
+msgstr ""
+
+#: paywallet/urls.py:25
+msgid "Welcome to PayWallet Portal"
+msgstr ""
+
+#: school/models/student.py:66
+#, python-format
+msgid "%(updated_count)d/%(total_count)d student was successfully checked out."
+msgid_plural ""
+"%(updated_count)d/%(total_count)d students were successfully checked out."
+msgstr[0] ""
+msgstr[1] ""
+
+#: school/models/student.py:84
+#, python-format
+msgid "%(created_count)d/%(total_count)d student was successfully checked in."
+msgid_plural ""
+"%(created_count)d/%(total_count)d students were successfully checked in."
+msgstr[0] ""
+msgstr[1] ""
+
+#: school_store/apps.py:9
+msgid "School Store"
+msgstr ""

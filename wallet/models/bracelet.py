@@ -24,7 +24,7 @@ class Bracelet(models.Model):
 class BraceletAdmin(admin.ModelAdmin):
     list_display = ('rfid', 'student_id', 'all_restrictions', )
     fields = ('rfid', 'student_id', 'restrictions', 'guardian')
-    readonly_fields = ('rfid', 'guardian')
+    readonly_fields = ['guardian']
     search_fields = ('rfid', 'student_id__first_name',
                      'student_id__last_name', 'student_id__registration_number')
 
