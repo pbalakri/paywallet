@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any
 from django.db import models
 import uuid
@@ -6,6 +7,7 @@ from django.db.models.fields.related import ForeignKey
 from django.forms.models import ModelChoiceField
 from django.http.request import HttpRequest
 from cafe.models import Cafe
+from .restrictions import PaymentRestriction
 from .bracelet import Bracelet
 from django.contrib import admin
 from django.db import transaction
@@ -20,22 +22,55 @@ class Transaction(models.Model):
     type = models.CharField(max_length=10, choices=typeChoices)
     amount = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
-    bracelet_id = models.ForeignKey(
+    bracelet = models.ForeignKey(
         Bracelet, on_delete=models.RESTRICT)
     merchant_id = models.ForeignKey(
         Cafe, on_delete=models.RESTRICT)
     reference = models.CharField(max_length=100, blank=True, null=True)
 
+    def check_for_payment_restrictions(self):
+        # Get all payment restrictions for this bracelet
+
+        restrictions = PaymentRestriction.objects.filter(
+            bracelet=self.bracelet)
+        today = datetime.today()
+        for restriction in restrictions:
+            # check if frequency of restriction is weekly
+            if restriction.frequency == 'Weekly':
+                # get total count of transactions this week of year
+                transactions_this_week = Transaction.objects.filter(
+                    bracelet=self.bracelet, date__week=datetime.today().isocalendar()[1])
+                if transactions_this_week.count() > restriction.count_per_period:
+                    raise Exception(
+                        'You have exceeded your weekly transaction limit')
+            elif restriction.frequency == 'Monthly':
+                # get total count of transactions this month
+                transactions_this_month = Transaction.objects.filter(
+                    bracelet=self.bracelet, date__month=datetime.now().month)
+                if transactions_this_month.count() > restriction.count_per_period:
+                    raise Exception(
+                        'You have exceeded your monthly transaction limit')
+            elif restriction.frequency == 'Daily':
+                # get total count of transactions today
+                transactions_today = Transaction.objects.filter(
+                    bracelet=self.bracelet, date__day=datetime.now().day)
+                if transactions_today.count() > restriction.count_per_period:
+                    raise Exception(
+                        'You have exceeded your daily transaction limit')
+
+        return True
+
     def save(self, *args, **kwargs):
         if self.type == 'debit':
-            bracelet = Bracelet.objects.get(rfid=self.bracelet_id)
+            self.check_for_payment_restrictions()
+            bracelet = Bracelet.objects.get(rfid=self.bracelet)
             if bracelet.balance < self.amount:
                 raise Exception('Insufficient balance')
             else:
                 bracelet.balance -= self.amount
 
         else:
-            bracelet = Bracelet.objects.get(rfid=self.bracelet_id)
+            bracelet = Bracelet.objects.get(rfid=self.bracelet)
             bracelet.balance += self.amount
         with transaction.atomic():
             bracelet.save()
@@ -45,7 +80,7 @@ class Transaction(models.Model):
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('date', 'type', 'amount',
                     'merchant_id', 'reference')
-    fields = ('type', 'amount', 'bracelet_id',
+    fields = ('type', 'amount', 'bracelet',
               'merchant_id', 'reference')
 
     def formfield_for_foreignkey(self, db_field: ForeignKey[Any], request: HttpRequest | None, **kwargs: Any) -> ModelChoiceField | None:
