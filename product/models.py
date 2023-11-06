@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 
 class Category(models.Model):
@@ -11,7 +12,8 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
 
 class Product(models.Model):
@@ -26,6 +28,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -43,3 +49,7 @@ class DietaryRestriction(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Dietary Restriction")
+        verbose_name_plural = _("Dietary Restrictions")
