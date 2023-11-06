@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-
+from django.utils.translation import gettext_lazy as _
 from product.models import Product
 from . import Cafe
 from django.contrib import admin
@@ -18,8 +18,8 @@ class Inventory(models.Model):
     cafe_id = models.ForeignKey(Cafe, on_delete=models.RESTRICT)
 
     class Meta:
-        verbose_name = "Inventory"
-        verbose_name_plural = "Inventory"
+        verbose_name = _("Inventory")
+        verbose_name_plural = _("Inventory")
 
     def __str__(self):
         return self.product_id.name

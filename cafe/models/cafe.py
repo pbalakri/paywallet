@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 
 class Cafe(models.Model):
@@ -16,8 +17,8 @@ class Cafe(models.Model):
         settings.AUTH_USER_MODEL, related_name='vendor_operators', limit_choices_to={'groups__name': 'Vendor Operator'})
 
     class Meta:
-        verbose_name = "Café"
-        verbose_name_plural = "Café"
+        verbose_name = _("Café")
+        verbose_name_plural = _("Café")
 
     def __str__(self):
         return self.name
