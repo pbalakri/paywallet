@@ -11,6 +11,7 @@ from .restrictions import CategoryRestriction, PaymentRestriction
 from .bracelet import Bracelet
 from django.contrib import admin
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 
 
 class Transaction(models.Model):
@@ -81,6 +82,10 @@ class Transaction(models.Model):
         with transaction.atomic():
             bracelet.save()
             super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = _('Transaction')
+        verbose_name_plural = _('Transactions')
 
 
 class TransactionAdmin(admin.ModelAdmin):

@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.db import models
-from django.http.request import HttpRequest
 from django.conf import settings
-
+from django.utils.translation import gettext_lazy as _
 from school.models import Student
 
 
@@ -19,6 +18,10 @@ class Bracelet(models.Model):
 
     def __str__(self):
         return self.rfid
+
+    class Meta:
+        verbose_name = _('Bracelet')
+        verbose_name_plural = _('Bracelets')
 
 
 class BraceletAdmin(admin.ModelAdmin):

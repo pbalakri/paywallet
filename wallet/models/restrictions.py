@@ -1,10 +1,7 @@
-# Create a model to store restrictions for a user
-# Payment restrictions are Once Per Week, Once Per Day, Once Per Month
-# Category restrictions prevent a user from purchasing a product in a category
 from django.db import models
-
 from .bracelet import Bracelet
 from product.models import Category
+from django.utils.translation import gettext_lazy as _
 
 
 class PaymentRestriction(models.Model):
@@ -23,6 +20,10 @@ class PaymentRestriction(models.Model):
     def __str__(self):
         return self.frequency
 
+    class Meta:
+        verbose_name = _('Payment Restriction')
+        verbose_name_plural = _('Payment Restrictions')
+
 
 class CategoryRestriction(models.Model):
     id = models.AutoField(primary_key=True)
@@ -33,3 +34,7 @@ class CategoryRestriction(models.Model):
 
     def __str__(self):
         return self.category
+
+    class Meta:
+        verbose_name = _('Category Restriction')
+        verbose_name_plural = _('Category Restrictions')
