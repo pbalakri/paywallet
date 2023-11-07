@@ -13,6 +13,7 @@ class Student(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     registration_number = models.CharField(max_length=100)
+    grade = models.IntegerField(default=0)
     date_of_birth = models.DateField(default=None)
     school = models.ForeignKey(School, on_delete=models.RESTRICT)
 

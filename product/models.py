@@ -43,6 +43,16 @@ class ProductAdmin(admin.ModelAdmin):
         return ", ".join([p.name for p in obj.restriction.all()])
 
 
+class ProductInlines(admin.TabularInline):
+    model = Product
+    extra = 1
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = [ProductInlines, ]
+    search_fields = ('name',)
+
+
 class DietaryRestriction(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)

@@ -26,6 +26,6 @@ admin.site.index_title = _("Welcome to PayWallet Portal")
 
 urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
-    path("", include("school.urls")),
+    path('', include('admin_material.urls')),
     re_path(r'^rosetta/', include('rosetta.urls')),
     prefix_default_language=False)

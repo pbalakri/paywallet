@@ -125,7 +125,7 @@ class OrderItem(models.Model):
 class OrderItemInlines(admin.TabularInline):
     model = OrderItem
     extra = 0
-    readonly_fields = ['unit_price', 'quantity', 'product']
+    # readonly_fields = ['unit_price', 'quantity', 'product']
 
 
 class OrderAdmin(admin.ModelAdmin):
