@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    parent_category = models.ForeignKey(
+        'self', on_delete=models.RESTRICT, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -49,17 +51,5 @@ class ProductInlines(admin.TabularInline):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    inlines = [ProductInlines, ]
+    inlines = [ProductInlines]
     search_fields = ('name',)
-
-
-class DietaryRestriction(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _("Dietary Restriction")
-        verbose_name_plural = _("Dietary Restrictions")

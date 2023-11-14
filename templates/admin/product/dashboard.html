@@ -1,0 +1,53 @@
+{% extends "admin/change_list.html" %}
+{% load static i18n mathfilters %}
+
+{% block content_title %}
+<script src="{% static '/chartjs.min.js' %}"></script>
+Hi {% static '/chartjs.min.js' %}
+{% endblock %}
+{% block content %}
+<div style="width: 400; float: left;" >
+    <canvas id="chart-product-count-by-category" class="chart-canvas" width="400" height="170" ></canvas>
+</div>
+<div style="width: 400; float: left;" >
+    <canvas id="chart-product-count-by-restriction" class="chart-canvas" width="400" height="170" ></canvas>
+</div>
+{{ product_count_by_category|json_script:"product_count_by_category" }}
+{{ product_count_by_restriction|json_script:"product_count_by_restriction" }}
+    <script>
+        // Create a pie chart with dummy data
+        var ctx = document.getElementById("chart-product-count-by-category").getContext('2d');
+        new Chart(ctx, {
+        type: "pie",
+        data: JSON.parse(document.getElementById('product_count_by_category').textContent),
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Product count by category'
+                }
+            }
+        }
+        });
+        var ctx = document.getElementById("chart-product-count-by-restriction").getContext('2d');
+        new Chart(ctx, {
+        type: "pie",
+        data: JSON.parse(document.getElementById('product_count_by_restriction').textContent),
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Product count by restriction'
+                }
+            }
+        }
+        });
+    
+    </script>
+
+
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block scripts %}
+    
+{% endblock scripts %}

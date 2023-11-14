@@ -34,7 +34,6 @@ class Transaction(models.Model):
 
         restrictions = PaymentRestriction.objects.filter(
             bracelet=self.bracelet)
-        today = datetime.today()
         for restriction in restrictions:
             # check if frequency of restriction is weekly
             if restriction.frequency == 'Weekly':
