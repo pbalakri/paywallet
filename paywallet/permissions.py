@@ -16,4 +16,4 @@ class IsGuardian(BasePermission):
 class isVendor(BasePermission):
     def has_permission(self, request, view):
         # Check if the user belongs to the "vendor" group
-        return request.user.groups.filter(name='Vendor Admin').exists() or request.user.is_superuser or request.user.groups.filter(name='Vendor Operator').exists()
+        return request.user.groups.filter(name='Vendor Admin').exists() or request.user.groups.filter(name='Vendor Operator').exists()
