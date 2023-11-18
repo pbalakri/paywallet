@@ -65,6 +65,10 @@ class ProductAdmin(admin.ModelAdmin):
     fields = (('name', 'image'), 'description', ('price', 'stock'),
               ('category', 'is_active'), 'school')
     search_fields = ('name',)
+    list_display = ('name', 'product_price', 'stock', 'category', 'is_active')
+
+    def product_price(self, obj):
+        return '%.3f KWD' % obj.price
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
@@ -84,6 +88,7 @@ class ProductAdmin(admin.ModelAdmin):
 class Order(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
+
                           editable=False)
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
         'groups__name': 'Guardian'}, blank=True, null=True)
@@ -96,7 +101,7 @@ class Order(models.Model):
         max_length=20, choices=status_choices, default='Pending')
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = _("Order")
@@ -115,7 +120,7 @@ class OrderItem(models.Model):
     unit_price = models.FloatField(default=0)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = _("Order Item")
@@ -130,3 +135,7 @@ class OrderItemInlines(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInlines]
+    list_display = ('id', 'customer', 'date', 'status', 'order_total')
+
+    def order_total(self, obj):
+        return '%.3f KWD' % sum([item.unit_price * item.quantity for item in obj.orderitem_set.all()])

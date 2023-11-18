@@ -3,20 +3,48 @@ from django.contrib import admin
 from django.db.models import Count
 import random
 from django.utils.translation import gettext_lazy as _
+from django.contrib.admin.filters import FieldListFilter, SimpleListFilter
 
 
-class ProductDashboard(Product):
+class Dashboard(Product):
     class Meta:
         proxy = True
         verbose_name = _('Dashboard')
         verbose_name_plural = _('Dashboard')
 
 
-class ProductDashboardAdmin(admin.ModelAdmin):
+class CustomCategoryListFilter(SimpleListFilter):
+    title = _('category')
+    parameter_name = 'category__name'
+
+    def lookups(self, request, model_admin):
+        queryset = model_admin.get_queryset(request)
+        return [(value, value) for value in queryset.values_list('category__name', flat=True).distinct()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(category__name=self.value())
+        return queryset
+
+
+class CustomRestrictionListFilter(SimpleListFilter):
+    title = _('restriction')
+    parameter_name = 'restriction__name'
+
+    def lookups(self, request, model_admin):
+        queryset = model_admin.get_queryset(request)
+        return [(value, value) for value in queryset.values_list('restriction__name', flat=True).distinct()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(restriction__name=self.value())
+        return queryset
+
+
+class DashboardAdmin(admin.ModelAdmin):
 
     change_list_template = 'admin/product/dashboard.html'
-    list_filter = (('category__name', admin.AllValuesFieldListFilter),
-                   ('restriction__name', admin.AllValuesFieldListFilter))
+    list_filter = [CustomCategoryListFilter, CustomRestrictionListFilter]
 
     def getRandomColor(self):
         letters = list('0123456789ABCDEF')
