@@ -1,16 +1,17 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from cafe.models import Cafe
-
+from django.db.utils import IntegrityError
 from wallet.helpers.payment_restrictions import check_for_payment_restrictions
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
-from .models import Bracelet, Transaction
+from .models import Bracelet, Transaction, Device
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from django.db import transaction
 
 
@@ -89,3 +90,35 @@ class TransactionsView(APIView):
                 return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Register guardian as a user with Guardian role
+class GuardianView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        email = request.data.get('email')
+        phone_number = request.data.get('phone_number')
+        device_fcm_token = request.data.get('device_fcm_token')
+
+        required_fields = [username, password, first_name,
+                           last_name, email, phone_number, device_fcm_token]
+        if any(field is None or field == '' for field in required_fields):
+            raise ValidationError(
+                {'status': 'error', 'message': 'All fields are required'})
+
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=username, password=password, first_name=first_name, last_name=last_name, email=email)
+                Device.objects.create(
+                    guardian=user, device_fcm_token=device_fcm_token, phone_number=phone_number)
+                user.groups.add(Group.objects.get(name='Guardian'))
+            return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({'status': 'username already exists'}, status=status.HTTP_400_BAD_REQUEST)
