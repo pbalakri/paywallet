@@ -37,9 +37,10 @@ class DashboardAdmin(admin.ModelAdmin):
         background_color.append(self.getRandomColor())
 
         low_stock_count = qs.filter(quantity__gt=0, quantity__lte=5).count()
-        labels.append('Low Stock')
-        data.append(low_stock_count)
-        background_color.append(self.getRandomColor())
+        if (low_stock_count > 0):
+            labels.append('Low Stock')
+            data.append(low_stock_count)
+            background_color.append(self.getRandomColor())
 
         oos_count = qs.filter(quantity=0).count()
         labels.append('OOS')
