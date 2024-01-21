@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
-
+from rest_framework.authtoken import views
 
 admin.site.site_header = _("PayWallet Admin")
 admin.site.site_title = _("PayWallet Admin")
@@ -29,6 +29,8 @@ urlpatterns = i18n_patterns(
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include("school.urls")),
     path('api/', include("wallet.urls")),
+    path('api/', include("school_store.urls")),
     # path('', include('admin_material.urls')),
+    path('api-token-auth/', views.obtain_auth_token),
     re_path(r'^rosetta/', include('rosetta.urls')),
     prefix_default_language=False)

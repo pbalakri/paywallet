@@ -10,6 +10,8 @@ from django.utils.translation import gettext_lazy as _
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    parent_category = models.ForeignKey(
+        'self', on_delete=models.RESTRICT, blank=True, null=True)
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, blank=True, null=True)
 
