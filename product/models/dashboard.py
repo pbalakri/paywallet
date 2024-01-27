@@ -33,7 +33,7 @@ class CustomRestrictionListFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         queryset = model_admin.get_queryset(request)
-        return [(value, value) for value in queryset.values_list('restriction__name', flat=True).distinct()]
+        return [(value, value) for value in queryset.exclude(restriction=None).values_list('restriction__name', flat=True).distinct()]
 
     def queryset(self, request, queryset):
         if self.value():
@@ -74,8 +74,10 @@ class DashboardAdmin(admin.ModelAdmin):
         labels = []
         data = []
         background_color = []
-        product_count_by_restriction = list(qs.values('restriction__name').annotate(
+        # get all product count by restriction, exclude None
+        product_count_by_restriction = list(qs.exclude(restriction=None).values('restriction__name').annotate(
             total=Count('restriction__name')))
+
         for i in product_count_by_restriction:
             labels.append(i['restriction__name'])
             data.append(i['total'])

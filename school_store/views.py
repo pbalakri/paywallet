@@ -32,11 +32,23 @@ class GetProductsPerCategoryView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class GetProducts(APIView):
+    # Get products per school
+    def get(self, request, store_id):
+        try:
+            products = Product.objects.filter(school__guid=store_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Products not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class GetProduct(APIView):
     # Get product details
-    def get(self, request, product_id):
+    def get(self, request, store_id, product_id):
         try:
-            product = Product.objects.get(id=product_id)
+            product = Product.objects.get(school__guid=store_id, id=product_id)
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 

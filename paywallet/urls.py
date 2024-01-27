@@ -30,6 +30,7 @@ urlpatterns = i18n_patterns(
     path('api/', include("school.urls")),
     path('api/', include("wallet.urls")),
     path('api/', include("school_store.urls")),
+    path('api/', include("guardian.urls")),
     # path('', include('admin_material.urls')),
     path('api-token-auth/', views.obtain_auth_token),
     re_path(r'^rosetta/', include('rosetta.urls')),

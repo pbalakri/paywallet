@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "cafe",
     "product",
     "school_store",
+    "guardian",
     # 'admin_material.apps.AdminMaterialDashboardConfig',
     "django.contrib.admin",
     "django.contrib.auth",

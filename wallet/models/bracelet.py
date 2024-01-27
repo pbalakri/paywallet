@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from guardian.models import Guardian
 from school.models import Student
 
 
@@ -11,8 +12,8 @@ class Bracelet(models.Model):
     student_id = models.ForeignKey(
         Student, on_delete=models.RESTRICT)
     balance = models.FloatField(default=0)
-    guardian = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
-        'groups__name': 'Guardian'}, blank=True, null=True)
+    guardian = models.ForeignKey(
+        Guardian, on_delete=models.RESTRICT, blank=True, null=True)
     restrictions = models.ManyToManyField(
         'product.DietaryRestriction', blank=True)
 

@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
@@ -6,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 class School(models.Model):
     id = models.AutoField(primary_key=True)
+    guid = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -23,7 +25,7 @@ class School(models.Model):
 
 
 class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'city', 'phone_number',
+    list_display = ('name', 'guid', 'address', 'city', 'phone_number',
                     'school_admin')
     fields = ('name', ('address', 'city'), 'phone_number', 'school_admin')
     list_filter = ('city',)

@@ -2,16 +2,16 @@ import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from paywallet.permissions import IsSchoolAdmin
-from .models import Student, Attendance
-from .serializers import AttendanceSerializer
+from .models import Student, Attendance, School
+from .serializers import AttendanceSerializer, SchoolSerializer
 
 
 class CheckInView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsSchoolAdmin]
 
     def post(self, request, pk):
@@ -31,7 +31,7 @@ class CheckInView(APIView):
 
 
 class CheckoutView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -49,3 +49,17 @@ class CheckoutView(APIView):
         attendance_obj.checkout = datetime.now()
         attendance_obj.save()
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+class SchoolView(APIView):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            # Get all Schools
+            school_obj = School.objects.all()
+            serializer = SchoolSerializer(school_obj, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except School.DoesNotExist:
+            return Response({'error': 'School not found'}, status=status.HTTP_404_NOT_FOUND)

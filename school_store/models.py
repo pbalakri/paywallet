@@ -67,7 +67,8 @@ class ProductAdmin(admin.ModelAdmin):
     fields = (('name', 'image'), 'description', ('price', 'stock'),
               ('category', 'is_active'), 'school')
     search_fields = ('name',)
-    list_display = ('name', 'product_price', 'stock', 'category', 'is_active')
+    list_display = ('id', 'name', 'product_price',
+                    'stock', 'category', 'is_active')
 
     def product_price(self, obj):
         return '%.3f KWD' % obj.price

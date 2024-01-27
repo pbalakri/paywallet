@@ -7,7 +7,7 @@ from .serializers import TransactionGetSerializer, TransactionPostSerializer
 from .models import Bracelet, Transaction, Device
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
@@ -23,7 +23,7 @@ from django.db import transaction
 
 
 class BalanceView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request, rfid):
@@ -32,7 +32,7 @@ class BalanceView(APIView):
 
 
 class TransactionsView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     pagination_class = PageNumberPagination
 
     def get_permissions(self):

@@ -47,14 +47,6 @@ class DashboardAdmin(admin.ModelAdmin):
         data.append(oos_count)
         background_color.append(self.getRandomColor())
 
-        # data.extend([in_stock_count, out_of_stock_count])
-        # background_color.extend([self.getRandomColor(), self.getRandomColor()])
-        # product_count_based_on_stock = list(qs.values('stock').annotate(
-        #     total=Count('stock')))
-        # for i in product_count_based_on_stock:
-        #     labels.append(i['stock'])
-        #     data.append(i['total'])
-        #     background_color.append(self.getRandomColor())
         return {
             'labels': labels,
             'datasets': [{'data': data,

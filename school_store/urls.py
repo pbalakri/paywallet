@@ -7,6 +7,8 @@ urlpatterns = [
          views.GetProductsPerCategoryView.as_view(), name="get_products_category"),
     path(r"store/<str:store_id>/products/<str:product_id>",
          views.GetProduct.as_view(), name="get_product"),
+    path(r"store/<str:store_id>/products/",
+         views.GetProducts.as_view(), name="get_products"),
     path(r"store/<str:store_id>/categories/",
          views.GetCategories.as_view(), name="get_categories"),
 ]

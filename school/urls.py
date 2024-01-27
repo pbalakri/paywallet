@@ -7,5 +7,7 @@ urlpatterns = [
          views.CheckInView.as_view(), name="checkin"),
     path(r"students/<str:pk>/checkout",
          views.CheckoutView.as_view(), name="checkout"),
+    path(r"schools/",
+         views.SchoolView.as_view(), name="school"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
