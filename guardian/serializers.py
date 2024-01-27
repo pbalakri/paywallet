@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from school.serializers import StudentSerializer
 from .models import Guardian
 from django.contrib.auth.models import User
 
@@ -24,7 +26,8 @@ class WriteGuardianSerializer(serializers.ModelSerializer):
 
 class ReadGuardianSerializer(serializers.ModelSerializer):
     user = ReadUserSerializer(read_only=True)
+    student = StudentSerializer(read_only=True, many=True)
 
     class Meta:
         model = Guardian
-        fields = ['user', 'phone_number']
+        fields = ['user', 'phone_number', 'student']

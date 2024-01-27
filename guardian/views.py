@@ -64,21 +64,21 @@ class GuardianRegisterView(APIView):
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GuardianUpdateView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+# class GuardianUpdateView(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        try:
-            guardian_obj = Guardian.objects.get(user=request.user)
-        except Guardian.DoesNotExist:
-            return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
+#     def post(self, request):
+#         try:
+#             guardian_obj = Guardian.objects.get(user=request.user)
+#         except Guardian.DoesNotExist:
+#             return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = GuardianSerializer(guardian_obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'status': 'success'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+#         serializer = GuardianSerializer(guardian_obj, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({'status': 'success'}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 # Create your views here.
