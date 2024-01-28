@@ -13,10 +13,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = '__all__'
+        fields = ['name']
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    school = SchoolSerializer(read_only=True)
+
     class Meta:
         model = Student
-        fields = ['first_name', 'last_name', 'registration_number']
+        fields = ['first_name', 'last_name',
+                  'registration_number', 'rfid', 'school', 'date_of_birth']

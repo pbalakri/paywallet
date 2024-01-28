@@ -3,6 +3,7 @@ from django.db import models
 import uuid
 from django.contrib import admin
 from django.conf import settings
+from guardian.models import Guardian
 from school.models import School
 from django.utils.translation import gettext_lazy as _
 
@@ -93,8 +94,10 @@ class Order(models.Model):
                           default=uuid.uuid4,
 
                           editable=False)
-    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
-        'groups__name': 'Guardian'}, blank=True, null=True)
+    school = models.ForeignKey(
+        School, on_delete=models.RESTRICT, blank=True, null=True)
+    customer = models.ForeignKey(
+        Guardian, on_delete=models.RESTRICT, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
     status_choices = [('Pending', 'Pending'),
                       ('Ready for Pickup', 'Ready for Pickup'),
@@ -116,7 +119,7 @@ class OrderItem(models.Model):
                           default=uuid.uuid4,
                           editable=False)
     order = models.ForeignKey(
-        Order, on_delete=models.RESTRICT, blank=True, null=True)
+        Order, on_delete=models.RESTRICT, blank=True, null=True, related_name='orderitem_set')
     product = models.ForeignKey(
         Product, on_delete=models.RESTRICT, blank=True, null=True)
     quantity = models.IntegerField(default=0)

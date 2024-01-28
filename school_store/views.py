@@ -1,8 +1,12 @@
 from rest_framework.views import APIView
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+
+from paywallet.permissions import IsGuardian
+from .models import Category, Order, Product
+from .serializers import OrderedCategorySerializer, OrderSerializer, ProductSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+
 # Create your views here.
 
 
@@ -64,5 +68,19 @@ class GetCategories(APIView):
         except Category.DoesNotExist:
             return Response({'error': 'Categories not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CategorySerializer(categories, many=True)
+        serializer = OrderedCategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetOrders(APIView):
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsGuardian]
+
+    def get(self, request, store_id):
+        try:
+            orders = Order.objects.filter(school__guid=store_id)
+        except Order.DoesNotExist:
+            return Response({'error': 'Orders not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

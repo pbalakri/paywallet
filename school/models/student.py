@@ -4,6 +4,8 @@ from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
+
+from product.models import DietaryRestriction
 from .school import School
 from django.utils.translation import gettext_lazy as _
 
@@ -15,7 +17,11 @@ class Student(models.Model):
     registration_number = models.CharField(max_length=100)
     grade = models.IntegerField(default=0)
     date_of_birth = models.DateField(default=None)
+    rfid = models.CharField(max_length=100, unique=True)
     school = models.ForeignKey(School, on_delete=models.RESTRICT)
+    balance = models.FloatField(default=0)
+    restrictions = models.ManyToManyField(
+        DietaryRestriction, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -27,10 +33,10 @@ class Student(models.Model):
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
-                    'date_of_birth', 'current_status')
+                    'date_of_birth', 'current_status', 'rfid')
     fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), 'school')
-    search_fields = ('first_name', 'last_name', 'registration_number')
+              ('date_of_birth', 'registration_number'), 'school', ('rfid', 'balance'), 'restrictions')
+    search_fields = ('first_name', 'last_name', 'registration_number', 'rfid')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:

@@ -93,32 +93,3 @@ class TransactionsView(APIView):
 
 
 # Register guardian as a user with Guardian role
-class GuardianView(APIView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
-        email = request.data.get('email')
-        phone_number = request.data.get('phone_number')
-        device_fcm_token = request.data.get('device_fcm_token')
-
-        required_fields = [username, password, first_name,
-                           last_name, email, phone_number, device_fcm_token]
-        if any(field is None or field == '' for field in required_fields):
-            raise ValidationError(
-                {'status': 'error', 'message': 'All fields are required'})
-
-        try:
-            with transaction.atomic():
-                user = User.objects.create_user(
-                    username=username, password=password, first_name=first_name, last_name=last_name, email=email)
-                Device.objects.create(
-                    guardian=user, device_fcm_token=device_fcm_token, phone_number=phone_number)
-                user.groups.add(Group.objects.get(name='Guardian'))
-            return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
-        except IntegrityError:
-            return Response({'status': 'username already exists'}, status=status.HTTP_400_BAD_REQUEST)

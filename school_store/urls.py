@@ -11,5 +11,7 @@ urlpatterns = [
          views.GetProducts.as_view(), name="get_products"),
     path(r"store/<str:store_id>/categories/",
          views.GetCategories.as_view(), name="get_categories"),
+    path(r"store/<str:store_id>/orders/",
+         views.GetOrders.as_view(), name="get_orders"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
