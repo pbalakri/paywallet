@@ -51,8 +51,21 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rosetta",
     "mathfilters",
+    "parler",
 
 ]
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en', },
+        {'code': 'ar', },
+    ),
+    'default': {
+        'fallback': 'en',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        # the default; let .active_translations() return fallbacks too.
+        'hide_untranslated': False,
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -15,7 +15,7 @@ class GetProductsView(APIView):
     # Get products per school
     def get(self, request, school_id):
         try:
-            products = Product.objects.filter(school_id=school_id)
+            products = Product.objects.filter(school_guid=school_id)
         except Product.DoesNotExist:
             return Response({'error': 'Products not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -38,9 +38,9 @@ class GetProductsPerCategoryView(APIView):
 
 class GetProducts(APIView):
     # Get products per school
-    def get(self, request, store_id):
+    def get(self, request, school_id):
         try:
-            products = Product.objects.filter(school__guid=store_id)
+            products = Product.objects.filter(school__guid=school_id)
         except Product.DoesNotExist:
             return Response({'error': 'Products not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -50,9 +50,10 @@ class GetProducts(APIView):
 
 class GetProduct(APIView):
     # Get product details
-    def get(self, request, store_id, product_id):
+    def get(self, request, school_id, product_id):
         try:
-            product = Product.objects.get(school__guid=store_id, id=product_id)
+            product = Product.objects.get(
+                school__guid=school_id, id=product_id)
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -64,7 +65,7 @@ class GetCategories(APIView):
     # Get categories per school
     def get(self, request, school_id):
         try:
-            categories = Category.objects.filter(school_id=school_id)
+            categories = Category.objects.filter(school_guid=school_id)
         except Category.DoesNotExist:
             return Response({'error': 'Categories not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -73,12 +74,14 @@ class GetCategories(APIView):
 
 
 class GetOrders(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsGuardian]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsGuardian]
 
-    def get(self, request, store_id):
+    def get(self, request):
         try:
-            orders = Order.objects.filter(school__guid=store_id)
+            orders = Order.objects.filter(
+                customer__user=request.user
+            )
         except Order.DoesNotExist:
             return Response({'error': 'Orders not found'}, status=status.HTTP_404_NOT_FOUND)
 

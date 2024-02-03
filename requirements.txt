@@ -1,7 +1,5 @@
 Django==4.2.5
-djangorestframework==3.14.0
+django-mathfilters==1.0.0
+django_parler==2.3
 django-rosetta==0.9.9
-scipy==1.11.3
-nltk==3.8.1
-pandas==2.1.2
-django-admin-material-dashboard==1.0.10
+

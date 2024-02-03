@@ -50,6 +50,7 @@ class OrderSerializer(serializers.ModelSerializer):
         for item in orderitems:
             total += item.quantity * item.unit_price
         return total
+    date = serializers.DateTimeField(format="%Y-%m-%d")
 
     class Meta:
         model = Order

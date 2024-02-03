@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-06 10:28+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2024-02-03 12:43+0000\n"
+"Last-Translator:   <pbalakri@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Translated-Using: django-rosetta 0.9.9\n"
 
 #: cafe/apps.py:8
 msgid "Cafe"
@@ -105,7 +105,8 @@ msgstr ""
 
 #: school/models/student.py:71
 #, python-format
-msgid "%(updated_count)d/%(total_count)d student was successfully checked out."
+msgid ""
+"%(updated_count)d/%(total_count)d student was successfully checked out."
 msgid_plural ""
 "%(updated_count)d/%(total_count)d students were successfully checked out."
 msgstr[0] ""
@@ -129,11 +130,11 @@ msgstr ""
 
 #: school_store/models.py:102
 msgid "Order"
-msgstr ""
+msgstr "طلبات"
 
 #: school_store/models.py:103
 msgid "Orders"
-msgstr ""
+msgstr "طلبات"
 
 #: school_store/models.py:121
 msgid "Order Item"

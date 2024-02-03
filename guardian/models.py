@@ -4,9 +4,10 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from school.models import Student
 from django.contrib import admin
+from parler.models import TranslatableModel, TranslatedFields
 
 
-class Guardian(models.Model):
+class Guardian(TranslatableModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone_number = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
