@@ -41,8 +41,9 @@ INSTALLED_APPS = [
     "wallet",
     "cafe",
     "product",
-    "school_store",
+    "school_store.apps.SchoolStoreConfig",
     "guardian",
+    "modeltranslation",
     # 'admin_material.apps.AdminMaterialDashboardConfig',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -54,21 +55,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rosetta",
     "mathfilters",
-    "parler",
 
 ]
-
-PARLER_LANGUAGES = {
-    None: (
-        {'code': 'en', },
-        {'code': 'ar', },
-    ),
-    'default': {
-        'fallback': 'en',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
-        # the default; let .active_translations() return fallbacks too.
-        'hide_untranslated': False,
-    }
-}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -135,18 +123,22 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
 
 USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+def gettext(s): return s
+
+
 LANGUAGES = [
-    ('en', _('English')),
-    ('ar', _('Arabic'))]
+    ('en', 'English'),
+    ('ar', 'Arabic')]
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_LANGUAGES = ('en', 'ar')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
