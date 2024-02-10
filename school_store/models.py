@@ -25,6 +25,8 @@ class Category(models.Model):
 
 
 class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'parent_category', 'school')
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)

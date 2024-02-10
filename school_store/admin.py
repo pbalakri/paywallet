@@ -1,14 +1,18 @@
 from django.contrib import admin
 
 from .models import Product, ProductAdmin, Category, CategoryAdmin, Order, OrderAdmin
-from modeltranslation.admin import TranslationAdmin
+from modeltranslation.admin import TabbedExternalJqueryTranslationAdmin
 
 
 @admin.register(Category)
-class CategoryAdminTranslationOptions(CategoryAdmin, TranslationAdmin):
+class CategoryAdminTranslationOptions(CategoryAdmin, TabbedExternalJqueryTranslationAdmin):
     pass
 
 
-admin.site.register(Product, ProductAdmin)
+@admin.register(Product)
+class ProductAdminTranslationOptions(ProductAdmin, TabbedExternalJqueryTranslationAdmin):
+    pass
+
+
 # admin.site.register(Category, CategoryAdmin)
 admin.site.register(Order, OrderAdmin)

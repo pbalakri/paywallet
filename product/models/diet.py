@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,3 +13,8 @@ class DietaryRestriction(models.Model):
     class Meta:
         verbose_name = _("Dietary Restriction")
         verbose_name_plural = _("Dietary Restrictions")
+
+
+class DietaryRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
