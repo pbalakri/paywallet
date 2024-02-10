@@ -11,35 +11,31 @@ var google, django, gettext;
   };
 
   jQuery(function ($) {
-    var detectTemplate = function () {
-      if (
-        document.querySelector(
-          "#jazzmin-theme, #jazzy-navbar, #jazzy-tabs, #jazzy-actions"
-        )
-      ) {
+    var detectTemplate = function() {
+      if (document.querySelector("#jazzmin-theme, #jazzy-navbar, #jazzy-tabs, #jazzy-actions")) {
         return "jazzmin";
       }
       return "default";
-    };
+    }
 
     var selectorMapping = {
-      default: {
-        mainHeader: () => $("#content").find("h1"),
-        tabContainer: (el) => $(el).closest(".form-row"),
-        tabUlClass: "",
-        tabLiClass: "",
-        tabAClass: "",
-        tabErrorClass: "ui-tab-has-errors",
+      "default": {
+        "mainHeader": () => $("#content").find("h1"),
+        "tabContainer": (el) => $(el).closest(".form-row"),
+        "tabUlClass": "",
+        "tabLiClass": "",
+        "tabAClass": "",
+        "tabErrorClass": "ui-tab-has-errors"
       },
-      jazzmin: {
-        mainHeader: () => $("#content-main").find(".card-title:first"),
-        tabContainer: (el) => $(el).closest(".form-group"),
-        tabUlClass: "nav nav-tabs",
-        tabLiClass: "nav-item",
-        tabAClass: "nav-link",
-        tabErrorClass: "ui-tab-has-errors",
-      },
-    };
+      "jazzmin": {
+        "mainHeader": () => $("#content-main").find(".card-title:first"),
+        "tabContainer": (el) => $(el).closest(".form-group"),
+        "tabUlClass": "nav nav-tabs",
+        "tabLiClass": "nav-item",
+        "tabAClass": "nav-link",
+        "tabErrorClass": "ui-tab-has-errors"
+      }
+    }
 
     const selectors = selectorMapping[detectTemplate()];
 
@@ -245,8 +241,7 @@ var google, django, gettext;
           panel = $('<div id="' + tabId + '"></div>').append(container);
           tab = $(
             `<li class='${selectors["tabLiClass"]} ` +
-              (label.hasClass("required") ? "required" : "") +
-              "'" +
+              (label.hasClass("required") ? "required" : "") + "'" +
               `><a class="${selectors["tabAClass"]}" href="#` +
               tabId +
               '">' +
@@ -473,9 +468,7 @@ var google, django, gettext;
 
     var MainSwitch = {
       languages: [],
-      $select: $(
-        "<select id='modeltranslation-main-switch' class='modeltranslation-switch'>"
-      ),
+      $select: $("<select id='modeltranslation-main-switch' class='modeltranslation-switch'>"),
 
       init: function (groupedTranslations, tabs) {
         var self = this;
@@ -499,6 +492,7 @@ var google, django, gettext;
         });
         this.update(tabs);
         selectors["mainHeader"]().append("&nbsp;").append(self.$select);
+
       },
 
       update: function (tabs) {

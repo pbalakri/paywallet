@@ -72,7 +72,7 @@ backward compatibility:
 }
 
 .ui-tabs .ui-tab-has-errors a::after {
-    content: "â€¢";
+    content: "•";
     color: #ba2121;
     position: absolute;
     font-size: 1.8rem;
