@@ -30,7 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
-    "127.0.0.1"
+    "127.0.0.1",
+    "localhost"
 ]
 
 
