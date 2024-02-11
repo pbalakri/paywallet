@@ -32,7 +32,9 @@ SECRET_KEY = "django-insecure-ug+p47x#8&h*ir3xjh%+s9z(q-*=7so7nk9lnlo7r8m2o)j2w1
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com"]
+    "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
+    "172.31.21.221"
+]
 
 
 # Application definition
@@ -101,7 +103,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASSWORD"),
+#         "HOST": env("DB_HOST"),
+#         "PORT": env("DB_PORT"),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
