@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import environ
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,9 +32,7 @@ SECRET_KEY = "django-insecure-ug+p47x#8&h*ir3xjh%+s9z(q-*=7so7nk9lnlo7r8m2o)j2w1
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
-    "172.31.21.221",
-]
+    "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com"]
 
 
 # Application definition
@@ -56,7 +57,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rosetta",
     "mathfilters",
-
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -144,8 +145,29 @@ MODELTRANSLATION_LANGUAGES = ('en', 'ar')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# if os.environ.get("STORAGE_DESTINATION") == "s3":
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+print("BUCKETNAME", AWS_STORAGE_BUCKET_NAME)
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400"
+}
+AWS_LOCATION = "static"
+STATICFILES_DIRS = [
+    'static',
+]
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+# else:
+#     STATIC_URL = "static/"
+#     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+#     MEDIA_URL = "/media/"
+#     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
