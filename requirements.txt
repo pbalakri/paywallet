@@ -3,5 +3,6 @@ djangorestframework==3.14.0
 django-mathfilters==1.0.0
 django-modeltranslation==0.18.11
 django-rosetta==0.9.9
+psycopg2-binary==2.9.9
 
 

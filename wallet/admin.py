@@ -1,9 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Transaction, Bracelet, TransactionAdmin, BraceletAdmin, PaymentRestriction, CategoryRestriction, Device, DeviceAdmin
+from .models import Transaction, Wallet, TransactionAdmin, WalletAdmin
 admin.site.register(Transaction, TransactionAdmin)
-admin.site.register(Bracelet, BraceletAdmin)
-admin.site.register(PaymentRestriction)
-admin.site.register(CategoryRestriction)
-admin.site.register(Device, DeviceAdmin)
+admin.site.register(Wallet, WalletAdmin)

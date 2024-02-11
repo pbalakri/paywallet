@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.db import models
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from guardian.models import Guardian
 from school.models import Student
 
 
-class Bracelet(models.Model):
+class Wallet(models.Model):
     id = models.AutoField(primary_key=True)
     rfid = models.CharField(max_length=100, unique=True)
     student_id = models.ForeignKey(
@@ -19,11 +17,11 @@ class Bracelet(models.Model):
         return self.rfid
 
     class Meta:
-        verbose_name = _('Bracelet')
-        verbose_name_plural = _('Bracelets')
+        verbose_name = _('Wallet')
+        verbose_name_plural = _('Wallets')
 
 
-class BraceletAdmin(admin.ModelAdmin):
+class WalletAdmin(admin.ModelAdmin):
     list_display = ('rfid', 'student_id', 'all_restrictions', )
     fields = ('rfid', 'student_id', 'restrictions')
     search_fields = ('rfid', 'student_id__first_name',
@@ -46,14 +44,14 @@ class BraceletAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
-            return super(BraceletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            return super(WalletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "student_id":
             kwargs["queryset"] = Student.objects.filter(
                 school_id__school_admin=request.user)
-            return super(BraceletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            return super(WalletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
-        qs = super(BraceletAdmin, self).get_queryset(request)
+        qs = super(WalletAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
         else:

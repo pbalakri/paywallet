@@ -2,9 +2,9 @@ from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from cafe.models import Cafe
 from django.db.utils import IntegrityError
-from wallet.helpers.payment_restrictions import check_for_payment_restrictions
+from restriction.helpers.payment_restrictions import check_for_payment_restrictions
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
-from .models import Bracelet, Transaction, Device
+from .models import Wallet, Transaction
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -27,8 +27,8 @@ class BalanceView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request, rfid):
-        bracelet = Bracelet.objects.get(rfid=rfid)
-        return Response({"balance": bracelet.balance})
+        wallet = Wallet.objects.get(rfid=rfid)
+        return Response({"balance": wallet.balance})
 
 
 class TransactionsView(APIView):
@@ -46,7 +46,7 @@ class TransactionsView(APIView):
         paginator = PageNumberPagination()
 
         transactions = Transaction.objects.filter(
-            bracelet__rfid=rfid).order_by('-date')
+            wallet__rfid=rfid).order_by('-date')
         page = paginator.paginate_queryset(transactions, request)
         if page is not None:
             transaction_serializer = TransactionGetSerializer(
@@ -60,9 +60,9 @@ class TransactionsView(APIView):
     def post(self, request, rfid):
         # Create a transaction
         try:
-            bracelet = Bracelet.objects.get(rfid=rfid)
-        except Bracelet.DoesNotExist:
-            return Response({'error': 'Bracelet not found'}, status=status.HTTP_404_NOT_FOUND)
+            wallet = Wallet.objects.get(rfid=rfid)
+        except Wallet.DoesNotExist:
+            return Response({'error': 'Wallet not found'}, status=status.HTTP_404_NOT_FOUND)
         try:
             merchant = Cafe.objects.get(vendor_admin=request.user)
         except Cafe.DoesNotExist:
@@ -72,17 +72,17 @@ class TransactionsView(APIView):
             return Response({'error': 'Invalid transaction type'}, status=status.HTTP_400_BAD_REQUEST)
         amount = request.data.get('amount')
         if transaction_type == 'debit':
-            check_for_payment_restrictions(bracelet)
-            if bracelet.balance < amount:
+            check_for_payment_restrictions(wallet)
+            if wallet.balance < amount:
                 return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                bracelet.balance -= amount
+                wallet.balance -= amount
         else:
-            bracelet.balance += amount
+            wallet.balance += amount
         with transaction.atomic():
-            bracelet.save()
+            wallet.save()
             transaction_data = {'type': transaction_type,
-                                'amount': amount, 'bracelet': bracelet.id, 'merchant_id': merchant.id, 'reference': "sdf"}
+                                'amount': amount, 'wallet': wallet.id, 'merchant_id': merchant.id, 'reference': "sdf"}
             transaction_serializer = TransactionPostSerializer(
                 data=transaction_data)
             if transaction_serializer.is_valid():

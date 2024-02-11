@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "product",
     "school_store.apps.SchoolStoreConfig",
     "guardian",
+    "restriction",
     "modeltranslation",
     # 'admin_material.apps.AdminMaterialDashboardConfig',
     "django.contrib.admin",

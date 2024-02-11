@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationTabularInline
 
 
 class Category(models.Model):
@@ -46,7 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
         return ", ".join([p.name for p in obj.restriction.all()])
 
 
-class ProductInlines(admin.TabularInline):
+class ProductInlines(TranslationTabularInline):
     model = Product
     extra = 1
 

@@ -2,12 +2,13 @@ from rest_framework import serializers
 
 from cafe.serializers import CafeSerializer
 
-from .models import Bracelet, PaymentRestriction, Transaction, CategoryRestriction
+from .models import Wallet, Transaction
+from restriction.models import CategoryRestriction, PaymentRestriction
 
 
-class BraceletSerializer(serializers.ModelSerializer):
+class WalletSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Bracelet
+        model = Wallet
         fields = '__all__'
 
 
@@ -35,4 +36,4 @@ class TransactionGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['id', 'type', 'amount',
-                  'reference', 'bracelet', 'merchant']
+                  'reference', 'wallet', 'merchant']
