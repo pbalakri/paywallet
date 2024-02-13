@@ -33,7 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
-    "172.31.21.221"
+    "172.31.21.221",
+    "127.0.0.1"
 ]
 
 
@@ -160,18 +161,20 @@ MODELTRANSLATION_LANGUAGES = ('en', 'ar')
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-print("BUCKETNAME", AWS_STORAGE_BUCKET_NAME)
+AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400"
 }
-AWS_LOCATION = "static"
+STATIC_LOCATION = "static"
 STATICFILES_DIRS = [
     'static',
 ]
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+STATICFILES_STORAGE = "paywallet.storage_backends.StaticStorage"
+MEDIA_LOCATION = "media"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
+DEFAULT_FILE_STORAGE = "paywallet.storage_backends.PublicMediaStorage"
 # else:
 #     STATIC_URL = "static/"
 #     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
