@@ -34,4 +34,5 @@ urlpatterns = i18n_patterns(
     # path('', include('admin_material.urls')),
     path('api-token-auth/', views.obtain_auth_token),
     re_path(r'^rosetta/', include('rosetta.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
     prefix_default_language=False)
