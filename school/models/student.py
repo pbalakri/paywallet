@@ -17,9 +17,7 @@ class Student(models.Model):
     registration_number = models.CharField(max_length=100)
     grade = models.IntegerField(default=0)
     date_of_birth = models.DateField(default=None)
-    rfid = models.CharField(max_length=100, unique=True)
     school = models.ForeignKey(School, on_delete=models.RESTRICT)
-    balance = models.FloatField(default=0)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -31,10 +29,10 @@ class Student(models.Model):
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
-                    'date_of_birth', 'current_status', 'rfid')
+                    'date_of_birth', 'current_status')
     fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), 'school', ('rfid', 'balance'), 'restrictions')
-    search_fields = ('first_name', 'last_name', 'registration_number', 'rfid')
+              ('date_of_birth', 'registration_number'), 'school')
+    search_fields = ('first_name', 'last_name', 'registration_number')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
