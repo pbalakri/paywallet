@@ -34,6 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
     "172.31.21.221",
+    "54.228.111.231",
 ]
 
 
