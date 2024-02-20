@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationTabularInline
 
+from .allergy import Allergy
+
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
@@ -28,7 +30,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.RESTRICT, blank=True, null=True)
-    restriction = models.ManyToManyField('DietaryRestriction', blank=True)
+    allergies = models.ManyToManyField(Allergy, blank=True)
 
     def __str__(self):
         return self.name
@@ -39,12 +41,12 @@ class Product(models.Model):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image', 'category', 'all_restrictions')
-    fields = ('name', 'image', 'category', 'restriction')
+    list_display = ('name', 'image', 'category', 'all_allergies')
+    fields = ('name', 'image', 'category', 'allergies')
     search_fields = ('name',)
 
-    def all_restrictions(self, obj):
-        return ", ".join([p.name for p in obj.restriction.all()])
+    def all_allergies(self, obj):
+        return ", ".join([p.name for p in obj.allergies.all()])
 
 
 class ProductInlines(TranslationTabularInline):

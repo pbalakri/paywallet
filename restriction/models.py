@@ -1,8 +1,7 @@
 from django.db import models
-from product.models import DietaryRestriction
 from school.models import Student
 from django.utils.translation import gettext_lazy as _
-from product.models import Category, Product
+from product.models import Category, Product, Allergy
 
 
 class Restriction(models.Model):
@@ -19,8 +18,8 @@ class Restriction(models.Model):
 
 
 class DietRestriction(Restriction):
-    dietary_restriction = models.ForeignKey(
-        DietaryRestriction, on_delete=models.CASCADE)
+    allergies = models.ManyToManyField(
+        Allergy, blank=True)
 
     def __str__(self):
         return self.dietary_restriction

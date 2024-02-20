@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Product, ProductAdmin, DietaryRestriction, Category, CategoryAdmin, Dashboard, DashboardAdmin, DietaryRestrictionAdmin
+from .models import Product, ProductAdmin, Category, CategoryAdmin, Dashboard, DashboardAdmin, Allergy
 from modeltranslation.admin import TabbedDjangoJqueryTranslationAdmin
 
 
@@ -14,12 +14,9 @@ class ProductAdminTranslationOptions(ProductAdmin, TabbedDjangoJqueryTranslation
     pass
 
 
-@admin.register(DietaryRestriction)
-class DietaryRestrictionAdminTranslationOptions(DietaryRestrictionAdmin, TabbedDjangoJqueryTranslationAdmin):
+@admin.register(Allergy)
+class AllergyAdminTranslationOptions(TabbedDjangoJqueryTranslationAdmin):
     pass
 
 
-# admin.site.register(Product)
-# admin.site.register(DietaryRestriction)
-# admin.site.register(Category)
 admin.site.register(Dashboard, DashboardAdmin)

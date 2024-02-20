@@ -1,4 +1,5 @@
 from django.contrib import admin
+from modeltranslation.admin import TabbedDjangoJqueryTranslationAdmin
 
 # Register your models here.
 from .models import PaymentRestriction, CategoryRestriction, DietRestriction, ProductRestriction

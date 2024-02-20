@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from school.models import Student
 
 from school.serializers import StudentSerializer
 from .models import Guardian
@@ -31,3 +32,9 @@ class ReadGuardianSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guardian
         fields = ['user', 'phone_number', 'student']
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['registration_number', 'school_id']

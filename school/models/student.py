@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
 
-from product.models import DietaryRestriction
+
 from .school import School
 from django.utils.translation import gettext_lazy as _
 
@@ -20,8 +20,6 @@ class Student(models.Model):
     rfid = models.CharField(max_length=100, unique=True)
     school = models.ForeignKey(School, on_delete=models.RESTRICT)
     balance = models.FloatField(default=0)
-    restrictions = models.ManyToManyField(
-        DietaryRestriction, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"

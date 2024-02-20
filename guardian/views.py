@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
+
+from school.models import Student, School
 from .models import Device, Guardian
 from django.contrib.auth.models import User, Group
 from rest_framework.authentication import TokenAuthentication
@@ -61,6 +63,29 @@ class GuardianRegisterView(APIView):
                 return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GuardianStudentAddView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            guardian_obj = Guardian.objects.get(user=request.user)
+            school = School.objects.get(
+                name=request.data['school'], address=request.data['address'])
+            student = Student.objects.get(
+                registration_number=request.data['registration_number'], school_id=school.id)
+            guardian_obj.student.add(student)
+            guardian_obj.save()
+        except Guardian.DoesNotExist:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        except School.DoesNotExist:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Student.DoesNotExist:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 
 # class GuardianUpdateView(APIView):

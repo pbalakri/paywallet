@@ -10,8 +10,6 @@ class Wallet(models.Model):
     student_id = models.ForeignKey(
         Student, on_delete=models.RESTRICT)
     balance = models.FloatField(default=0)
-    restrictions = models.ManyToManyField(
-        'product.DietaryRestriction', blank=True)
 
     def __str__(self):
         return self.rfid
@@ -22,8 +20,8 @@ class Wallet(models.Model):
 
 
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('rfid', 'student_id', 'all_restrictions', )
-    fields = ('rfid', 'student_id', 'restrictions')
+    list_display = ('rfid', 'student_id',)
+    fields = ('rfid', 'student_id')
     search_fields = ('rfid', 'student_id__first_name',
                      'student_id__last_name', 'student_id__registration_number')
 

@@ -1,5 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import Category, Product, DietaryRestriction
+from .models import Category, Product, Allergy
 
 
 @register(Category)
@@ -14,7 +14,7 @@ class ProductTranslationOptions(TranslationOptions):
     required_languages = ('en', 'ar')
 
 
-@register(DietaryRestriction)
-class DietaryRestrictionTranslationOptions(TranslationOptions):
+@register(Allergy)
+class AllergyTranslationOptions(TranslationOptions):
     fields = ('name',)
     required_languages = ('en', 'ar')
