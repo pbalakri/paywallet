@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "rosetta",
     "mathfilters",
     "storages",
+    "import_export"
 ]
 
 MIDDLEWARE = [
