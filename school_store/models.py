@@ -47,16 +47,18 @@ class Product(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
                           editable=False)
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='products/', blank=True)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    description = models.TextField(
+        blank=True, null=True, verbose_name=_("Description"))
+    image = models.ImageField(upload_to='products/',
+                              blank=True, verbose_name=_("Image"))
     school = models.ForeignKey(
-        School, on_delete=models.RESTRICT, blank=True, null=True)
+        School, on_delete=models.RESTRICT, blank=True, null=True, verbose_name=_("School"))
     category = models.ForeignKey(
-        Category, on_delete=models.RESTRICT, blank=True, null=True)
-    price = models.FloatField(default=0)
-    stock = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+        Category, on_delete=models.RESTRICT, blank=True, null=True, verbose_name=_("Category"))
+    price = models.FloatField(default=0, verbose_name=_("Price"))
+    stock = models.IntegerField(default=0, verbose_name=_("Stock"))
+    is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
 
     def __str__(self):
         return self.name
