@@ -12,12 +12,15 @@ from django.utils.translation import gettext_lazy as _
 
 class Student(models.Model):
     id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    registration_number = models.CharField(max_length=100)
-    grade = models.IntegerField(default=0)
-    date_of_birth = models.DateField(default=None)
-    school = models.ForeignKey(School, on_delete=models.RESTRICT)
+    first_name = models.CharField(max_length=100, verbose_name=_("First Name"))
+    last_name = models.CharField(max_length=100, verbose_name=_("Last Name"))
+    registration_number = models.CharField(max_length=100, verbose_name=_(
+        "Registration Number"))
+    grade = models.IntegerField(default=0, verbose_name=_("Grade"))
+    date_of_birth = models.DateField(
+        default=None, verbose_name=_("Date of Birth"))
+    school = models.ForeignKey(
+        School, on_delete=models.RESTRICT, verbose_name=_("School"))
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -25,6 +28,7 @@ class Student(models.Model):
     class Meta:
         verbose_name = _("Student")
         verbose_name_plural = _("Students")
+        unique_together = ('registration_number', 'school')
 
 
 class StudentAdmin(admin.ModelAdmin):
