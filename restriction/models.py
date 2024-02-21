@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from school.models import Student
 from django.utils.translation import gettext_lazy as _
@@ -5,7 +6,7 @@ from product.models import Category, Product, Allergy
 
 
 class Restriction(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE)
 

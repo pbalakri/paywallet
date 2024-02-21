@@ -8,7 +8,7 @@ from .allergy import Allergy
 
 
 class Category(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     parent_category = models.ForeignKey(
         'self', on_delete=models.RESTRICT, blank=True, null=True)
