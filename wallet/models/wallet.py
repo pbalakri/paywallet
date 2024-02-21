@@ -1,18 +1,18 @@
+import uuid
 from django.contrib import admin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from school.models import Student
+from school.models import Bracelet
 
 
 class Wallet(models.Model):
-    id = models.AutoField(primary_key=True)
-    rfid = models.CharField(max_length=100, unique=True)
-    student_id = models.ForeignKey(
-        Student, on_delete=models.RESTRICT)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    bracelet = models.ForeignKey(
+        Bracelet, on_delete=models.RESTRICT, default=None)
     balance = models.FloatField(default=0)
 
     def __str__(self):
-        return self.rfid
+        return self.bracelet + " " + self.student
 
     class Meta:
         verbose_name = _('Wallet')
@@ -20,13 +20,9 @@ class Wallet(models.Model):
 
 
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('rfid', 'student_id',)
-    fields = ('rfid', 'student_id')
-    search_fields = ('rfid', 'student_id__first_name',
-                     'student_id__last_name', 'student_id__registration_number')
-
-    def all_restrictions(self, obj):
-        return ", ".join([p.name for p in obj.restrictions.all()])
+    list_display = ('bracelet',)
+    fields = ('bracelet',)
+    search_fields = ('bracelet',)
 
     def get_list_display(self, request):
         if request.user.is_superuser:
@@ -39,18 +35,3 @@ class WalletAdmin(admin.ModelAdmin):
             return super().get_fields(request, obj) + ('balance',)
         else:
             return super().get_fields(request, obj)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
-            return super(WalletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        elif db_field.name == "student_id":
-            kwargs["queryset"] = Student.objects.filter(
-                school_id__school_admin=request.user)
-            return super(WalletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def get_queryset(self, request):
-        qs = super(WalletAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        else:
-            return qs.filter(student_id__school_id__school_admin=request.user)

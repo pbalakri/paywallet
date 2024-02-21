@@ -31,7 +31,7 @@ class TransactionPostSerializer(serializers.ModelSerializer):
 
 
 class TransactionGetSerializer(serializers.ModelSerializer):
-    merchant = CafeSerializer(source='merchant_id')
+    merchant = CafeSerializer(source='merchant')
 
     class Meta:
         model = Transaction

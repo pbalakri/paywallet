@@ -1,9 +1,5 @@
-from typing import Any
+import uuid
 from django.db import models
-from django.contrib import admin, messages
-from django.utils.safestring import mark_safe
-from django.utils.translation import ngettext
-from datetime import datetime
 from .student import Student
 
 
@@ -12,8 +8,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Bracelet(models.Model):
-    id = models.AutoField(primary_key=True, verbose_name=_("ID"))
-    model_name = models.CharField(max_length=100, verbose_name=_("Model Name"))
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, verbose_name=_("ID"))
+    model_name = models.CharField(
+        max_length=100, verbose_name=_("Bracelet Model"))
     rfid = models.CharField(max_length=100, unique=True,
                             verbose_name=_("RFID"))
     school = models.ForeignKey(

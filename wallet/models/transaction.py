@@ -25,7 +25,7 @@ class Transaction(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     wallet = models.ForeignKey(
         Wallet, on_delete=models.RESTRICT)
-    merchant_id = models.ForeignKey(
+    merchant = models.ForeignKey(
         Cafe, on_delete=models.RESTRICT)
     reference = models.CharField(max_length=100, blank=True, null=True)
 
@@ -89,14 +89,14 @@ class Transaction(models.Model):
 
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('date', 'type', 'amount',
-                    'merchant_id', 'reference')
+                    'merchant', 'reference')
     fields = ('type', 'amount', 'wallet',
-              'merchant_id', 'reference')
+              'merchant', 'reference')
 
     def formfield_for_foreignkey(self, db_field: ForeignKey[Any], request: HttpRequest | None, **kwargs: Any) -> ModelChoiceField | None:
         if request.user.is_superuser:
             return super(TransactionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        elif db_field.name == "merchant_id":
+        elif db_field.name == "merchant":
             kwargs["queryset"] = Cafe.objects.filter(
                 vendor_admin=request.user)
             return super(TransactionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
@@ -108,4 +108,4 @@ class TransactionAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(merchant_id__vendor_admin=request.user)
+            return qs.filter(merchant__vendor_admin=request.user)

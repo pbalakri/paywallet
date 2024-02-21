@@ -6,15 +6,16 @@ from django.utils.translation import gettext_lazy as _
 
 
 class School(models.Model):
-    id = models.AutoField(primary_key=True)
-    guid = models.UUIDField(default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
-    primary_email = models.CharField(max_length=100)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    address = models.CharField(max_length=100, verbose_name=_("Address"))
+    city = models.CharField(max_length=100, verbose_name=_("City"))
+    phone_number = models.CharField(
+        max_length=100, verbose_name=_("Phone Number"))
+    primary_email = models.CharField(
+        max_length=100, verbose_name=_("Primary Email"))
     school_admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
-                                     'groups__name': 'School Admin'})
+                                     'groups__name': 'School Admin'}, verbose_name=_("School Admin"))
 
     def __str__(self):
         return self.name
@@ -25,7 +26,7 @@ class School(models.Model):
 
 
 class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'guid', 'address', 'city', 'phone_number',
+    list_display = ('name', 'id', 'address', 'city', 'phone_number',
                     'school_admin')
     fields = ('name', ('address', 'city'), 'phone_number', 'school_admin')
     list_filter = ('city',)
