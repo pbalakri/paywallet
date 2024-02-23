@@ -109,15 +109,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-if 'RDS_HOSTNAME' in os.environ:
+if os.environ.get("ENVIRONMENT") in ["PRODUCTION", "STAGING"]:
+    print ("OOOOOOOOOOOOOOOOOOOOOOOOOO\n"+os.environ.get("ENVIRONMENT")"+\n"+os.environ.get("RDS_HOSTNAME")+"\n"+os.environ("RDS_HOSTNAME")+"\nOOOOOOOOOOOOOOOOOOOOOOOOOO")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("RDS_DB_NAME"),
-            "USER": os.environ.get("RDS_USERNAME"),
-            "PASSWORD": os.environ.get("RDS_PASSWORD"),
-            "HOST": os.environ.get("RDS_HOSTNAME"),
-            "PORT": os.environ.get("RDS_PORT"),
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
+            "HOST": os.environ.get("DB_HOST"),
+            "PORT": os.environ.get("DB_PORT"),
         }
     }
 
