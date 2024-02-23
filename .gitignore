@@ -1,5 +1,4 @@
 # Ignore all migration folders
-*/migrations/*
 */__pycache__/*
 db.sqlite3
 
