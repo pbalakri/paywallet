@@ -111,7 +111,7 @@ DATABASES = {
 }
 if os.environ.get("ENVIRONMENT") in ["PRODUCTION", "STAGING"]:
     print("OOOOOOOOOOOOOOOOOOOOOOOOOO\n"+os.environ.get("ENVIRONMENT")+"\n" +
-          os.environ.get("RDS_HOSTNAME")+"\n"+os.environ("RDS_HOSTNAME")+"\nOOOOOOOOOOOOOOOOOOOOOOOOOO")
+          os.environ.get("RDS_HOSTNAME")+"\n\nOOOOOOOOOOOOOOOOOOOOOOOOOO")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
