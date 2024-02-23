@@ -109,7 +109,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-if os.environ.get("ENVIRONMENT") in ["PRODUCTION", "STAGING"]:
+if 'RDS_HOSTNAME' in os.environ:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
