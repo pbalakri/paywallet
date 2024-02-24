@@ -15,6 +15,11 @@
     "fields": { "name": "Vendor Operator", "permissions": [] }
   },
   {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": { "name": "Guardian", "permissions": [] }
+  },
+  {
     "model": "auth.user",
     "pk": 1,
     "fields": {
