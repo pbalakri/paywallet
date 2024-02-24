@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-06 10:28+0000\n"
+"POT-Creation-Date: 2024-02-24 01:53+0000\n"
 "PO-Revision-Date: 2024-02-03 12:43+0000\n"
 "Last-Translator:   <pbalakri@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Translated-Using: django-rosetta 0.9.9\n"
 
 #: cafe/apps.py:8
@@ -27,16 +28,45 @@ msgstr ""
 msgid "Café"
 msgstr ""
 
+#: cafe/models/dashboard.py:11 cafe/models/dashboard.py:12
+#: product/models/dashboard.py:12 product/models/dashboard.py:13
+msgid "Dashboard"
+msgstr ""
+
 #: cafe/models/inventory.py:21 cafe/models/inventory.py:22
 msgid "Inventory"
 msgstr ""
 
-#: paywallet/settings.py:126
-msgid "English"
+#: cafe/models/operator.py:23
+msgid "Operator"
 msgstr ""
 
-#: paywallet/settings.py:127
-msgid "Arabic"
+#: cafe/models/operator.py:24
+msgid "Operators"
+msgstr ""
+
+#: cafe/models/order.py:25 school_store/models.py:117
+msgid "Order"
+msgstr "طلبات"
+
+#: cafe/models/order.py:26 school_store/models.py:118
+msgid "Orders"
+msgstr "طلبات"
+
+#: cafe/models/order.py:44 school_store/models.py:136
+msgid "Order Item"
+msgstr ""
+
+#: cafe/models/order.py:45 school_store/models.py:137
+msgid "Order Items"
+msgstr ""
+
+#: guardian/models.py:38
+msgid "Device"
+msgstr ""
+
+#: guardian/models.py:39
+msgid "Devices"
 msgstr ""
 
 #: paywallet/urls.py:23 paywallet/urls.py:24
@@ -47,72 +77,162 @@ msgstr ""
 msgid "Welcome to PayWallet Portal"
 msgstr ""
 
-#: product/apps.py:8 product/models.py:33 school_store/models.py:60
+#: product/apps.py:8 product/models/product.py:39 school_store/models.py:67
 msgid "Product"
 msgstr ""
 
-#: product/models.py:15 school_store/models.py:20
+#: product/models/allergy.py:7 school/models/school.py:10
+#: school_store/models.py:50
+msgid "Name"
+msgstr ""
+
+#: product/models/allergy.py:13
+msgid "Allergy"
+msgstr ""
+
+#: product/models/allergy.py:14
+msgid "Allergies"
+msgstr ""
+
+#: product/models/dashboard.py:17
+msgid "category"
+msgstr ""
+
+#: product/models/dashboard.py:31
+msgid "restriction"
+msgstr ""
+
+#: product/models/product.py:20 school_store/models.py:23
+#: school_store/models.py:58
 msgid "Category"
 msgstr ""
 
-#: product/models.py:16 school_store/models.py:21
+#: product/models/product.py:21 school_store/models.py:24
 msgid "Categories"
 msgstr ""
 
-#: product/models.py:34 school_store/models.py:61
+#: product/models/product.py:40 school_store/models.py:68
 msgid "Products"
 msgstr ""
 
-#: product/models.py:54
-msgid "Dietary Restriction"
+#: restriction/models.py:29
+msgid "Diet Restriction"
 msgstr ""
 
-#: product/models.py:55
-msgid "Dietary Restrictions"
+#: restriction/models.py:30
+msgid "Diet Restrictions"
 msgstr ""
 
-#: sales/apps.py:8 sales/models.py:26
-msgid "Sales"
+#: restriction/models.py:41
+msgid "Category Restriction"
 msgstr ""
 
-#: sales/models.py:25
-msgid "Sale"
+#: restriction/models.py:42
+msgid "Category Restrictions"
 msgstr ""
 
-#: sales/models.py:44
-msgid "Sold Item"
+#: restriction/models.py:59
+msgid "Payment Restriction"
 msgstr ""
 
-#: sales/models.py:45
-msgid "Sold Items"
+#: restriction/models.py:60
+msgid "Payment Restrictions"
 msgstr ""
 
-#: school/apps.py:8 school/models/school.py:21
+#: restriction/models.py:71
+msgid "Product Restriction"
+msgstr ""
+
+#: restriction/models.py:72
+msgid "Product Restrictions"
+msgstr ""
+
+#: school/apps.py:8 school/models/bracelet.py:18 school/models/school.py:24
+#: school/models/student.py:23 school_store/models.py:56
 msgid "School"
 msgstr ""
 
-#: school/models/school.py:22
-msgid "Schools"
+#: school/models/bracelet.py:12
+msgid "ID"
 msgstr ""
 
-#: school/models/student.py:23
+#: school/models/bracelet.py:14
+msgid "Bracelet Model"
+msgstr ""
+
+#: school/models/bracelet.py:16
+msgid "RFID"
+msgstr ""
+
+#: school/models/bracelet.py:20 school/models/student.py:29
 msgid "Student"
 msgstr ""
 
-#: school/models/student.py:24
+#: school/models/bracelet.py:26
+msgid "Bracelet"
+msgstr ""
+
+#: school/models/bracelet.py:27
+msgid "Bracelets"
+msgstr ""
+
+#: school/models/school.py:11
+msgid "Address"
+msgstr ""
+
+#: school/models/school.py:12
+msgid "City"
+msgstr ""
+
+#: school/models/school.py:14
+msgid "Phone Number"
+msgstr ""
+
+#: school/models/school.py:16
+msgid "Primary Email"
+msgstr ""
+
+#: school/models/school.py:18
+msgid "School Admin"
+msgstr ""
+
+#: school/models/school.py:25
+msgid "Schools"
+msgstr ""
+
+#: school/models/student.py:15
+msgid "First Name"
+msgstr ""
+
+#: school/models/student.py:16
+msgid "Last Name"
+msgstr ""
+
+#: school/models/student.py:18
+msgid "Registration Number"
+msgstr ""
+
+#: school/models/student.py:19
+msgid "Grade"
+msgstr ""
+
+#: school/models/student.py:21
+msgid "Date of Birth"
+msgstr ""
+
+#: school/models/student.py:30
 msgid "Students"
 msgstr ""
 
-#: school/models/student.py:71
+#: school/models/student.py:78
 #, python-format
-msgid ""
-"%(updated_count)d/%(total_count)d student was successfully checked out."
+msgid "%(updated_count)d/%(total_count)d student was successfully checked out."
 msgid_plural ""
 "%(updated_count)d/%(total_count)d students were successfully checked out."
 msgstr[0] ""
 msgstr[1] ""
 
-#: school/models/student.py:89
+#: school/models/student.py:96
 #, python-format
 msgid "%(created_count)d/%(total_count)d student was successfully checked in."
 msgid_plural ""
@@ -120,7 +240,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: school/models/student.py:126 school/models/student.py:127
+#: school/models/student.py:133 school/models/student.py:134
 msgid "Attendance"
 msgstr ""
 
@@ -128,54 +248,75 @@ msgstr ""
 msgid "School Store"
 msgstr ""
 
-#: school_store/models.py:102
-msgid "Order"
-msgstr "طلبات"
-
-#: school_store/models.py:103
-msgid "Orders"
-msgstr "طلبات"
-
-#: school_store/models.py:121
-msgid "Order Item"
+#: school_store/models.py:52
+msgid "Description"
 msgstr ""
 
-#: school_store/models.py:122
-msgid "Order Items"
+#: school_store/models.py:54
+msgid "Image"
 msgstr ""
 
-#: wallet/apps.py:8
+#: school_store/models.py:59
+msgid "Price"
+msgstr ""
+
+#: school_store/models.py:60
+msgid "Stock"
+msgstr ""
+
+#: school_store/models.py:61
+msgid "Is Active"
+msgstr ""
+
+#: templates/admin/cafe/dashboard.html:18
+#: templates/admin/product/dashboard.html:20
+msgid "Filter"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:31
+msgid "Skip to main content"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:46
+msgid "Welcome,"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:51
+msgid "View site"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:56
+msgid "Documentation"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:60
+msgid "Change password"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:64
+msgid "Log out"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:76
+msgid "Breadcrumbs"
+msgstr ""
+
+#: templates/layouts/dashboard_base.html:79
+msgid "Home"
+msgstr ""
+
+#: wallet/apps.py:8 wallet/models/wallet.py:18
 msgid "Wallet"
 msgstr ""
 
-#: wallet/models/bracelet.py:23
-msgid "Bracelet"
-msgstr ""
-
-#: wallet/models/bracelet.py:24
-msgid "Bracelets"
-msgstr ""
-
-#: wallet/models/restrictions.py:24
-msgid "Payment Restriction"
-msgstr ""
-
-#: wallet/models/restrictions.py:25
-msgid "Payment Restrictions"
-msgstr ""
-
-#: wallet/models/restrictions.py:39
-msgid "Category Restriction"
-msgstr ""
-
-#: wallet/models/restrictions.py:40
-msgid "Category Restrictions"
-msgstr ""
-
-#: wallet/models/transaction.py:87
+#: wallet/models/transaction.py:86
 msgid "Transaction"
 msgstr ""
 
-#: wallet/models/transaction.py:88
+#: wallet/models/transaction.py:87
 msgid "Transactions"
+msgstr ""
+
+#: wallet/models/wallet.py:19
+msgid "Wallets"
 msgstr ""
