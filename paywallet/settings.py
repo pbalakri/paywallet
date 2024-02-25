@@ -32,9 +32,8 @@ SECRET_KEY = "django-insecure-ug+p47x#8&h*ir3xjh%+s9z(q-*=7so7nk9lnlo7r8m2o)j2w1
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com",
-    "52.215.57.53",
-    "127.0.0.1"
+    "127.0.0.1",
+    "localhost",
 ]
 
 
@@ -61,7 +60,8 @@ INSTALLED_APPS = [
     "rosetta",
     "mathfilters",
     "storages",
-    "import_export"
+    "import_export",
+    "oauth2_provider",
 ]
 
 MIDDLEWARE = [
@@ -110,6 +110,9 @@ DATABASES = {
     }
 }
 if os.environ.get("ENVIRONMENT") in ["PRODUCTION", "STAGING"]:
+    DEBUG = False
+    ALLOWED_HOSTS = [
+        "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com"]
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -202,4 +205,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,  # Set your desired page size
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }

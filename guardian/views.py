@@ -7,15 +7,14 @@ from django.db import transaction
 from school.models import Student, School
 from .models import Device, Guardian
 from django.contrib.auth.models import User, Group
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
 from django.contrib.auth.hashers import make_password
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 
 class GuardianView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
 
     def get(self, request):
         try:
@@ -66,8 +65,7 @@ class GuardianRegisterView(APIView):
 
 
 class GuardianStudentAddView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
 
     def post(self, request):
         try:

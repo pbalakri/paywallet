@@ -2,16 +2,15 @@ import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from paywallet.permissions import IsSchoolAdmin
+from paywallet.permissions import IsGuardian, IsSchoolAdmin
 from .models import Student, Attendance, School
 from .serializers import AttendanceSerializer, SchoolSerializer
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 
 class CheckInView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsSchoolAdmin]
 
     def post(self, request, pk):
@@ -31,7 +30,6 @@ class CheckInView(APIView):
 
 
 class CheckoutView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -52,8 +50,7 @@ class CheckoutView(APIView):
 
 
 class SchoolView(APIView):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request):
         try:

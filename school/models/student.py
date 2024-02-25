@@ -4,6 +4,7 @@ from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
+from paywallet.widgets.widget import PastCustomDatePickerWidget
 
 
 from .school import School
@@ -37,6 +38,10 @@ class StudentAdmin(admin.ModelAdmin):
     fields = (('first_name', 'last_name'),
               ('date_of_birth', 'registration_number'), 'school')
     search_fields = ('first_name', 'last_name', 'registration_number')
+
+    formfield_overrides = {
+        models.DateField: {'widget': PastCustomDatePickerWidget},
+    }
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:

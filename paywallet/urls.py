@@ -35,4 +35,5 @@ urlpatterns = i18n_patterns(
     path('api-token-auth/', views.obtain_auth_token),
     re_path(r'^rosetta/', include('rosetta.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('api/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     prefix_default_language=False)

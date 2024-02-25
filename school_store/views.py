@@ -5,7 +5,7 @@ from .models import Category, Order, Product
 from .serializers import OrderedCategorySerializer, OrderSerializer, ProductSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -74,8 +74,7 @@ class GetCategories(APIView):
 
 
 class GetOrders(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsGuardian]
+    permission_classes = [IsGuardian, IsAuthenticated]
 
     def get(self, request):
         try:

@@ -23,7 +23,6 @@ from django.db import transaction
 
 
 class BalanceView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request, rfid):
@@ -32,7 +31,6 @@ class BalanceView(APIView):
 
 
 class TransactionsView(APIView):
-    authentication_classes = [TokenAuthentication]
     pagination_class = PageNumberPagination
 
     def get_permissions(self):
