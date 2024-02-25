@@ -6,7 +6,7 @@ from django.utils.translation import ngettext
 from datetime import datetime
 from paywallet.widgets.widget import PastCustomDatePickerWidget
 
-
+from .bracelet import Bracelet
 from .school import School
 from django.utils.translation import gettext_lazy as _
 
@@ -22,6 +22,8 @@ class Student(models.Model):
         default=None, verbose_name=_("Date of Birth"))
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
+    bracelet = models.ForeignKey(
+        Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -36,7 +38,7 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
                     'date_of_birth', 'current_status')
     fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), 'school')
+              ('date_of_birth', 'registration_number'), ('school', 'bracelet'))
     search_fields = ('first_name', 'last_name', 'registration_number')
 
     formfield_overrides = {

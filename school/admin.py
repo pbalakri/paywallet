@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export import resources
 
 # Register your models here.
-from .models import Student, Attendance, School, SchoolAdmin, StudentAdmin, AttendanceAdmin, Bracelet
+from .models import Student, Attendance, School, SchoolAdmin, StudentAdmin, AttendanceAdmin, Bracelet, Teacher, TeacherAdmin
 
 
 class BraceletResource(resources.ModelResource):
@@ -14,10 +14,10 @@ class BraceletResource(resources.ModelResource):
 
 class BraceletAdmin(ImportExportModelAdmin):
     resource_classes = [BraceletResource]
-    list_display = ('rfid', 'school', 'student')
+    list_display = ('rfid', 'school')
     fields = (('model_name', 'rfid'),
-              ('school', 'student'))
-    search_fields = ('student', 'rfid')
+              ('school'))
+    search_fields = ('rfid',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:
@@ -49,3 +49,4 @@ admin.site.register(Student, StudentAdmin)
 admin.site.register(Attendance, AttendanceAdmin)
 admin.site.register(School, SchoolAdmin)
 admin.site.register(Bracelet, BraceletAdmin)
+admin.site.register(Teacher, TeacherAdmin)
