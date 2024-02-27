@@ -22,3 +22,4 @@ class Bracelet(models.Model):
     class Meta:
         verbose_name = _("Bracelet")
         verbose_name_plural = _("Bracelets")
+        unique_together = ("rfid", "school")
