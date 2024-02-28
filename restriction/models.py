@@ -23,7 +23,7 @@ class DietRestriction(Restriction):
         Allergy, blank=True)
 
     def __str__(self):
-        return self.dietary_restriction
+        return self.allergies.name
 
     class Meta:
         verbose_name = _('Diet Restriction')
