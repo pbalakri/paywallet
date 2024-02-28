@@ -17,18 +17,18 @@ new Chart(ctx, {
 });
 
 var ctx = document
-  .getElementById("chart-product-count-by-restriction")
+  .getElementById("chart-product-count-by-allergies")
   .getContext("2d");
 new Chart(ctx, {
   type: "pie",
   data: JSON.parse(
-    document.getElementById("product_count_by_restriction").textContent
+    document.getElementById("product_count_by_allergies").textContent
   ),
   options: {
     plugins: {
       title: {
         display: true,
-        text: "Product count by restriction",
+        text: "Product count by allergies",
       },
     },
   },

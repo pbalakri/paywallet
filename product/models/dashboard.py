@@ -27,24 +27,10 @@ class CustomCategoryListFilter(SimpleListFilter):
         return queryset
 
 
-class CustomRestrictionListFilter(SimpleListFilter):
-    title = _('restriction')
-    parameter_name = 'restriction__name'
-
-    def lookups(self, request, model_admin):
-        queryset = model_admin.get_queryset(request)
-        return [(value, value) for value in queryset.exclude(restriction=None).values_list('restriction__name', flat=True).distinct()]
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(restriction__name=self.value())
-        return queryset
-
-
 class DashboardAdmin(admin.ModelAdmin):
 
     change_list_template = 'admin/product/dashboard.html'
-    list_filter = [CustomCategoryListFilter, CustomRestrictionListFilter]
+    list_filter = [CustomCategoryListFilter]
 
     def getRandomColor(self):
         letters = list('0123456789ABCDEF')
@@ -70,16 +56,16 @@ class DashboardAdmin(admin.ModelAdmin):
                          'backgroundColor': background_color}]
         }
 
-    def get_product_count_by_restriction(self, qs):
+    def get_product_count_by_allergies(self, qs):
         labels = []
         data = []
         background_color = []
         # get all product count by restriction, exclude None
-        product_count_by_restriction = list(qs.exclude(restriction=None).values('restriction__name').annotate(
-            total=Count('restriction__name')))
+        product_count_by_allergies = list(qs.values('allergies__name').annotate(
+            total=Count('allergies__name')))
 
-        for i in product_count_by_restriction:
-            labels.append(i['restriction__name'])
+        for i in product_count_by_allergies:
+            labels.append(i['allergies__name'])
             data.append(i['total'])
             background_color.append(self.getRandomColor())
         return {
@@ -97,7 +83,7 @@ class DashboardAdmin(admin.ModelAdmin):
             qs = response.context_data['cl'].queryset
             response.context_data['product_count_by_category'] = self.get_product_count_by_category(
                 qs)
-            response.context_data['product_count_by_restriction'] = self.get_product_count_by_restriction(
+            response.context_data['product_count_by_allergies'] = self.get_product_count_by_allergies(
                 qs)
         except (AttributeError, KeyError):
             return response
