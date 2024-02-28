@@ -12,7 +12,7 @@ class Wallet(models.Model):
     balance = models.FloatField(default=0)
 
     def __str__(self):
-        return self.bracelet + " " + self.student
+        return self.bracelet.rfid
 
     class Meta:
         verbose_name = _('Wallet')
