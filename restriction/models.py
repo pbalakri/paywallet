@@ -35,7 +35,7 @@ class CategoryRestriction(Restriction):
         Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.category
+        return self.category.name
 
     class Meta:
         verbose_name = _('Category Restriction')
@@ -65,7 +65,7 @@ class ProductRestriction(Restriction):
         Product, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.product
+        return self.product.name
 
     class Meta:
         verbose_name = _('Product Restriction')
