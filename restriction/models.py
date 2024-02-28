@@ -3,6 +3,7 @@ from django.db import models
 from school.models import Student
 from django.utils.translation import gettext_lazy as _
 from product.models import Category, Product, Allergy
+from django.contrib import admin
 
 
 class Restriction(models.Model):
@@ -58,6 +59,12 @@ class PaymentRestriction(Restriction):
     class Meta:
         verbose_name = _('Payment Restriction')
         verbose_name_plural = _('Payment Restrictions')
+
+
+class PaymentRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('student', 'count_per_period', 'frequency')
+    fields = ('student', 'count_per_period', 'frequency')
+    search_fields = ('student',)
 
 
 class ProductRestriction(Restriction):
