@@ -11,26 +11,26 @@ class Inventory(models.Model):
                           default=uuid.uuid4,
                           editable=False)
     product = models.ForeignKey(Product, on_delete=models.RESTRICT)
+    product_code = models.CharField(max_length=100, null=True, blank=True)
     quantity = models.IntegerField()
     date = models.DateField(auto_now_add=True)
     price = models.FloatField()
-    currency = models.CharField(max_length=10, default='KWD')
     cafe = models.ForeignKey(Cafe, on_delete=models.RESTRICT)
 
     class Meta:
         verbose_name = _("Inventory")
         verbose_name_plural = _("Inventory")
+        unique_together = ('product_code', 'cafe')
 
     def __str__(self):
         return self.product.name
 
 
 class InventoryAdmin(admin.ModelAdmin):
-    list_display = ('product', 'quantity',
-                    'product_price', 'cafe', 'currency')
-    fields = ('product', 'quantity', 'price', 'cafe', 'currency')
-    search_fields = ('product__name', 'cafe__name')
-    readonly_fields = ('currency',)
+    list_display = ('product_code', 'product', 'quantity',
+                    'product_price', 'cafe')
+    fields = (('product_code', 'product'), ('quantity', 'price'), 'cafe')
+    search_fields = ('product__name', 'cafe__name', 'product_code')
 
     def product_price(self, obj):
         return '%.3f KWD' % obj.price

@@ -9,10 +9,9 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
                           editable=False)
-    cafe_id = models.ForeignKey(Cafe, on_delete=models.RESTRICT)
+    cafe = models.ForeignKey(Cafe, on_delete=models.RESTRICT)
     date = models.DateField(auto_now_add=True)
     total = models.FloatField()
-    currency = models.CharField(max_length=10, default='KWD')
     payment_choices = [
         ('cash', 'Cash'),
         ('card', 'Card'),
@@ -56,8 +55,8 @@ class OrderItemInlines(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('date', 'total', 'payment_method')
-    fields = ('cafe_id', 'payment_method')
+    list_display = ('cafe', 'date', 'total', 'payment_method')
+    fields = ('cafe', 'payment_method')
     inlines = [OrderItemInlines]
 
     def get_queryset(self, request):
@@ -66,4 +65,4 @@ class OrderAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(cafe_id__vendor_admin=request.user)
+            return qs.filter(cafe__vendor_admin=request.user)

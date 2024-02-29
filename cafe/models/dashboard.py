@@ -62,8 +62,6 @@ class DashboardAdmin(admin.ModelAdmin):
             qs = response.context_data['cl'].queryset
             response.context_data['get_product_count_based_on_stock'] = self.get_product_count_based_on_stock(
                 qs)
-            # response.context_data['product_count_by_restriction'] = self.get_product_count_by_restriction(
-            #     qs)
         except (AttributeError, KeyError):
             return response
         return response

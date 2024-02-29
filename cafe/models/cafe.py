@@ -19,6 +19,7 @@ class Cafe(models.Model):
     class Meta:
         verbose_name = _("Café")
         verbose_name_plural = _("Café")
+        unique_together = ('name', 'address')
 
     def __str__(self):
         return self.name
