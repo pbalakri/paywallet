@@ -1,5 +1,6 @@
 # Ignore all migration folders
 */__pycache__/*
+*/*/__pycache__/*
 db.sqlite3
 
 # Elastic Beanstalk Files
