@@ -14,10 +14,21 @@ class BraceletResource(resources.ModelResource):
 
 class BraceletAdmin(ImportExportModelAdmin):
     resource_classes = [BraceletResource]
-    list_display = ('rfid', 'school')
-    fields = (('model_name', 'rfid'),
+    list_display = ("rfid", "model_name", "school", "assigned_user", 'status')
+    fields = (('model_name', 'rfid', 'status'),
               ('school'))
-    search_fields = ('rfid',)
+    search_fields = ("rfid", "model_name", "school__name")
+
+    def assigned_user(self, obj):
+        # Get student record filter by bracelet object
+        student = obj.student_set.first()
+        teacher = obj.teacher_set.first()
+        if student:
+            return f"{student.first_name} {student.last_name}"
+        elif teacher:
+            return f"{teacher.first_name} {teacher.last_name}"
+        else:
+            return "Unassigned"
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user.is_superuser:

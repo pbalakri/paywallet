@@ -36,7 +36,7 @@ class Student(models.Model):
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
-                    'date_of_birth', 'current_status')
+                    'date_of_birth', 'current_status', 'bracelet')
     fields = (('first_name', 'last_name'),
               ('date_of_birth', 'registration_number'), ('school', 'bracelet'))
     search_fields = ('first_name', 'last_name', 'registration_number')
@@ -118,12 +118,19 @@ class StudentAdmin(admin.ModelAdmin):
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
         if request.user.is_superuser:
+            # If bracelet is assigned, then set the status of the bracelet to assigned
+            if form.instance.bracelet is not None:
+                form.instance.bracelet.status = Bracelet.ACTIVE
+                form.instance.bracelet.save()
             return super().save_form(request, form, change)
         schools = School.objects.filter(school_admin=request.user)
         if len(schools) == 0:
             raise Exception("You are not an admin of any schools")
         else:
             form.instance.school_id = schools[0]
+            if form.instance.bracelet is not None:
+                form.instance.bracelet.status = Bracelet.ACTIVE
+                form.instance.bracelet.save()
             return super().save_form(request, form, change)
 
 

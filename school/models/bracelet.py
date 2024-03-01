@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-
+from django.contrib import admin
 
 from .school import School
 from django.utils.translation import gettext_lazy as _
@@ -15,6 +15,16 @@ class Bracelet(models.Model):
                             verbose_name=_("RFID"))
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
+    ACTIVE = 'assigned'
+    INACTIVE = 'inactive'
+    UNASSIGNED = 'unassigned'
+    STATUS_CHOICES = [
+        (ACTIVE, _('Assigned')),
+        (INACTIVE, _('Inactive')),
+        (UNASSIGNED, _('Unassigned')),
+    ]
+    status = models.CharField(
+        max_length=100, choices=STATUS_CHOICES, default=UNASSIGNED, verbose_name=_("Status"))
 
     def __str__(self):
         return self.rfid
