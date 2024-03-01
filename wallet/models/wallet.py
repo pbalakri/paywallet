@@ -20,9 +20,17 @@ class Wallet(models.Model):
 
 
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('bracelet',)
+    list_display = ('bracelet', 'assigned_user')
     fields = ('bracelet',)
     search_fields = ('bracelet',)
+
+    def assigned_user(self, obj):
+        # Get student record filter by bracelet object
+        student = obj.bracelet.student_set.first()
+        if student:
+            return f'{student.first_name} {student.last_name}'
+        else:
+            return 'Unassigned'
 
     def get_list_display(self, request):
         if request.user.is_superuser:
