@@ -11,7 +11,6 @@ class Bracelet(models.Model):
                             verbose_name=_("RFID"))
     model_name = models.CharField(
         max_length=100, verbose_name=_("Bracelet Model"))
-
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, verbose_name=_("School"))
     ACTIVE = 'assigned'
