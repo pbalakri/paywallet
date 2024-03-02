@@ -18,6 +18,7 @@ class BraceletAdmin(ImportExportModelAdmin):
     fields = (('model_name', 'rfid', 'status'),
               ('school'))
     search_fields = ("rfid", "model_name", "school__name")
+    autocomplete_fields = ['school']
 
     def assigned_user(self, obj):
         # Get student record filter by bracelet object
@@ -43,7 +44,7 @@ class BraceletAdmin(ImportExportModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(school_id__school_admin=request.user)
+            return qs.filter(school__school_admin=request.user)
 
     def save_form(self, request, form, change):
         def remove_bracelet_from_user(form):
