@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
 from django.db import transaction
-from .helpers import check_restrictions
+from .helpers import get_restrictions
 
 # Create your views here.
 
@@ -65,7 +65,7 @@ class TransactionsView(APIView):
             return Response({'error': 'Invalid transaction type'}, status=status.HTTP_400_BAD_REQUEST)
         amount = request.data.get('amount')
         if transaction_type == 'debit':
-            restrictions = check_restrictions(wallet.bracelet)
+            restrictions = get_restrictions(wallet.bracelet)
             if wallet.balance < amount:
                 return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
             else:
