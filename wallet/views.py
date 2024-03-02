@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
 from django.db import transaction
-from .helpers import get_restrictions
+from .helpers.restrictions import get_restrictions
 
 # Create your views here.
 
