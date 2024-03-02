@@ -7,8 +7,8 @@ from school.models import Bracelet
 
 class Wallet(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bracelet = models.ForeignKey(
-        Bracelet, on_delete=models.RESTRICT, default=None)
+    bracelet = models.OneToOneField(
+        Bracelet, on_delete=models.RESTRICT, default=None, related_name='wallet')
     balance = models.FloatField(default=0)
     status = models.BooleanField(default=True)
 
@@ -23,7 +23,7 @@ class Wallet(models.Model):
 class WalletAdmin(admin.ModelAdmin):
     list_display = ('bracelet', 'assigned_user', 'status')
     fields = ('bracelet', 'balance')
-    readonly_fields = ('bracelet', 'status', 'assigned_user', 'balance')
+    # readonly_fields = ('bracelet', 'status', 'assigned_user', 'balance')
     search_fields = ('bracelet',)
 
     def assigned_user(self, obj):

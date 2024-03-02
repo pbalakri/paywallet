@@ -22,8 +22,8 @@ class Student(models.Model):
         default=None, verbose_name=_("Date of Birth"))
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
-    bracelet = models.ForeignKey(
-        Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True, unique=True)
+    bracelet = models.OneToOneField(
+        Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
