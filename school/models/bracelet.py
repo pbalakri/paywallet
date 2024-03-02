@@ -7,12 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Bracelet(models.Model):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, verbose_name=_("ID"))
+    rfid = models.CharField(primary_key=True, max_length=100, unique=True,
+                            verbose_name=_("RFID"))
     model_name = models.CharField(
         max_length=100, verbose_name=_("Bracelet Model"))
-    rfid = models.CharField(max_length=100, unique=True,
-                            verbose_name=_("RFID"))
+
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, verbose_name=_("School"))
     ACTIVE = 'assigned'
