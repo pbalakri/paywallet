@@ -10,6 +10,7 @@ class Wallet(models.Model):
     bracelet = models.ForeignKey(
         Bracelet, on_delete=models.RESTRICT, default=None)
     balance = models.FloatField(default=0)
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return self.bracelet.rfid
@@ -20,8 +21,9 @@ class Wallet(models.Model):
 
 
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('bracelet', 'assigned_user')
-    fields = ('bracelet',)
+    list_display = ('bracelet', 'assigned_user', 'status')
+    fields = ('bracelet', 'balance')
+    readonly_fields = ('bracelet', 'status', 'assigned_user', 'balance')
     search_fields = ('bracelet',)
 
     def assigned_user(self, obj):
@@ -40,9 +42,3 @@ class WalletAdmin(admin.ModelAdmin):
             return super().get_list_display(request) + ('balance',)
         else:
             return super().get_list_display(request)
-
-    def get_fields(self, request, obj):
-        if request.user.is_superuser:
-            return super().get_fields(request, obj) + ('balance',)
-        else:
-            return super().get_fields(request, obj)
