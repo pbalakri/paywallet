@@ -4,17 +4,17 @@ from school.models import Student
 from django.utils.translation import gettext_lazy as _
 from product.models import Category, Product, Allergy
 from django.contrib import admin
+from school.models import Bracelet
 
 
 class Restriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE)
+    bracelet = models.ForeignKey(
+        Bracelet, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.name
 
-    # Set this to proxy model
     class Meta:
         abstract = True
 
@@ -62,9 +62,9 @@ class PaymentRestriction(Restriction):
 
 
 class PaymentRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'count_per_period', 'frequency')
-    fields = ('student', 'count_per_period', 'frequency')
-    search_fields = ('student',)
+    list_display = ('bracelet', 'count_per_period', 'frequency')
+    fields = ('bracelet', 'count_per_period', 'frequency')
+    search_fields = ('bracelet',)
 
 
 class ProductRestriction(Restriction):
