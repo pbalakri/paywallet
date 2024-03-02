@@ -14,13 +14,11 @@ class Bracelet(models.Model):
     rfid = models.CharField(max_length=100, unique=True,
                             verbose_name=_("RFID"))
     school = models.ForeignKey(
-        School, on_delete=models.RESTRICT, verbose_name=_("School"))
+        School, on_delete=models.CASCADE, verbose_name=_("School"))
     ACTIVE = 'assigned'
-    INACTIVE = 'inactive'
     UNASSIGNED = 'unassigned'
     STATUS_CHOICES = [
         (ACTIVE, _('Assigned')),
-        (INACTIVE, _('Inactive')),
         (UNASSIGNED, _('Unassigned')),
     ]
     status = models.CharField(
