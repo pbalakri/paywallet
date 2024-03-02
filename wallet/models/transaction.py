@@ -29,54 +29,16 @@ class Transaction(models.Model):
         Cafe, on_delete=models.RESTRICT)
     reference = models.CharField(max_length=100, blank=True, null=True)
 
-    def check_for_payment_restrictions(self):
-        # Get all payment restrictions for this wallet
-
-        restrictions = PaymentRestriction.objects.filter(
-            wallet=self.wallet)
-        for restriction in restrictions:
-            # check if frequency of restriction is weekly
-            if restriction.frequency == 'Weekly':
-                # get total count of transactions this week of year
-                transactions_this_week = Transaction.objects.filter(
-                    wallet=self.wallet, date__week=datetime.today().isocalendar()[1])
-                if transactions_this_week.count() > restriction.count_per_period:
-                    raise Exception(
-                        'You have exceeded your weekly transaction limit')
-            elif restriction.frequency == 'Monthly':
-                # get total count of transactions this month
-                transactions_this_month = Transaction.objects.filter(
-                    wallet=self.wallet, date__month=datetime.now().month)
-                if transactions_this_month.count() > restriction.count_per_period:
-                    raise Exception(
-                        'You have exceeded your monthly transaction limit')
-            elif restriction.frequency == 'Daily':
-                # get total count of transactions today
-                transactions_today = Transaction.objects.filter(
-                    wallet=self.wallet, date__day=datetime.now().day)
-                if transactions_today.count() > restriction.count_per_period:
-                    raise Exception(
-                        'You have exceeded your daily transaction limit')
-
-        return True
-
-    def check_for_category_restrictions(self):
-        # Get all category restrictions for this wallet
-        restrictions = CategoryRestriction.objects.filter(
-            wallet=self.wallet)
-        return True
-
     def save(self, *args, **kwargs):
         if self.type == 'debit':
-            self.check_for_payment_restrictions()
-            wallet = Wallet.objects.get(rfid=self.wallet)
+            wallet = Wallet.objects.get(bracelet_id=self.wallet.bracelet_id)
             if wallet.balance < self.amount:
                 raise Exception('Insufficient balance')
             else:
                 wallet.balance -= self.amount
 
         else:
-            wallet = Wallet.objects.get(rfid=self.wallet)
+            wallet = Wallet.objects.get(bracelet_id=self.wallet.bracelet_id)
             wallet.balance += self.amount
         with transaction.atomic():
             wallet.save()
