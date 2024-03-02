@@ -46,13 +46,27 @@ class BraceletAdmin(ImportExportModelAdmin):
             return qs.filter(school_id__school_admin=request.user)
 
     def save_form(self, request, form, change):
+        def remove_bracelet_from_user(form):
+            student = form.instance.student_set.first()
+            teacher = form.instance.teacher_set.first()
+            if student:
+                student.bracelet = None
+                student.save()
+            if teacher:
+                teacher.bracelet = None
+                teacher.save()
         if request.user.is_superuser:
+            if form.instance.status == Bracelet.UNASSIGNED:
+                remove_bracelet_from_user(form)
             return super().save_form(request, form, change)
         schools = School.objects.filter(school_admin=request.user)
-        if len(schools) == 0:
-            raise Exception("You are not an admin of any schools")
+        if not schools.exists():
+            raise Exception("You are not an admin of any school")
         else:
-            form.instance.school_id = schools[0]
+            form.instance.school_id = schools.first()
+            # If bracelet is being unassigned, then set the bracelet field of Student and Teacher to None
+            if form.instance.status == Bracelet.UNASSIGNED:
+                remove_bracelet_from_user(form)
             return super().save_form(request, form, change)
 
 

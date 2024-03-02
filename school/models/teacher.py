@@ -45,12 +45,13 @@ class TeacherAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Bracelet.objects.filter(
                 status="unassigned")
             return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-        if request.user.is_superuser:
-            return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
-            kwargs["queryset"] = School.objects.filter(
-                school_admin=request.user)
-            return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            if request.user.is_superuser:
+                return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            else:
+                kwargs["queryset"] = School.objects.filter(
+                    school_admin=request.user)
+                return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
