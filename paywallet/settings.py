@@ -112,7 +112,7 @@ DATABASES = {
 if os.environ.get("ENVIRONMENT") in ["PRODUCTION", "STAGING"]:
     DEBUG = False
     ALLOWED_HOSTS = [
-        "http://generations-staging.eu-west-1.elasticbeanstalk.com",
+        "generations-staging.eu-west-1.elasticbeanstalk.com",
         "paywallet-test.eba-gpcbmfsa.eu-west-1.elasticbeanstalk.com"]
     DATABASES = {
         "default": {
