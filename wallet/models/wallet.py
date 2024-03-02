@@ -27,8 +27,11 @@ class WalletAdmin(admin.ModelAdmin):
     def assigned_user(self, obj):
         # Get student record filter by bracelet object
         student = obj.bracelet.student_set.first()
+        teacher = obj.bracelet.teacher_set.first()
         if student:
             return f'{student.first_name} {student.last_name}'
+        elif teacher:
+            return f'{teacher.first_name} {teacher.last_name}'
         else:
             return 'Unassigned'
 

@@ -40,6 +40,11 @@ class TeacherAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'registration_number')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "bracelet":
+            # Show bracelets with status unassigned
+            kwargs["queryset"] = Bracelet.objects.filter(
+                status="unassigned")
+            return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         if request.user.is_superuser:
             return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
