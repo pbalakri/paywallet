@@ -1,19 +1,14 @@
-from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from cafe.models import Cafe
-from django.db.utils import IntegrityError
-from restriction.helpers.payment_restrictions import check_for_payment_restrictions
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
 from .models import Wallet, Transaction
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
 from django.db import transaction
-
+from .helpers import check_restrictions
 
 # Create your views here.
 
@@ -58,7 +53,7 @@ class TransactionsView(APIView):
     def post(self, request, rfid):
         # Create a transaction
         try:
-            wallet = Wallet.objects.get(rfid=rfid)
+            wallet = Wallet.objects.get(bracelet_rfid=rfid)
         except Wallet.DoesNotExist:
             return Response({'error': 'Wallet not found'}, status=status.HTTP_404_NOT_FOUND)
         try:
@@ -70,7 +65,7 @@ class TransactionsView(APIView):
             return Response({'error': 'Invalid transaction type'}, status=status.HTTP_400_BAD_REQUEST)
         amount = request.data.get('amount')
         if transaction_type == 'debit':
-            check_for_payment_restrictions(wallet)
+            restrictions = check_restrictions(wallet.bracelet)
             if wallet.balance < amount:
                 return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
             else:
