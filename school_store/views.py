@@ -7,21 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
-
-
-class GetProductsView(APIView):
-
-    # Get products per school
-    def get(self, request, school_id):
-        try:
-            products = Product.objects.filter(school_guid=school_id)
-        except Product.DoesNotExist:
-            return Response({'error': 'Products not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class GetProductsPerCategoryView(APIView):
     # Get products per school per category
@@ -40,7 +25,7 @@ class GetProducts(APIView):
     # Get products per school
     def get(self, request, school_id):
         try:
-            products = Product.objects.filter(school__guid=school_id)
+            products = Product.objects.filter(school__id=school_id)
         except Product.DoesNotExist:
             return Response({'error': 'Products not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -53,7 +38,7 @@ class GetProduct(APIView):
     def get(self, request, school_id, product_id):
         try:
             product = Product.objects.get(
-                school__guid=school_id, id=product_id)
+                school__id=school_id, id=product_id)
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -65,7 +50,7 @@ class GetCategories(APIView):
     # Get categories per school
     def get(self, request, school_id):
         try:
-            categories = Category.objects.filter(school_guid=school_id)
+            categories = Category.objects.filter(school_id=school_id)
         except Category.DoesNotExist:
             return Response({'error': 'Categories not found'}, status=status.HTTP_404_NOT_FOUND)
 
