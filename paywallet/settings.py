@@ -93,9 +93,9 @@ WSGI_APPLICATION = "paywallet.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
-    "generations-staging.eu-west-1.elasticbeanstalk.com"]
+    "paywallet-dev.eu-west-1.elasticbeanstalk.com", "*"]
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
