@@ -51,14 +51,17 @@ class BraceletAdmin(ImportExportModelAdmin):
 
     def save_form(self, request, form, change):
         def remove_bracelet_from_user(form):
-            student = form.instance.student_set.first()
-            teacher = form.instance.teacher_set.first()
-            if student:
-                student.bracelet = None
-                student.save()
-            if teacher:
-                teacher.bracelet = None
-                teacher.save()
+            try:
+                student = form.instance.student_set.first()
+                teacher = form.instance.teacher_set.first()
+                if student:
+                    student.bracelet = None
+                    student.save()
+                if teacher:
+                    teacher.bracelet = None
+                    teacher.save()
+            except:
+                pass
         if request.user.is_superuser:
             if form.instance.status == Bracelet.UNASSIGNED:
                 remove_bracelet_from_user(form)
