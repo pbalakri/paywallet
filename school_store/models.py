@@ -145,7 +145,14 @@ class OrderItemInlines(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInlines]
-    list_display = ('id', 'customer', 'date', 'status', 'order_total')
+    list_display = ('id', 'customer', 'date', 'status',
+                    'total_sku_count', 'order_total')
 
     def order_total(self, obj):
         return '%.3f KWD' % sum([item.unit_price * item.quantity for item in obj.orderitem_set.all()])
+
+    def total_sku_count(self, obj):
+        count = 0
+        for item in obj.orderitem_set.all():
+            count += 1
+        return count

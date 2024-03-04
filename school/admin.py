@@ -15,11 +15,17 @@ class BraceletResource(resources.ModelResource):
 class BraceletAdmin(ImportExportModelAdmin):
     resource_classes = [BraceletResource]
     list_display = ("rfid", "model_name", "school", "assigned_user", 'status')
-    fields = (('model_name', 'rfid'),
-              ('school', 'status'))
     search_fields = ("rfid", "model_name", "school__name")
     autocomplete_fields = ['school']
-    readonly_fields = ['status', 'assigned_user']
+    readonly_fields = ['status', 'assigned_user', 'model_name', 'rfid']
+
+    def get_fields(self, request, obj):
+        if request.user.is_superuser:
+            return (('model_name', 'rfid'),
+                    ('school', 'status'))
+        else:
+            return (('model_name', 'rfid'),
+                    ('status'))
 
     def assigned_user(self, obj):
         returnable_value = "Unassigned"
