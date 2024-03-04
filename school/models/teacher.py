@@ -1,6 +1,8 @@
+from collections.abc import Callable, Sequence
 from typing import Any
 from django.db import models
 from django.contrib import admin, messages
+from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
@@ -38,6 +40,15 @@ class TeacherAdmin(admin.ModelAdmin):
     fields = (('first_name', 'last_name'),
               ('registration_number', 'school'), 'bracelet')
     search_fields = ('first_name', 'last_name', 'registration_number')
+
+    def get_fields(self, request, obj):
+        # Show bracelet field only if bracelet is not assigned
+        if obj is not None and obj.bracelet is not None:
+            return (('first_name', 'last_name'),
+                    ('registration_number', 'school'))
+        else:
+            return (('first_name', 'last_name'),
+                    ('registration_number', 'school', 'bracelet'))
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
