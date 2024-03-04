@@ -9,8 +9,8 @@ from school.models import Bracelet
 
 class Restriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bracelet = models.ForeignKey(
-        Bracelet, on_delete=models.CASCADE, default=None)
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return self.name
@@ -62,9 +62,9 @@ class PaymentRestriction(Restriction):
 
 
 class PaymentRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('bracelet', 'count_per_period', 'frequency')
-    fields = ('bracelet', 'count_per_period', 'frequency')
-    search_fields = ('bracelet',)
+    list_display = ('student', 'count_per_period', 'frequency')
+    fields = ('student', 'count_per_period', 'frequency')
+    search_fields = ('student',)
 
 
 class ProductRestriction(Restriction):
