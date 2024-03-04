@@ -45,6 +45,15 @@ class StudentAdmin(admin.ModelAdmin):
         models.DateField: {'widget': PastCustomDatePickerWidget},
     }
 
+    def get_fields(self, request, obj):
+        # Show bracelet field only if bracelet is not assigned
+        if obj is not None and obj.bracelet is not None:
+            return (('first_name', 'last_name'),
+                    ('date_of_birth', 'registration_number'), 'school')
+        else:
+            return (('first_name', 'last_name'),
+                    ('date_of_birth', 'registration_number'), ('school', 'bracelet'))
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
             # Show bracelets with status unassigned
