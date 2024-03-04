@@ -54,7 +54,6 @@ class SchoolView(APIView):
 
     def get(self, request):
         try:
-            # Get all Schools
             school_obj = School.objects.all()
             serializer = SchoolSerializer(school_obj, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)

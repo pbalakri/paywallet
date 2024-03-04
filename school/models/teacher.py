@@ -24,7 +24,7 @@ class Teacher(models.Model):
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
     bracelet = models.ForeignKey(
-        Bracelet, on_delete=models.RESTRICT, default=None)
+        Bracelet, on_delete=models.RESTRICT, default=None, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
@@ -71,7 +71,7 @@ class TeacherAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(school_id__school_admin=request.user)
+            return qs.filter(school__school_admin=request.user)
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
         if request.user.is_superuser:
@@ -80,5 +80,5 @@ class TeacherAdmin(admin.ModelAdmin):
         if len(schools) == 0:
             raise Exception("You are not an admin of any schools")
         else:
-            form.instance.school_id = schools[0]
+            form.instance.school = schools[0]
             return super().save_form(request, form, change)

@@ -129,7 +129,7 @@ class StudentAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(school_id__school_admin=request.user)
+            return qs.filter(school__school_admin=request.user)
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
         if request.user.is_superuser:
@@ -142,7 +142,7 @@ class StudentAdmin(admin.ModelAdmin):
         if len(schools) == 0:
             raise Exception("You are not an admin of any schools")
         else:
-            form.instance.school_id = schools[0]
+            form.instance.school = schools[0]
             if form.instance.bracelet is not None:
                 form.instance.bracelet.status = Bracelet.ACTIVE
                 form.instance.bracelet.save()

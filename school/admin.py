@@ -24,12 +24,11 @@ class BraceletAdmin(ImportExportModelAdmin):
     def assigned_user(self, obj):
         returnable_value = "Unassigned"
         try:
-            student = obj.student_set.first()
-            teacher = obj.teacher_set.first()
-            if student:
-                returnable_value = f"{student.first_name} {student.last_name}"
-            elif teacher:
-                returnable_value = f"{teacher.first_name} {teacher.last_name}"
+            # Get student who has this bracelet
+            if obj.student is not None:
+                returnable_value = f"{obj.student.first_name} {obj.student.last_name}"
+            elif obj.teacher is not None:
+                returnable_value = f"{obj.teacher.first_name} {obj.teacher.last_name}"
         except:
             returnable_value = "Unassigned"
         return returnable_value
@@ -50,30 +49,31 @@ class BraceletAdmin(ImportExportModelAdmin):
             return qs.filter(school__school_admin=request.user)
 
     def save_form(self, request, form, change):
-        def remove_bracelet_from_user(form):
+        def remove_bracelet_from_user(bracelet):
             try:
-                student = form.instance.student_set.first()
-                teacher = form.instance.teacher_set.first()
-                if student:
-                    student.bracelet = None
-                    student.save()
-                if teacher:
-                    teacher.bracelet = None
-                    teacher.save()
-            except:
+                student = Student.objects.get(bracelet=bracelet)
+                student.bracelet = None
+                student.save()
+            except Student.DoesNotExist:
+                pass
+            try:
+                teacher = Teacher.objects.get(bracelet=bracelet)
+                teacher.bracelet = None
+                teacher.save()
+            except Teacher.DoesNotExist:
                 pass
         if request.user.is_superuser:
             if form.instance.status == Bracelet.UNASSIGNED:
-                remove_bracelet_from_user(form)
+                remove_bracelet_from_user(form.instance)
             return super().save_form(request, form, change)
-        schools = School.objects.filter(school_admin=request.user)
-        if not schools.exists():
+        school = School.objects.get(school_admin=request.user)
+        if school is None:
             raise Exception("You are not an admin of any school")
         else:
-            form.instance.school_id = schools.first()
+            form.instance.school = school
             # If bracelet is being unassigned, then set the bracelet field of Student and Teacher to None
             if form.instance.status == Bracelet.UNASSIGNED:
-                remove_bracelet_from_user(form)
+                remove_bracelet_from_user(form.instance)
             return super().save_form(request, form, change)
 
 
