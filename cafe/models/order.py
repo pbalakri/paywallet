@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+
+from product.models import Product
 from .cafe import Cafe
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +13,6 @@ class Order(models.Model):
                           editable=False)
     cafe = models.ForeignKey(Cafe, on_delete=models.RESTRICT)
     date = models.DateField(auto_now_add=True)
-    total = models.FloatField()
     payment_choices = [
         ('cash', 'Cash'),
         ('card', 'Card'),
@@ -25,7 +26,9 @@ class Order(models.Model):
         verbose_name_plural = _("Orders")
 
     def __str__(self):
-        return str(self.date) + " - " + str(self.total)
+        order_total = '%.3f KWD' % sum(
+            [item.original_price * item.quantity for item in self.orderitem_set.all()])
+        return str(self.date) + " - " + str(order_total)
 
 
 class OrderItem(models.Model):
@@ -33,7 +36,8 @@ class OrderItem(models.Model):
                           default=uuid.uuid4,
                           editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product_name = models.CharField(max_length=100)
+    product = models.ForeignKey(
+        Product, on_delete=models.RESTRICT, default=None)
     quantity = models.IntegerField()
     original_price = models.FloatField()
     selling_price = models.FloatField()
@@ -44,20 +48,21 @@ class OrderItem(models.Model):
         verbose_name_plural = _("Order Items")
 
     def __str__(self):
-        return self.product_id.name + " - " + str(self.quantity)
+        return self.product.name + " (" + str(self.quantity) + ") "
 
 
 class OrderItemInlines(admin.TabularInline):
-    readonly_fields = ['product_name', 'quantity',
-                       'original_price', 'selling_price']
     model = OrderItem
     extra = 0
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('cafe', 'date', 'total', 'payment_method')
+    list_display = ('cafe', 'date', 'order_total', 'payment_method')
     fields = ('cafe', 'payment_method')
     inlines = [OrderItemInlines]
+
+    def order_total(self, obj):
+        return '%.3f KWD' % sum([item.original_price * item.quantity for item in obj.orderitem_set.all()])
 
     def get_queryset(self, request):
         qs = super(OrderAdmin, self).get_queryset(request)
@@ -65,4 +70,4 @@ class OrderAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(cafe__vendor_admin=request.user)
+            return qs.filter(cafe__admin=request.user)
