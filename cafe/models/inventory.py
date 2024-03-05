@@ -40,7 +40,12 @@ class InventoryAdmin(admin.ModelAdmin):
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "cafe":
             kwargs["queryset"] = Cafe.objects.filter(
-                vendor_admin=request.user)
+                admin=request.user)
+            return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        elif db_field.name == 'product':
+            # Hide products that already have quantity in the inventory
+            kwargs["queryset"] = Product.objects.exclude(
+                inventory__quantity__gt=0)
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
@@ -50,6 +55,6 @@ class InventoryAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         elif request.user.groups.filter(name='Vendor Admin').exists():
-            return qs.filter(cafe_id__vendor_admin=request.user)
+            return qs.filter(cafe__admin=request.user)
         elif request.user.groups.filter(name='Vendor Operator').exists():
-            return qs.filter(cafe_id__vendor_operators=request.user)
+            return qs.filter(cafe__operators=request.user)
