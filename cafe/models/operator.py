@@ -29,6 +29,7 @@ class OperatorAdminForm(forms.ModelForm):
     last_name = forms.CharField(max_length=100)
     email = forms.EmailField(max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,6 +38,17 @@ class OperatorAdminForm(forms.ModelForm):
             self.fields['first_name'].initial = instance.user.first_name
             self.fields['last_name'].initial = instance.user.last_name
             self.fields['email'].initial = instance.user.email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            self.add_error('password', "Passwords don't match")
+            self.add_error('confirm_password', "Passwords don't match")
+
+        return cleaned_data
 
     class Meta:
         model = Operator
@@ -47,14 +59,14 @@ class OperatorAdmin(admin.ModelAdmin):
     form = OperatorAdminForm
     list_display = ('name', 'phone', 'cafe')
     # fields = ('cafe', 'first_name', 'last_name', 'phone', 'email', 'password')
-    fields = ('cafe', ('first_name', 'last_name'), 'phone',
-              ('email', 'password'))
 
     def get_fields(self, request, obj):
         if request.user.is_superuser:
-            return ('cafe', ('first_name', 'last_name'), 'phone', ('email', 'password'))
+            return ('cafe', ('first_name', 'last_name'),
+                    ('phone', 'email'), ('password', 'confirm_password'))
         elif request.user.groups.filter(name='Vendor Admin').exists():
-            return (('first_name', 'last_name'), 'phone', ('email', 'password'))
+            return (('first_name', 'last_name'),
+                    ('phone', 'email'), ('password', 'confirm_password'))
 
     def name(self, obj):
         return obj.user.first_name + ' ' + obj.user.last_name
