@@ -96,7 +96,6 @@ class ProductAdmin(admin.ModelAdmin):
 class Order(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
-
                           editable=False)
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, blank=True, null=True)
@@ -130,7 +129,7 @@ class OrderItem(models.Model):
     unit_price = models.FloatField(default=0)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.product.name)
 
     class Meta:
         verbose_name = _("Order Item")
@@ -152,7 +151,4 @@ class OrderAdmin(admin.ModelAdmin):
         return '%.3f KWD' % sum([item.unit_price * item.quantity for item in obj.orderitem_set.all()])
 
     def total_sku_count(self, obj):
-        count = 0
-        for item in obj.orderitem_set.all():
-            count += 1
-        return count
+        return len(obj.orderitem_set.all())
