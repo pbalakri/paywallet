@@ -50,6 +50,12 @@ class OperatorAdmin(admin.ModelAdmin):
     fields = ('cafe', ('first_name', 'last_name'), 'phone',
               ('email', 'password'))
 
+    def get_fields(self, request, obj):
+        if request.user.is_superuser:
+            return ('cafe', ('first_name', 'last_name'), 'phone', ('email', 'password'))
+        elif request.user.groups.filter(name='Vendor Admin').exists():
+            return (('first_name', 'last_name'), 'phone', ('email', 'password'))
+
     def name(self, obj):
         return obj.user.first_name + ' ' + obj.user.last_name
 
@@ -78,6 +84,9 @@ class OperatorAdmin(admin.ModelAdmin):
             operator_group = Group.objects.get(name='Vendor Operator')
             user.groups.add(operator_group)
             user.save()
+            cafe = Cafe.objects.get(
+                admin=request.user)
+            obj.cafe = cafe
             obj.user = user
             obj.save()
 
@@ -86,7 +95,7 @@ class OperatorAdmin(admin.ModelAdmin):
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "cafe":
             kwargs["queryset"] = Cafe.objects.filter(
-                vendor_admin=request.user)
+                admin=request.user)
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
@@ -99,8 +108,6 @@ class OperatorAdmin(admin.ModelAdmin):
 
         elif request.user.groups.filter(name='Vendor Admin').exists():
             # Return operators of the cafe of the vendor admin
-            for rec in qs:
-                print(rec.cafe.vendor_admin)
-            return qs.filter(cafe__vendor_admin=request.user)
+            return qs.filter(cafe__admin=request.user)
         else:
             return qs.none()
