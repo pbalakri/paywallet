@@ -24,11 +24,20 @@ class DietRestriction(Restriction):
         Allergy, blank=True)
 
     def __str__(self):
-        return self.allergies.name
+        return ', '.join([a.name for a in self.allergies.all()])
 
     class Meta:
         verbose_name = _('Diet Restriction')
         verbose_name_plural = _('Diet Restrictions')
+
+
+class DietRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('student', 'all_allergies')
+    fields = ('student', 'allergies')
+    search_fields = ('student',)
+
+    def all_allergies(self, obj):
+        return ', '.join([a.name for a in obj.allergies.all()])
 
 
 class CategoryRestriction(Restriction):
@@ -41,6 +50,12 @@ class CategoryRestriction(Restriction):
     class Meta:
         verbose_name = _('Category Restriction')
         verbose_name_plural = _('Category Restrictions')
+
+
+class CategoryRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('student', 'category')
+    fields = ('student', 'category')
+    search_fields = ('student',)
 
 
 class PaymentRestriction(Restriction):
@@ -68,12 +83,21 @@ class PaymentRestrictionAdmin(admin.ModelAdmin):
 
 
 class ProductRestriction(Restriction):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE)
+    product = models.ManyToManyField(
+        Product, blank=True)
 
     def __str__(self):
-        return self.product.name
+        return ', '.join([p.name for p in self.product.all()])
 
     class Meta:
         verbose_name = _('Product Restriction')
         verbose_name_plural = _('Product Restrictions')
+
+
+class ProductRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('student', 'all_products')
+    fields = ('student', 'product')
+    search_fields = ('student',)
+
+    def all_products(self, obj):
+        return ', '.join([p.name for p in obj.product.all()])

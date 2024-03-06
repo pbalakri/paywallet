@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import PaymentRestriction, CategoryRestriction, DietRestriction, ProductRestriction, PaymentRestrictionAdmin
+from .models import PaymentRestriction, CategoryRestriction, CategoryRestrictionAdmin, DietRestriction, DietRestrictionAdmin, ProductRestriction, ProductRestrictionAdmin, PaymentRestrictionAdmin
 admin.site.register(PaymentRestriction, PaymentRestrictionAdmin)
-admin.site.register(CategoryRestriction)
-admin.site.register(DietRestriction)
-admin.site.register(ProductRestriction)
+admin.site.register(CategoryRestriction, CategoryRestrictionAdmin)
+admin.site.register(DietRestriction, DietRestrictionAdmin)
+admin.site.register(ProductRestriction, ProductRestrictionAdmin)
