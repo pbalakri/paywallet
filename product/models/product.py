@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationTabularInline
 
+from paywallet.storage_backends import PublicMediaStorage
+
 from .allergy import Allergy
 
 
@@ -27,7 +29,8 @@ class Product(models.Model):
                           editable=False)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='products/', blank=True)
+    image = models.ImageField(
+        storage=PublicMediaStorage(), upload_to='products/', blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.RESTRICT, blank=True, null=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
