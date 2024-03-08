@@ -152,3 +152,17 @@ class OrderAdmin(admin.ModelAdmin):
 
     def total_sku_count(self, obj):
         return len(obj.orderitem_set.all())
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if request.user.is_superuser:
+            return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        elif db_field.name == "school":
+            kwargs["queryset"] = School.objects.filter(
+                school_admin=request.user)
+            return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        else:
+            return super().get_queryset(request).filter(school__school_admin=request.user)
