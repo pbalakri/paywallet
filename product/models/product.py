@@ -30,7 +30,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(
-        upload_to='products/', blank=True)
+        storage=PublicMediaStorage(), upload_to='products/', blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.RESTRICT, blank=True, null=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
