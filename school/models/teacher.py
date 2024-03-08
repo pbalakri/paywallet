@@ -36,7 +36,8 @@ class Teacher(models.Model):
 
 
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ('registration_number', 'first_name', 'last_name')
+    list_display = ('registration_number', 'first_name',
+                    'last_name', 'bracelet')
     fields = (('first_name', 'last_name'),
               ('registration_number', 'school'), 'bracelet')
     search_fields = ('first_name', 'last_name', 'registration_number')
@@ -48,7 +49,7 @@ class TeacherAdmin(admin.ModelAdmin):
                     ('registration_number', 'school'))
         else:
             return (('first_name', 'last_name'),
-                    ('registration_number', 'school', 'bracelet'))
+                    ('registration_number', 'school'), 'bracelet')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
@@ -75,10 +76,19 @@ class TeacherAdmin(admin.ModelAdmin):
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
         if request.user.is_superuser:
+            if request.user.is_superuser:
+                # If bracelet is assigned, then set the status of the bracelet to assigned
+                if form.instance.bracelet is not None:
+                    form.instance.bracelet.status = Bracelet.ACTIVE
+                    form.instance.bracelet.save()
             return super().save_form(request, form, change)
+
         schools = School.objects.filter(school_admin=request.user)
         if len(schools) == 0:
             raise Exception("You are not an admin of any schools")
         else:
             form.instance.school = schools[0]
+            if form.instance.bracelet is not None:
+                form.instance.bracelet.status = Bracelet.ACTIVE
+                form.instance.bracelet.save()
             return super().save_form(request, form, change)
