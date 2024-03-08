@@ -151,7 +151,7 @@ class StudentAdmin(admin.ModelAdmin):
 
 class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(Student, on_delete=models.RESTRICT)
+    student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     in_time = models.DateTimeField(auto_now_add=True)
     out_time = models.DateTimeField(default=None, null=True, blank=True)
 
@@ -174,4 +174,4 @@ class AttendanceAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            return qs.filter(student_id__school_id__school_admin=request.user)
+            return qs.filter(student__school__school_admin=request.user)
