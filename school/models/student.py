@@ -1,6 +1,8 @@
+from collections.abc import Sequence
 from typing import Any
 from django.db import models
 from django.contrib import admin, messages
+from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
@@ -44,6 +46,10 @@ class StudentAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.DateField: {'widget': PastCustomDatePickerWidget},
     }
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            return ('school',)
 
     def get_fields(self, request, obj):
         # Show bracelet field only if bracelet is not assigned

@@ -51,6 +51,10 @@ class TeacherAdmin(admin.ModelAdmin):
             return (('first_name', 'last_name'),
                     ('registration_number', 'school'), 'bracelet')
 
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            return ('school',)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
             # Show bracelets with status unassigned
