@@ -1,15 +1,24 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from import_export import resources
+from import_export import resources, fields
+from import_export.widgets import ForeignKeyWidget
+
 
 # Register your models here.
 from .models import Student, Attendance, School, SchoolAdmin, StudentAdmin, AttendanceAdmin, Bracelet, Teacher, TeacherAdmin
 
 
 class BraceletResource(resources.ModelResource):
+
+    school_name = fields.Field(
+        column_name='school_name',
+        attribute='school',
+        widget=ForeignKeyWidget(School, field='name'))
+
     class Meta:
         model = Bracelet
-        fields = ('model_name', 'rfid', 'school')
+        fields = ('model_name', 'rfid', 'school_name')
+        import_id_fields = ('rfid',)
 
 
 class BraceletAdmin(ImportExportModelAdmin):
@@ -18,6 +27,12 @@ class BraceletAdmin(ImportExportModelAdmin):
     search_fields = ("rfid", "model_name", "school__name")
     autocomplete_fields = ['school']
     list_filter = ('status', 'school')
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            return ('status', 'school')
+        else:
+            return ('status',)
 
     def get_readonly_fields(self, request, obj):
         if request.user.is_superuser:
