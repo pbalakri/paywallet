@@ -23,8 +23,8 @@ class Teacher(models.Model):
     grade = models.IntegerField(default=0, verbose_name=_("Grade"))
     school = models.ForeignKey(
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
-    bracelet = models.ForeignKey(
-        Bracelet, on_delete=models.RESTRICT, default=None, null=True, blank=True)
+    bracelet = models.OneToOneField(
+        Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
