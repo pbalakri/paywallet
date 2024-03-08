@@ -34,14 +34,18 @@ class BraceletAdmin(ImportExportModelAdmin):
 
     def assigned_user(self, obj):
         returnable_value = "Unassigned"
+        # Get student who has this bracelet assigned
         try:
             # Get student who has this bracelet
             if obj.student is not None:
                 returnable_value = f"{obj.student.first_name} {obj.student.last_name}"
-            elif obj.teacher is not None:
-                returnable_value = f"{obj.teacher.first_name} {obj.teacher.last_name}"
         except:
-            returnable_value = "Unassigned"
+            try:
+                if obj.teacher is not None:
+                    returnable_value = f"{obj.teacher.first_name} {obj.teacher.last_name}"
+            except:
+                returnable_value = "Unassigned"
+
         return returnable_value
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
