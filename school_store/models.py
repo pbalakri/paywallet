@@ -92,6 +92,12 @@ class ProductAdmin(admin.ModelAdmin):
         else:
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        else:
+            return super().get_queryset(request).filter(school__school_admin=request.user)
+
 
 class Order(models.Model):
     id = models.UUIDField(primary_key=True,
