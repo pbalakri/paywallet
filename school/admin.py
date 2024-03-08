@@ -17,6 +17,7 @@ class BraceletAdmin(ImportExportModelAdmin):
     list_display = ("rfid", "model_name", "school", "assigned_user", 'status')
     search_fields = ("rfid", "model_name", "school__name")
     autocomplete_fields = ['school']
+    list_filter = ('status', 'school')
 
     def get_readonly_fields(self, request, obj):
         if request.user.is_superuser:
