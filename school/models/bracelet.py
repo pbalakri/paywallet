@@ -15,9 +15,11 @@ class Bracelet(models.Model):
         School, on_delete=models.CASCADE, verbose_name=_("School"))
     ACTIVE = 'assigned'
     UNASSIGNED = 'unassigned'
+    DEACTIVATED = 'deactivated'
     STATUS_CHOICES = [
         (ACTIVE, _('Assigned')),
         (UNASSIGNED, _('Unassigned')),
+        (DEACTIVATED, _('Deactivated')),
     ]
     status = models.CharField(
         max_length=100, choices=STATUS_CHOICES, default=UNASSIGNED, verbose_name=_("Status"))

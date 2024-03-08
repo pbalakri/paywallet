@@ -26,7 +26,7 @@ class Student(models.Model):
         Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
 
     def __str__(self):
-        return self.first_name + " " + self.last_name + " (" + self.registration_number + ")"
+        return self.first_name + " " + self.last_name + " (" + str(self.date_of_birth) + ")"
 
     class Meta:
         verbose_name = _("Student")

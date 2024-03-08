@@ -2,6 +2,11 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
+from django.utils.translation import ngettext
+from django.contrib import admin, messages
+from django.db import transaction
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 
 # Register your models here.
@@ -27,6 +32,37 @@ class BraceletAdmin(ImportExportModelAdmin):
     search_fields = ("rfid", "model_name", "school__name")
     autocomplete_fields = ['school']
     list_filter = ('status', 'school')
+
+    def deactivate_bracelet(self, request, queryset):
+        if 'apply' in request.POST:
+            updated_count = 0
+            # Get total records to be updated
+            total_count = queryset.count()
+            for bracelet in queryset:
+                with transaction.atomic():
+                    bracelet.status = Bracelet.DEACTIVATED
+                    bracelet.save()
+                    wallet = bracelet.wallet
+                    wallet.active = False
+                    wallet.save()
+                updated_count += 1
+
+            self.message_user(
+                request,
+                ngettext(
+                    '%(updated_count)d/%(total_count)d bracelet was successfully deactivated.',
+                    '%(updated_count)d/%(total_count)d students were successfully deactivated.',
+                    updated_count
+                )
+                % {"updated_count": updated_count, "total_count": total_count},
+                messages.SUCCESS,
+            )
+            return HttpResponseRedirect(request.get_full_path())
+        return render(request,
+                      'admin/confirm_bracelet_deactivation.html',
+                      context={'bracelets': queryset})
+
+    actions = [deactivate_bracelet]
 
     def get_list_filter(self, request):
         if request.user.is_superuser:

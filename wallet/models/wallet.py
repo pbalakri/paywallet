@@ -10,7 +10,7 @@ class Wallet(models.Model):
     bracelet = models.OneToOneField(
         Bracelet, on_delete=models.RESTRICT, default=None, related_name='wallet')
     balance = models.FloatField(default=0)
-    status = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.bracelet.rfid
@@ -21,7 +21,7 @@ class Wallet(models.Model):
 
 
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('bracelet', 'assigned_user', 'status')
+    list_display = ('bracelet', 'assigned_user', 'active')
     fields = ('bracelet', 'balance')
     # readonly_fields = ('bracelet', 'status', 'assigned_user', 'balance')
     search_fields = ('bracelet',)
