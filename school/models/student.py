@@ -169,6 +169,20 @@ class AttendanceAdmin(admin.ModelAdmin):
     search_fields = ('student_id__first_name', 'student_id__last_name',
                      'student_id__registration_number')
 
+    def school(self, obj):
+        return obj.student.school.name
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "student":
+            if request.user.is_superuser:
+                return super(AttendanceAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            else:
+                kwargs["queryset"] = Student.objects.filter(
+                    school__school_admin=request.user)
+                return super(AttendanceAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        else:
+            return super(AttendanceAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
     def get_queryset(self, request):
         qs = super(AttendanceAdmin, self).get_queryset(request)
         if request.user.is_superuser:
