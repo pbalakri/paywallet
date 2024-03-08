@@ -72,7 +72,7 @@ class StudentAdmin(admin.ModelAdmin):
 
     def current_status(self, obj):
         latest_attendance = Attendance.objects.filter(
-            student_id=obj).latest('in_time')
+            student=obj).latest('in_time')
         if latest_attendance.out_time is None:
             in_time = latest_attendance.in_time
             return mark_safe('<span style="color:green;">Checked In: ' + str(in_time.date()) + " " + str(in_time.strftime('%H:%M')) + '</span>')
@@ -89,7 +89,7 @@ class StudentAdmin(admin.ModelAdmin):
         for obj in queryset:
             #
             latest_attendance = Attendance.objects.filter(
-                student_id=obj).latest('in_time')
+                student=obj).latest('in_time')
             if latest_attendance.out_time is None:
                 latest_attendance.out_time = datetime.now()
                 latest_attendance.save()
@@ -110,7 +110,7 @@ class StudentAdmin(admin.ModelAdmin):
         created_count = 0
         total_count = queryset.count()
         for obj in queryset:
-            Attendance.objects.create(student_id=obj)
+            Attendance.objects.create(student=obj)
             created_count += 1
         self.message_user(
             request,
@@ -156,7 +156,7 @@ class Attendance(models.Model):
     out_time = models.DateTimeField(default=None, null=True, blank=True)
 
     def __str__(self):
-        return self.student_id.first_name + " " + self.student_id.last_name + " (" + self.student_id.registration_number + ")"
+        return self.student.first_name + " " + self.student.last_name + " (" + self.student.registration_number + ")"
 
     class Meta:
         verbose_name_plural = _("Attendance")
@@ -164,10 +164,10 @@ class Attendance(models.Model):
 
 
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('student_id', 'in_time', 'out_time')
+    list_display = ('student', 'in_time', 'out_time')
     list_filter = ('in_time', 'out_time')
-    search_fields = ('student_id__first_name', 'student_id__last_name',
-                     'student_id__registration_number')
+    search_fields = ('student__first_name', 'student__last_name',
+                     'student__registration_number')
 
     def school(self, obj):
         return obj.student.school.name
