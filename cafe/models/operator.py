@@ -96,9 +96,12 @@ class OperatorAdmin(admin.ModelAdmin):
             operator_group = Group.objects.get(name='Vendor Operator')
             user.groups.add(operator_group)
             user.save()
-            cafe = Cafe.objects.get(
-                admin=request.user)
-            obj.cafe = cafe
+            if request.user.is_superuser:
+                obj.cafe = form.cleaned_data.get('cafe')
+            else:
+                cafe = Cafe.objects.get(
+                    admin=request.user)
+                obj.cafe = cafe
             obj.user = user
             obj.save()
 
