@@ -1,4 +1,3 @@
-from typing import Any
 from django.db import models
 import uuid
 from django.contrib import admin
@@ -151,6 +150,12 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInlines]
     list_display = ('id', 'customer', 'date', 'status',
                     'total_sku_count', 'order_total')
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return ('school', 'date', 'status')
+        else:
+            return ('date', 'status')
 
     def order_total(self, obj):
         return '%.3f KWD' % sum([item.unit_price * item.quantity for item in obj.orderitem_set.all()])
