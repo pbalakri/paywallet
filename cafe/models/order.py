@@ -91,6 +91,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('cafe', 'date', 'order_total', 'payment_method')
     fields = ('cafe', 'payment_method')
     inlines = [OrderItemInlines]
+    list_filter = ['cafe__name', 'date']
 
     def order_total(self, obj):
         return '%.3f KWD' % sum([item.product.price * item.quantity for item in obj.orderitem_set.all()])
