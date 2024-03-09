@@ -48,6 +48,8 @@ class StudentAdmin(admin.ModelAdmin):
     def get_list_filter(self, request):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('school',)
+        else:
+            return ()
 
     def get_fields(self, request, obj):
         # Show bracelet field only if bracelet is not assigned

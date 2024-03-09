@@ -48,6 +48,8 @@ class TeacherAdmin(admin.ModelAdmin):
     def get_list_filter(self, request):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('school',)
+        else:
+            return ()
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
