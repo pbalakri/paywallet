@@ -26,7 +26,7 @@ class School(models.Model):
 
 
 class SchoolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'address', 'city', 'phone_number',
+    list_display = ('name', 'address', 'city', 'phone_number',
                     'school_admin')
     fields = ('name', ('address', 'city'), 'phone_number', 'school_admin')
     list_filter = ('city',)
