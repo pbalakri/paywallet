@@ -20,9 +20,9 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken import views
 
-admin.site.site_header = _("PayWallet Admin")
-admin.site.site_title = _("PayWallet Admin")
-admin.site.index_title = _("Welcome to PayWallet Portal")
+admin.site.site_header = _("PayWay Admin")
+admin.site.site_title = _("PayWay Admin")
+admin.site.index_title = _("Welcome to PayWay Admin")
 
 urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
