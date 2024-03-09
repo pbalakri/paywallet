@@ -65,19 +65,19 @@ class BraceletAdmin(ImportExportModelAdmin):
     actions = [deactivate_bracelet]
 
     def get_list_filter(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('status', 'school')
         else:
             return ('status',)
 
     def get_readonly_fields(self, request, obj):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_readonly_fields(request, obj)
         else:
             return ['status', 'assigned_user', 'model_name', 'rfid']
 
     def get_fields(self, request, obj):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return (('model_name', 'rfid'),
                     ('school', 'status'))
         else:
@@ -101,7 +101,7 @@ class BraceletAdmin(ImportExportModelAdmin):
         return returnable_value
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(BraceletAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
@@ -110,7 +110,7 @@ class BraceletAdmin(ImportExportModelAdmin):
 
     def get_queryset(self, request):
         qs = super(BraceletAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         else:
             return qs.filter(school__school_admin=request.user)
@@ -129,7 +129,7 @@ class BraceletAdmin(ImportExportModelAdmin):
                 teacher.save()
             except Teacher.DoesNotExist:
                 pass
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             if form.instance.status == Bracelet.UNASSIGNED:
                 remove_bracelet_from_user(form.instance)
             return super().save_form(request, form, change)

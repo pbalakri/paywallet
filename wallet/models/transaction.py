@@ -7,7 +7,6 @@ from django.db.models.fields.related import ForeignKey
 from django.forms.models import ModelChoiceField
 from django.http.request import HttpRequest
 from cafe.models import Cafe
-from restriction.models import CategoryRestriction, PaymentRestriction
 from .wallet import Wallet
 from django.contrib import admin
 from django.db import transaction
@@ -56,7 +55,7 @@ class TransactionAdmin(admin.ModelAdmin):
               'merchant', 'reference')
 
     def formfield_for_foreignkey(self, db_field: ForeignKey[Any], request: HttpRequest | None, **kwargs: Any) -> ModelChoiceField | None:
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(TransactionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "merchant":
             kwargs["queryset"] = Cafe.objects.filter(
@@ -67,7 +66,7 @@ class TransactionAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(TransactionAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         else:
             return qs.filter(merchant__vendor_admin=request.user)

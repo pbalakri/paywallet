@@ -34,7 +34,7 @@ class SchoolAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(SchoolAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         else:
             return qs.filter(school_admin=request.user)

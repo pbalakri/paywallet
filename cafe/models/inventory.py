@@ -23,7 +23,7 @@ class Inventory(models.Model):
         unique_together = ('product_code', 'cafe')
 
     def __str__(self):
-        return self.product.name
+        return self.product.name + " (" + str(self.product_code) + ") "
 
 
 class InventoryAdmin(admin.ModelAdmin):
@@ -36,7 +36,7 @@ class InventoryAdmin(admin.ModelAdmin):
         return '%.3f KWD' % obj.price
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user or request.user.groups.filter(name='Payway Admin').exists():
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "cafe":
             kwargs["queryset"] = Cafe.objects.filter(
@@ -52,7 +52,7 @@ class InventoryAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(InventoryAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         elif request.user.groups.filter(name='Vendor Admin').exists():
             return qs.filter(cafe__admin=request.user)

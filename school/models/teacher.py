@@ -1,12 +1,6 @@
-from collections.abc import Callable, Sequence
 from typing import Any
 from django.db import models
-from django.contrib import admin, messages
-from django.http import HttpRequest
-from django.utils.safestring import mark_safe
-from django.utils.translation import ngettext
-from datetime import datetime
-from paywallet.widgets.widget import PastCustomDatePickerWidget
+from django.contrib import admin
 from .bracelet import Bracelet
 
 
@@ -52,7 +46,7 @@ class TeacherAdmin(admin.ModelAdmin):
                     ('registration_number', 'school'), 'bracelet')
 
     def get_list_filter(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('school',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -62,7 +56,7 @@ class TeacherAdmin(admin.ModelAdmin):
                 status="unassigned")
             return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
                 return super(TeacherAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
             else:
                 kwargs["queryset"] = School.objects.filter(
@@ -73,18 +67,17 @@ class TeacherAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(TeacherAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         else:
             return qs.filter(school__school_admin=request.user)
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
-        if request.user.is_superuser:
-            if request.user.is_superuser:
-                # If bracelet is assigned, then set the status of the bracelet to assigned
-                if form.instance.bracelet is not None:
-                    form.instance.bracelet.status = Bracelet.ACTIVE
-                    form.instance.bracelet.save()
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            # If bracelet is assigned, then set the status of the bracelet to assigned
+            if form.instance.bracelet is not None:
+                form.instance.bracelet.status = Bracelet.ACTIVE
+                form.instance.bracelet.save()
             return super().save_form(request, form, change)
 
         schools = School.objects.filter(school_admin=request.user)

@@ -3,8 +3,6 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from django.db.models.query import QuerySet
-from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from cafe.models import Cafe
@@ -61,7 +59,7 @@ class OperatorAdmin(admin.ModelAdmin):
     # fields = ('cafe', 'first_name', 'last_name', 'phone', 'email', 'password')
 
     def get_fields(self, request, obj):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('cafe', ('first_name', 'last_name'),
                     ('phone', 'email'), ('password', 'confirm_password'))
         elif request.user.groups.filter(name='Vendor Admin').exists():
@@ -96,7 +94,7 @@ class OperatorAdmin(admin.ModelAdmin):
             operator_group = Group.objects.get(name='Vendor Operator')
             user.groups.add(operator_group)
             user.save()
-            if request.user.is_superuser:
+            if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
                 obj.cafe = form.cleaned_data.get('cafe')
             else:
                 cafe = Cafe.objects.get(
@@ -106,7 +104,7 @@ class OperatorAdmin(admin.ModelAdmin):
             obj.save()
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "cafe":
             kwargs["queryset"] = Cafe.objects.filter(
@@ -118,7 +116,7 @@ class OperatorAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
 
         qs = super(OperatorAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
 
         elif request.user.groups.filter(name='Vendor Admin').exists():

@@ -42,7 +42,7 @@ class WalletAdmin(admin.ModelAdmin):
         return returnable_value
 
     def get_list_display(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_list_display(request) + ('balance',)
         else:
             return super().get_list_display(request)

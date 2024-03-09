@@ -2,7 +2,6 @@ from typing import Any
 from django.db import models
 import uuid
 from django.contrib import admin
-from django.conf import settings
 from guardian.models import Guardian
 from school.models import School
 from django.utils.translation import gettext_lazy as _
@@ -28,7 +27,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent_category', 'school')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
@@ -38,7 +37,7 @@ class CategoryAdmin(admin.ModelAdmin):
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_queryset(request)
         return super().get_queryset(request).filter(school__school_admin=request.user)
 
@@ -79,7 +78,7 @@ class ProductAdmin(admin.ModelAdmin):
         return '%.3f KWD' % obj.price
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
@@ -93,7 +92,7 @@ class ProductAdmin(admin.ModelAdmin):
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_queryset(request)
         else:
             return super().get_queryset(request).filter(school__school_admin=request.user)
@@ -160,7 +159,7 @@ class OrderAdmin(admin.ModelAdmin):
         return len(obj.orderitem_set.all())
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
@@ -168,7 +167,7 @@ class OrderAdmin(admin.ModelAdmin):
             return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_queryset(request)
         else:
             return super().get_queryset(request).filter(school__school_admin=request.user)

@@ -32,7 +32,7 @@ class CafeAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(CafeAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return qs
         else:
             return qs.filter(admin=request.user)
