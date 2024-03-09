@@ -1,7 +1,5 @@
 from django.db import models
 import uuid
-
-from product.models import Product
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from . import Inventory, Cafe
@@ -91,7 +89,12 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('cafe', 'date', 'order_total', 'payment_method')
     fields = ('cafe', 'payment_method')
     inlines = [OrderItemInlines]
-    list_filter = ['cafe__name', 'date']
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return ('cafe__name', 'date')
+        else:
+            return ('date',)
 
     def order_total(self, obj):
         return '%.3f KWD' % sum([item.product.price * item.quantity for item in obj.orderitem_set.all()])
