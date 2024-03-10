@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 
 
 # Register your models here.
-from .models import Student, Attendance, School, SchoolAdmin, StudentAdmin, AttendanceAdmin, Bracelet, Teacher, TeacherAdmin, Operator, OperatorAdmin
+from .models import Student, Attendance, School, SchoolAdmin, StudentAdmin, AttendanceAdmin, Bracelet, Teacher, TeacherAdmin, Operator, OperatorAdmin, SchoolAdministrator, SchoolAdministratorAdmin
 
 
 class BraceletResource(resources.ModelResource):
@@ -150,3 +150,4 @@ admin.site.register(School, SchoolAdmin)
 admin.site.register(Bracelet, BraceletAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Operator, OperatorAdmin)
+admin.site.register(SchoolAdministrator, SchoolAdministratorAdmin)
