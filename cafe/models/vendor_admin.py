@@ -84,8 +84,8 @@ class VendorAdminAdmin(admin.ModelAdmin):
                 last_name=last_name,
             )
             user.is_staff = True
-            school_admin_group = Group.objects.get(name='School Admin')
-            user.groups.add(school_admin_group)
+            vendor_admin_group = Group.objects.get(name='Vendor Admin')
+            user.groups.add(vendor_admin_group)
             user.save()
             obj.cafe = form.cleaned_data.get('cafe')
             obj.user = user
