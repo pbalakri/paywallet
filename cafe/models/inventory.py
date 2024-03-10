@@ -28,12 +28,10 @@ class Inventory(models.Model):
 
 class InventoryAdmin(admin.ModelAdmin):
     list_display = ('product_code', 'product', 'quantity',
-                    'product_price', 'cafe')
+                    'price', 'cafe')
     fields = (('product_code', 'product'), ('quantity', 'price'), 'cafe')
     search_fields = ('product__name', 'cafe__name', 'product_code')
-
-    def product_price(self, obj):
-        return '%.3f KWD' % obj.price
+    list_editable = ('quantity', 'price')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user or request.user.groups.filter(name='Payway Admin').exists():
