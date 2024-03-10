@@ -31,5 +31,5 @@ class Bracelet(models.Model):
         verbose_name = _("Bracelet")
         verbose_name_plural = _("Bracelets")
         unique_together = ("rfid", "school")
-        permissions = [('import_bracelet', 'Can import'),
-                       ('export_bracelet', 'Can export')]
+        permissions = [('import_bracelet', 'Can import Bracelets'),
+                       ('export_bracelet', 'Can export Bracelets')]

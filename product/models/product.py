@@ -43,8 +43,8 @@ class Product(models.Model):
     class Meta:
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
-        permissions = [('import_product', 'Can import'),
-                       ('export_product', 'Can export')]
+        permissions = [('import_product', 'Can import Products'),
+                       ('export_product', 'Can export Products')]
 
 
 class ProductResource(resources.ModelResource):
