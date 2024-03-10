@@ -7,10 +7,18 @@ from django.contrib import admin
 from school.models import Bracelet
 
 
-class Restriction(models.Model):
+class FrequencyRestriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, default=None)
+    count_per_period = models.IntegerField(default=3)
+    restriction_frequency = (
+        ('Weekly', 'Weekly'),
+        ('Daily', 'Daily'),
+        ('Monthly', 'Monthly'),
+    )
+    frequency = models.CharField(
+        max_length=10, choices=restriction_frequency, default='Weekly')
 
     def __str__(self):
         return self.name
@@ -19,7 +27,10 @@ class Restriction(models.Model):
         abstract = True
 
 
-class DietRestriction(Restriction):
+class DietRestriction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, default=None)
     allergies = models.ManyToManyField(
         Allergy, blank=True)
 
@@ -40,7 +51,7 @@ class DietRestrictionAdmin(admin.ModelAdmin):
         return ', '.join([a.name for a in obj.allergies.all()])
 
 
-class CategoryRestriction(Restriction):
+class CategoryRestriction(FrequencyRestriction):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE)
 
@@ -53,21 +64,12 @@ class CategoryRestriction(Restriction):
 
 
 class CategoryRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'category')
-    fields = ('student', 'category')
+    list_display = ('student', 'category', 'count_per_period', 'frequency')
+    fields = ('student', 'category', 'count_per_period', 'frequency')
     search_fields = ('student',)
 
 
-class PaymentRestriction(Restriction):
-    count_per_period = models.IntegerField(default=3)
-    restriction_frequency = (
-        ('Weekly', 'Weekly'),
-        ('Daily', 'Daily'),
-        ('Monthly', 'Monthly'),
-    )
-    frequency = models.CharField(
-        max_length=10, choices=restriction_frequency, default='Weekly')
-
+class PaymentRestriction(FrequencyRestriction):
     def __str__(self):
         return self.frequency
 
@@ -82,7 +84,7 @@ class PaymentRestrictionAdmin(admin.ModelAdmin):
     search_fields = ('student',)
 
 
-class ProductRestriction(Restriction):
+class ProductRestriction(FrequencyRestriction):
     product = models.ManyToManyField(
         Product, blank=True)
 
@@ -95,8 +97,8 @@ class ProductRestriction(Restriction):
 
 
 class ProductRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'all_products')
-    fields = ('student', 'product')
+    list_display = ('student', 'all_products', 'count_per_period', 'frequency')
+    fields = ('student', 'product', 'count_per_period', 'frequency')
     search_fields = ('student',)
 
     def all_products(self, obj):
