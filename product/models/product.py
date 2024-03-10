@@ -3,7 +3,9 @@ import uuid
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationTabularInline
-
+from import_export import resources, fields
+from import_export.widgets import ForeignKeyWidget
+from import_export.admin import ImportExportModelAdmin
 from paywallet.storage_backends import PublicMediaStorage
 
 from .allergy import Allergy
@@ -41,9 +43,25 @@ class Product(models.Model):
     class Meta:
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
+        permissions = [('import_product', 'Can import'),
+                       ('export_product', 'Can export')]
 
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductResource(resources.ModelResource):
+    category_name = fields.Field(
+        column_name='category_name',
+        attribute='category',
+        widget=ForeignKeyWidget(Category, field='name'))
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'description',
+                  'category_name')
+        import_id_fields = ('id',)
+
+
+class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    resource_class = ProductResource
     list_display = ('name', 'image', 'category', 'all_allergies')
     fields = ('name', 'image', 'category', 'allergies')
     search_fields = ('name',)
