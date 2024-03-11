@@ -4,6 +4,7 @@ from django.contrib import admin
 from guardian.models import Guardian
 from school.models import School
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import format_html
 
 
 class Category(models.Model):
@@ -70,8 +71,12 @@ class ProductAdmin(admin.ModelAdmin):
     fields = (('name', 'image'), 'description', ('price', 'stock'),
               ('category', 'is_active'), 'school')
     search_fields = ('name',)
-    list_display = ('name', 'product_price',
+    list_display = ('thumbnail', 'name', 'product_price',
                     'stock', 'category', 'is_active')
+
+    def thumbnail(self, obj):
+        return format_html('<img src="{}" style="width: 40px; \
+                           height: 40px"/>'.format(obj.image.url))
 
     def product_price(self, obj):
         return '%.3f KWD' % obj.price

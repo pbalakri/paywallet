@@ -7,7 +7,7 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
 from paywallet.storage_backends import PublicMediaStorage
-
+from django.utils.html import format_html
 from .allergy import Allergy
 
 
@@ -65,6 +65,10 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('name', 'image', 'category', 'all_allergies')
     fields = ('name', 'image', 'category', 'allergies')
     search_fields = ('name',)
+
+    def thumbnail(self, obj):
+        return format_html('<img src="{}" style="width: 40px; \
+                           height: 40px"/>'.format(obj.image.url))
 
     def all_allergies(self, obj):
         return ", ".join([p.name for p in obj.allergies.all()])
