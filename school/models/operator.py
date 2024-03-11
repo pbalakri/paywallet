@@ -98,7 +98,7 @@ class OperatorAdmin(admin.ModelAdmin):
                 obj.school = form.cleaned_data.get('school')
             else:
                 school = School.objects.get(
-                    admin=request.user)
+                    school_admin=request.user)
                 obj.school = school
             obj.user = user
             obj.save()
@@ -108,7 +108,7 @@ class OperatorAdmin(admin.ModelAdmin):
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
             kwargs["queryset"] = School.objects.filter(
-                admin=request.user)
+                school_admin=request.user)
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(OperatorAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)

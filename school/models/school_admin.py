@@ -11,7 +11,6 @@ from . import School
 class SchoolAdministrator(models.Model):
     id = models.AutoField(primary_key=True)
     phone = models.CharField(max_length=20)
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
@@ -50,13 +49,13 @@ class SchoolAdministratorForm(forms.ModelForm):
 
     class Meta:
         model = SchoolAdministrator
-        fields = ('phone', 'school')
+        fields = ('phone',)
 
 
 class SchoolAdministratorAdmin(admin.ModelAdmin):
     form = SchoolAdministratorForm
-    list_display = ('name', 'phone', 'school')
-    fields = ('school', ('first_name', 'last_name'),
+    list_display = ('name', 'phone')
+    fields = (('first_name', 'last_name'),
               ('phone', 'email'), ('password', 'confirm_password'))
 
     def name(self, obj):
@@ -87,6 +86,5 @@ class SchoolAdministratorAdmin(admin.ModelAdmin):
             school_admin_group = Group.objects.get(name='School Admin')
             user.groups.add(school_admin_group)
             user.save()
-            obj.school = form.cleaned_data.get('school')
             obj.user = user
             obj.save()
