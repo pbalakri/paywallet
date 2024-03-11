@@ -71,12 +71,15 @@ class ProductAdmin(admin.ModelAdmin):
     fields = (('name', 'image'), 'description', ('price', 'stock'),
               ('category', 'is_active'), 'school')
     search_fields = ('name',)
-    list_display = ('thumbnail', 'name', 'product_price',
+    list_display = ('name', 'thumbnail', 'product_price',
                     'stock', 'category', 'is_active')
 
     def thumbnail(self, obj):
-        return format_html('<img src="{}" style="width: 40px; \
+        try:
+            return format_html('<img src="{}" style="width: 40px; \
                            height: 40px"/>'.format(obj.image.url))
+        except:
+            return None
 
     def product_price(self, obj):
         return '%.3f KWD' % obj.price

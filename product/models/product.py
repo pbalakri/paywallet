@@ -67,8 +67,11 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('name',)
 
     def thumbnail(self, obj):
-        return format_html('<img src="{}" style="width: 40px; \
+        try:
+            return format_html('<img src="{}" style="width: 40px; \
                            height: 40px"/>'.format(obj.image.url))
+        except:
+            return None
 
     def all_allergies(self, obj):
         return ", ".join([p.name for p in obj.allergies.all()])
