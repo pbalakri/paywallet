@@ -120,6 +120,6 @@ class OperatorAdmin(admin.ModelAdmin):
             return qs
 
         elif request.user.groups.filter(name='School Admin').exists():
-            return qs.filter(school__admin=request.user)
+            return qs.filter(school__school_admin=request.user)
         else:
             return qs.none()
