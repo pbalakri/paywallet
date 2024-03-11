@@ -19,7 +19,7 @@ from django.urls import path, include, re_path
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken import views
-
+admin.site.site_url = ''
 admin.site.site_header = _("PayWay Admin")
 admin.site.site_title = _("PayWay Admin")
 admin.site.index_title = _("Welcome to PayWay Admin")

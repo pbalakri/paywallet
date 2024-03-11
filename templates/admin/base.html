@@ -1,8 +1,24 @@
 {% extends "admin/base.html" %}
 {% load i18n %}
+
 {% block userlinks %}
+{% block extrastyle %}{{ block.super }}
+<style>
+:root {
+  --primary: #000F2D;
+  --secondary: #000F2D;
+  --link-fg: #000F2D;
+  --link-selected-fg: #40B1E5;
+  --header-color: #ececec;
+  --selected-row:#40B1E5;
+  --object-tools-bg: #000F2D;
+  --breadcrumbs-link-fg: #40B1E5;
+}
+</style>
+{% endblock %}
 {{ block.super }}
-/ <form action="{% url 'set_language' %}" method="post" style="display:inline">{% csrf_token %}
+
+<form action="{% url 'set_language' %}" method="post" style="display:inline">{% csrf_token %}
     <input name="next" type="hidden" value="{{ redirect_to }}">
     <select name="language" onchange="this.form.submit()">
         {% get_current_language as LANGUAGE_CODE %}
