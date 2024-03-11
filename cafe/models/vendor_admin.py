@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django import forms
+from cafe.models import Cafe
 
 
 class VendorAdmin(models.Model):
@@ -87,3 +88,7 @@ class VendorAdminAdmin(admin.ModelAdmin):
             user.save()
             obj.user = user
             obj.save()
+            if request.user.groups.filter(name='School Admin').exists():
+                cafe = Cafe.objects.get(school__school_admin=request.user)
+                cafe.admin = user
+                cafe.save()
