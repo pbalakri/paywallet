@@ -14,8 +14,8 @@ class School(models.Model):
         max_length=100, verbose_name=_("Phone Number"))
     primary_email = models.CharField(
         max_length=100, verbose_name=_("Primary Email"))
-    school_admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
-                                     'groups__name': 'School Admin'}, verbose_name=_("School Admin"))
+    school_admin = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, limit_choices_to={
+        'groups__name': 'School Admin'}, verbose_name=_("School Admin"))
 
     def __str__(self):
         return self.name
