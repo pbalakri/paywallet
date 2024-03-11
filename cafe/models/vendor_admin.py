@@ -5,13 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django import forms
-from cafe.models import Cafe
 
 
 class VendorAdmin(models.Model):
     id = models.AutoField(primary_key=True)
     phone = models.CharField(max_length=20)
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
@@ -50,13 +48,13 @@ class VendorAdminForm(forms.ModelForm):
 
     class Meta:
         model = VendorAdmin
-        fields = ('phone', 'cafe')
+        fields = ('phone',)
 
 
 class VendorAdminAdmin(admin.ModelAdmin):
     form = VendorAdminForm
-    list_display = ('name', 'phone', 'cafe')
-    fields = ('cafe', ('first_name', 'last_name'),
+    list_display = ('name', 'phone')
+    fields = (('first_name', 'last_name'),
               ('phone', 'email'), ('password', 'confirm_password'))
 
     def name(self, obj):
@@ -87,6 +85,5 @@ class VendorAdminAdmin(admin.ModelAdmin):
             vendor_admin_group = Group.objects.get(name='Vendor Admin')
             user.groups.add(vendor_admin_group)
             user.save()
-            obj.cafe = form.cleaned_data.get('cafe')
             obj.user = user
             obj.save()

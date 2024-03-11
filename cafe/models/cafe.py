@@ -11,7 +11,7 @@ class Cafe(models.Model):
                           editable=False)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
-    admin = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='vendor_admin', on_delete=models.RESTRICT, limit_choices_to={
+    admin = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='vendor_admin', on_delete=models.RESTRICT, limit_choices_to={
         'groups__name': 'Vendor Admin'})
     operators = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='vendor_users', limit_choices_to={'groups__name__in': ['Vendor Admin', 'Vendor Operator']})
