@@ -33,6 +33,7 @@ class InventoryAdmin(admin.ModelAdmin):
     fields = (('product_code', 'product'), ('quantity', 'price'), 'cafe')
     search_fields = ('product__name', 'cafe__name', 'product_code')
     list_editable = ('quantity', 'price')
+    change_list_template = 'admin/cafe/inventory/change_list.html'
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if request.user or request.user.groups.filter(name='Payway Admin').exists():
