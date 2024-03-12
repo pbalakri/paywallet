@@ -4,6 +4,7 @@ from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 from datetime import datetime
+from paywallet.storage_backends import PublicMediaStorage
 from paywallet.widgets.widget import PastCustomDatePickerWidget
 
 from .bracelet import Bracelet
@@ -24,6 +25,8 @@ class Student(models.Model):
         School, on_delete=models.RESTRICT, verbose_name=_("School"))
     bracelet = models.OneToOneField(
         Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
+    image = models.ImageField(
+        storage=PublicMediaStorage(), upload_to='students/', verbose_name=_("Image"))
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + str(self.date_of_birth) + ")"
