@@ -1,0 +1,24 @@
+{% extends "admin/change_list.html" %}
+{% load i18n static admin_list %}
+
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div style="width: 400; float: left;" >
+    <canvas id="chart-product-count-by-stock" class="chart-canvas" width="400" height="170" ></canvas>
+</div>
+{% block scripts %}
+{{ get_product_count_based_on_stock|json_script:"get_product_count_based_on_stock" }}
+
+<script src="{% static 'charts/stock_charts.js' %}"></script>
+
+
+    
+{% endblock %}
+
+{{ block.super }}
+
+{% endblock %}
