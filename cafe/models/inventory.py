@@ -103,8 +103,6 @@ class InventoryAdmin(admin.ModelAdmin):
             qs = response.context_data['cl'].queryset
             response.context_data['get_product_count_based_on_stock'] = self.get_product_count_based_on_stock(
                 qs)
-            # response.context_data['get_order_count_history'] = self.get_order_count_history(
-            #     qs)
         except (AttributeError, KeyError):
             return response
         return response
