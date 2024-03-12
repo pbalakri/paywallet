@@ -36,7 +36,7 @@ class InventoryAdmin(admin.ModelAdmin):
     change_list_template = 'admin/cafe/inventory/change_list.html'
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if request.user or request.user.groups.filter(name='Payway Admin').exists():
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "cafe":
             kwargs["queryset"] = Cafe.objects.filter(
