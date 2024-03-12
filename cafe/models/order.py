@@ -112,3 +112,10 @@ class OrderAdmin(admin.ModelAdmin):
             return qs
         else:
             return qs.filter(cafe__admin=request.user)
+
+    def save_form(self, request, form, change):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return super().save_form(request, form, change)
+        else:
+            form.instance.cafe = Cafe.objects.get(admin=request.user)
+            return super().save_form(request, form, change)
