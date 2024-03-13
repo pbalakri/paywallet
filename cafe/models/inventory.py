@@ -29,7 +29,7 @@ class Inventory(models.Model):
 
 class InventoryAdmin(admin.ModelAdmin):
     list_display = ('product_code', 'product', 'quantity',
-                    'price', 'cafe')
+                    'price')
     fields = (('product_code', 'product'), ('quantity', 'price'), 'cafe')
     search_fields = ('product__name', 'cafe__name', 'product_code')
     list_editable = ('quantity', 'price')
@@ -49,6 +49,15 @@ class InventoryAdmin(admin.ModelAdmin):
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(InventoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_list_display(self, request):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            # Add cafe to list
+            new_list_display = list(self.list_display)
+            new_list_display.append('cafe')
+            return new_list_display
+        else:
+            return super(InventoryAdmin, self).get_list_display(request)
 
     def get_queryset(self, request):
         qs = super(InventoryAdmin, self).get_queryset(request)
@@ -74,9 +83,10 @@ class InventoryAdmin(admin.ModelAdmin):
         #  Get product count based on stock whether it is in stock or out of stock
 
         in_stock_count = qs.filter(quantity__gt=5).count()
-        labels.append('In Stock')
-        data.append(in_stock_count)
-        background_color.append(self.getRandomColor())
+        if (in_stock_count > 0):
+            labels.append('In Stock')
+            data.append(in_stock_count)
+            background_color.append(self.getRandomColor())
 
         low_stock_count = qs.filter(quantity__gt=0, quantity__lte=5).count()
         if (low_stock_count > 0):
@@ -85,9 +95,10 @@ class InventoryAdmin(admin.ModelAdmin):
             background_color.append(self.getRandomColor())
 
         oos_count = qs.filter(quantity=0).count()
-        labels.append('OOS')
-        data.append(oos_count)
-        background_color.append(self.getRandomColor())
+        if (oos_count > 0):
+            labels.append('OOS')
+            data.append(oos_count)
+            background_color.append(self.getRandomColor())
 
         return {
             'labels': labels,
