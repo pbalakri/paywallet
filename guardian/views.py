@@ -1,16 +1,16 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User, Group
 from django.db import transaction
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope
+from rest_framework import status
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from school.models import Student, School
 from .models import Device, Guardian
-from django.contrib.auth.models import User, Group
-from rest_framework.permissions import IsAuthenticated
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
-from django.contrib.auth.hashers import make_password
-from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 
 class GuardianView(APIView):
@@ -26,6 +26,8 @@ class GuardianView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@authentication_classes([])
+@permission_classes([])
 class GuardianRegisterView(APIView):
     def post(self, request):
         # Check if user with Guardian role exists
@@ -84,7 +86,6 @@ class GuardianStudentAddView(APIView):
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
-
 
 # class GuardianUpdateView(APIView):
 #     authentication_classes = [TokenAuthentication]
