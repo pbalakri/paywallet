@@ -3,13 +3,13 @@ from . import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path(r"<str:school_id>/products/category/<str:category_id>",
+    path(r"products/category/<str:category_id>",
          views.GetProductsPerCategoryView.as_view(), name="get_products_category"),
-    path(r"<str:school_id>/products/<str:product_id>",
+    path(r"products/<str:product_id>",
          views.GetProduct.as_view(), name="get_product"),
-    path(r"<str:school_id>/products/",
+    path(r"products/",
          views.GetProducts.as_view(), name="get_products"),
-    path(r"<str:school_id>/categories/",
+    path(r"categories/",
          views.GetCategories.as_view(), name="get_categories"),
     path(r"orders/",
          views.GetOrders.as_view(), name="get_orders"),
