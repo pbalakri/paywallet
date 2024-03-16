@@ -13,7 +13,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        fields = ['name', 'address']
+        fields = ['id', 'name', 'address']
 
 
 class StudentSerializer(serializers.ModelSerializer):
