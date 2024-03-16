@@ -84,9 +84,9 @@ class PaymentRestrictionAdmin(admin.ModelAdmin):
     search_fields = ('student',)
 
 
-class ProductRestriction(FrequencyRestriction):
-    product = models.ManyToManyField(
-        Product, blank=True)
+class ProductsRestriction(FrequencyRestriction):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
         return ', '.join([p.name for p in self.product.all()])
@@ -96,10 +96,7 @@ class ProductRestriction(FrequencyRestriction):
         verbose_name_plural = _('Product Restrictions')
 
 
-class ProductRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'all_products', 'count_per_period', 'frequency')
+class ProductsRestrictionAdmin(admin.ModelAdmin):
+    list_display = ('student', 'product', 'count_per_period', 'frequency')
     fields = ('student', 'product', 'count_per_period', 'frequency')
     search_fields = ('student',)
-
-    def all_products(self, obj):
-        return ', '.join([p.name for p in obj.product.all()])

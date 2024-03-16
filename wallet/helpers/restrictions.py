@@ -1,4 +1,4 @@
-from restriction.models import PaymentRestriction, ProductRestriction, CategoryRestriction
+from restriction.models import PaymentRestriction, ProductsRestriction, CategoryRestriction
 from datetime import datetime
 from wallet.models import Transaction
 
@@ -12,7 +12,7 @@ def get_restrictions(txn_bracelet):
         }
     }
     restricted_products = []
-    product_restrictions = ProductRestriction.objects.filter(
+    product_restrictions = ProductsRestriction.objects.filter(
         bracelet=txn_bracelet)
     if product_restrictions:
         for product_restriction in product_restrictions:
