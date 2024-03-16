@@ -12,18 +12,6 @@ class WalletSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PaymentRestrictionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PaymentRestriction
-        fields = '__all__'
-
-
-class CategoryRestrictionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CategoryRestriction
-        fields = '__all__'
-
-
 class TransactionPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
