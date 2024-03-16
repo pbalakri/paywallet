@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
 from cafe.models import Cafe
+from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
+from restriction.serializers import ProductRestrictionSerializer, CategoryRestrictionSerializer, PaymentRestrictionSerializer
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
 from .models import Wallet, Transaction
 from rest_framework.pagination import PageNumberPagination
@@ -9,12 +11,6 @@ from paywallet.permissions import IsGuardian, isVendor
 from rest_framework import status
 from django.db import transaction
 from .helpers.restrictions import get_restrictions
-
-# Create your views here.
-
-# GET /api/v1/wallets/<char:rfid>/balance/
-# GET /api/v1/wallets/<char:rfid>/transactions/
-# POST /api/v1/wallets/<char:rfid>/transactions/
 
 
 class BalanceView(APIView):
@@ -85,4 +81,25 @@ class TransactionsView(APIView):
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Register guardian as a user with Guardian role
+class PurchaseRestrictionView(APIView):
+    # permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+
+    def get(self, request):
+        rfid = request.query_params['rfid']
+        catـrestriction = CategoryRestriction.objects.filter(
+            student__bracelet__rfid=rfid)
+        product_restriction = ProductsRestriction.objects.filter(
+            student__bracelet__rfid=rfid)
+        payment_restriction = PaymentRestriction.objects.filter(
+            student__bracelet__rfid=rfid)
+        payment_restriction_serializer = PaymentRestrictionSerializer(
+            payment_restriction)
+        cat_restriction_serializer = CategoryRestrictionSerializer(
+            catـrestriction, many=True)
+        product_restriction_serializer = ProductRestrictionSerializer(
+            product_restriction, many=True)
+        return Response({
+            "payment_restriction": payment_restriction_serializer.data,
+            "category_restriction": cat_restriction_serializer.data,
+            "product_restriction": product_restriction_serializer.data
+        }, status=status.HTTP_200_OK)

@@ -28,7 +28,7 @@ urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/schools/', include("school.urls")),
-    path('api/wallets/', include("wallet.urls")),
+    path('api/wallets/<str:rfid>/', include("wallet.urls")),
     path('api/schools/<str:school_id>/store/', include("school_store.urls")),
     path('api/guardian/', include("guardian.urls")),
     path('api/restrictions/', include("restriction.urls")),
