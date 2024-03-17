@@ -4,6 +4,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path(r"",
-         views.RestrictionView.as_view(), name="restrictions"),
+         views.PurchaseRestrictionView.as_view(), name="restrictions"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

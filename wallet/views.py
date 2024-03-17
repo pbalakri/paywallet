@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from cafe.models import Cafe
 from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
-from restriction.serializers import ProductRestrictionSerializer, CategoryRestrictionSerializer, PaymentRestrictionSerializer
+from restriction.serializers import ProductRestrictionSerializer, CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
 from .models import Wallet, Transaction
 from rest_framework.pagination import PageNumberPagination
@@ -94,7 +94,7 @@ class PurchaseRestrictionView(APIView):
             student__bracelet__rfid=rfid)
         payment_restriction_serializer = PaymentRestrictionSerializer(
             payment_restriction)
-        cat_restriction_serializer = CategoryRestrictionSerializer(
+        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
             catـrestriction, many=True)
         product_restriction_serializer = ProductRestrictionSerializer(
             product_restriction, many=True)
