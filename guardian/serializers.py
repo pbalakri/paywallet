@@ -37,4 +37,4 @@ class ReadGuardianSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['registration_number', 'school_id', 'image']
+        fields = ['registration_number', 'school', 'image']

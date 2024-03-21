@@ -21,7 +21,7 @@ class Guardian(models.Model):
 
 
 class GuardianAdmin(admin.ModelAdmin):
-    list_display = ('image', 'user', 'phone_number')
+    list_display = ('user', 'image', 'phone_number')
     search_fields = ('user__first_name', 'user__last_name', 'user__email', 'phone_number',
                      'student__first_name', 'student__last_name', 'student__registration_number')
 

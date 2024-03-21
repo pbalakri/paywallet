@@ -6,7 +6,7 @@ import uuid
 from django.db.models.fields.related import ForeignKey
 from django.forms.models import ModelChoiceField
 from django.http.request import HttpRequest
-from cafe.models import Cafe
+from cafe.models import Cafe, Order
 from .wallet import Wallet
 from django.contrib import admin
 from django.db import transaction
@@ -26,6 +26,8 @@ class Transaction(models.Model):
         Wallet, on_delete=models.RESTRICT)
     merchant = models.ForeignKey(
         Cafe, on_delete=models.RESTRICT)
+    order = models.OneToOneField(
+        Order, on_delete=models.RESTRICT, blank=True, null=True)
     reference = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -50,9 +52,9 @@ class Transaction(models.Model):
 
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('date', 'type', 'amount',
-                    'merchant', 'reference')
+                    'merchant', 'order', 'reference')
     fields = ('type', 'amount', 'wallet',
-              'merchant', 'reference')
+              'merchant', 'reference', 'order')
 
     def formfield_for_foreignkey(self, db_field: ForeignKey[Any], request: HttpRequest | None, **kwargs: Any) -> ModelChoiceField | None:
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
