@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from school.models import Student
+from wallet.models import Wallet
 from .models import Attendance, School
 
 
@@ -17,9 +18,17 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    school = SchoolSerializer(read_only=True)
+    balance = serializers.SerializerMethodField('get_balance')
+    school_name = serializers.CharField(source='school.name')
+
+    def get_balance(self, obj):
+        try:
+            wallet = Wallet.objects.get(bracelet=obj.bracelet)
+            return wallet.balance
+        except Wallet.DoesNotExist:
+            return 0
 
     class Meta:
         model = Student
-        fields = ['first_name', 'last_name',
-                  'registration_number', 'school', 'date_of_birth']
+        fields = ['id', 'first_name', 'last_name', 'image',
+                  'school_name', 'balance']
