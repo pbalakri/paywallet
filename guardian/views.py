@@ -8,7 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from paywallet.permissions import IsGuardian
+from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
+from restriction.serializers import CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer, ProductRestrictionSerializer
 from school.models import Student, School
+from wallet.models import Transaction
+from wallet.serializers import TransactionGetSerializer
 from .models import Device, Guardian
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
 
@@ -66,8 +71,69 @@ class GuardianRegisterView(APIView):
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class GuardianStudentTransactionsView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def get(self, request, student_id):
+        try:
+            bracelet = Guardian.objects.get(
+                user=request.user).student.get(id=student_id).bracelet
+            transactions = Transaction.objects.filter(
+                wallet__bracelet=bracelet).order_by('-date')
+        except Guardian.DoesNotExist:
+            return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TransactionGetSerializer(transactions, many=True)
+        return Response({"transactions": serializer.data}, status=status.HTTP_200_OK)
+
+
+class GuardianStudentRestrictionsView(APIView):
+    def get(self, request, student_id):
+        bracelet = Guardian.objects.get(
+            user=request.user).student.get(id=student_id).bracelet
+        catـrestriction = CategoryRestriction.objects.filter(
+            student__bracelet=bracelet)
+        product_restriction = ProductsRestriction.objects.filter(
+            student__bracelet=bracelet)
+        payment_restriction = PaymentRestriction.objects.filter(
+            student__bracelet=bracelet)
+        payment_restriction_serializer = PaymentRestrictionSerializer(
+            payment_restriction)
+        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
+            catـrestriction, many=True)
+        product_restriction_serializer = ProductRestrictionSerializer(
+            product_restriction, many=True)
+        return Response({
+            "payment_restriction": payment_restriction_serializer.data,
+            "category_restriction": cat_restriction_serializer.data,
+            "product_restriction": product_restriction_serializer.data
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request, student_id):
+        
+        bracelet = Guardian.objects.get(
+            user=request.user).student.get(id=student_id).bracelet
+        catـrestriction = CategoryRestriction.objects.filter(
+            student__bracelet=bracelet)
+        product_restriction = ProductsRestriction.objects.filter(
+            student__bracelet=bracelet)
+        payment_restriction = PaymentRestriction.objects.filter(
+            student__bracelet=bracelet)
+        payment_restriction_serializer = PaymentRestrictionSerializer(
+            payment_restriction)
+        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
+            catـrestriction, many=True)
+        product_restriction_serializer = ProductRestrictionSerializer(
+            product_restriction, many=True)
+        return Response({
+            "payment_restriction": payment_restriction_serializer.data,
+            "category_restriction": cat_restriction_serializer.data,
+            "product_restriction": product_restriction_serializer.data
+        }, status=status.HTTP_200_OK)
+
 class GuardianStudentAddView(APIView):
-    permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticated, IsGuardian]
 
     def post(self, request):
         try:
