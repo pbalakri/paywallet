@@ -32,27 +32,27 @@ def get_restrictions(txn_bracelet):
     return returnable_data
 
 
-def get_payment_restrictions(txn_bracelet):
+def get_payment_restrictions(rfid):
     restrictions = PaymentRestriction.objects.filter(
-        bracelet=txn_bracelet)
+        student__bracelet__rfid=rfid)
     for restriction in restrictions:
         # check if frequency of restriction is weekly
         if restriction.frequency == 'Weekly':
             # get total count of transactions this week of year
             transactions_this_week = Transaction.objects.filter(
-                bracelet=txn_bracelet, date__week=datetime.today().isocalendar()[1])
+                bracelet__rfid=rfid, date__week=datetime.today().isocalendar()[1])
             if transactions_this_week.count() > restriction.count_per_period:
                 return False
         elif restriction.frequency == 'Monthly':
             # get total count of transactions this month
             transactions_this_month = Transaction.objects.filter(
-                bracelet=txn_bracelet, date__month=datetime.now().month)
+                bracelet__rfid=rfid, date__month=datetime.now().month)
             if transactions_this_month.count() > restriction.count_per_period:
                 return False
         elif restriction.frequency == 'Daily':
             # get total count of transactions today
             transactions_today = Transaction.objects.filter(
-                bracelet=txn_bracelet, date__day=datetime.now().day)
+                bracelet__rfid=rfid, date__day=datetime.now().day)
             if transactions_today.count() > restriction.count_per_period:
                 return False
     return True

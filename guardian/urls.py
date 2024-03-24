@@ -10,7 +10,5 @@ urlpatterns = [
          views.GuardianStudentAddView.as_view(), name="add_child"),
     path(r"students/<int:student_id>/transactions",
          views.GuardianStudentTransactionsView.as_view(), name="transactions"),
-    path(r"students/<int:student_id>/restrictions",
-         views.GuardianStudentRestrictionsView.as_view(), name="restrictions")
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

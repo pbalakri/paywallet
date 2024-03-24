@@ -1,16 +1,17 @@
 from rest_framework.views import APIView
 from cafe.models import Cafe
-from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
-from restriction.serializers import ProductRestrictionSerializer, CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer
+from product.models.product import Product
+from product.serializers import RestrictedProductSerializer
+from restriction.models import CategoryRestriction, ProductsRestriction
 from .serializers import TransactionGetSerializer, TransactionPostSerializer
 from .models import Wallet, Transaction
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from paywallet.permissions import IsGuardian, isVendor
+from paywallet.permissions import IsGuardian, IsVendor
 from rest_framework import status
 from django.db import transaction
-from .helpers.restrictions import get_restrictions
+from .helpers.restrictions import get_payment_restrictions, get_restrictions
 
 
 class BalanceView(APIView):
@@ -28,7 +29,7 @@ class TransactionsView(APIView):
         if self.request.method == 'GET':
             return [IsAuthenticated(), IsGuardian()]
         elif self.request.method == 'POST':
-            return [IsAuthenticated(), isVendor()]
+            return [IsAuthenticated(), IsVendor()]
         return []
 
     def get(self, request, rfid):
@@ -82,24 +83,23 @@ class TransactionsView(APIView):
 
 
 class PurchaseRestrictionView(APIView):
-    # permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticated, IsVendor]
 
-    def get(self, request):
-        rfid = request.query_params['rfid']
+    def get(self, request, rfid):
         catـrestriction = CategoryRestriction.objects.filter(
             student__bracelet__rfid=rfid)
         product_restriction = ProductsRestriction.objects.filter(
             student__bracelet__rfid=rfid)
-        payment_restriction = PaymentRestriction.objects.filter(
-            student__bracelet__rfid=rfid)
-        payment_restriction_serializer = PaymentRestrictionSerializer(
-            payment_restriction)
-        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
-            catـrestriction, many=True)
-        product_restriction_serializer = ProductRestrictionSerializer(
-            product_restriction, many=True)
+        restricted_products = []
+        for restriction in product_restriction:
+            restricted_products.append(restriction.product)
+        for restriction in catـrestriction:
+            restricted_products.extend(
+                Product.objects.filter(category=restriction.category))
+        can_buy = get_payment_restrictions(rfid)
+        restricted_product_serializer = RestrictedProductSerializer(
+            restricted_products, many=True)
         return Response({
-            "payment_restriction": payment_restriction_serializer.data,
-            "category_restriction": cat_restriction_serializer.data,
-            "product_restriction": product_restriction_serializer.data
+            "restricted_products": restricted_product_serializer.data,
+            "can_buy": can_buy
         }, status=status.HTTP_200_OK)
