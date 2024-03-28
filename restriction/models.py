@@ -89,7 +89,7 @@ class ProductsRestriction(FrequencyRestriction):
         Product, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return ', '.join([p.name for p in self.product.all()])
+        return self.product.name
 
     class Meta:
         verbose_name = _('Product Restriction')
