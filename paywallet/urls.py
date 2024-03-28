@@ -31,6 +31,7 @@ urlpatterns = i18n_patterns(
     path('api/wallets/<str:rfid>/', include("wallet.urls")),
     path('api/schools/<str:school_id>/store/', include("school_store.urls")),
     path('api/guardian/', include("guardian.urls")),
+    path('api/merchants/<str:merchant_id>/', include("cafe.urls")),
     path('api/restrictions/', include("restriction.urls")),
     # path('', include('admin_material.urls')),
     path('api-token-auth/', views.obtain_auth_token),

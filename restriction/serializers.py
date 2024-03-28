@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from product.serializers import CategorySerializer
+from product.serializers import CategorySerializer, ProductSerializer
 
 from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
 
@@ -29,6 +29,8 @@ class CategoryViewRestrictionSerializer(serializers.ModelSerializer):
 
 
 class ProductRestrictionSerializer(serializers.ModelSerializer):
+    product_information = ProductSerializer(source='product')
+
     class Meta:
         model = ProductsRestriction
-        fields = ['product', 'count_per_period', 'frequency']
+        fields = ['product_information', 'count_per_period', 'frequency']
