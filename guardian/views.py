@@ -88,50 +88,6 @@ class GuardianStudentTransactionsView(APIView):
         return Response({"transactions": serializer.data}, status=status.HTTP_200_OK)
 
 
-class GuardianStudentRestrictionsView(APIView):
-    def get(self, request, student_id):
-        bracelet = Guardian.objects.get(
-            user=request.user).student.get(id=student_id).bracelet
-        catـrestriction = CategoryRestriction.objects.filter(
-            student__bracelet=bracelet)
-        product_restriction = ProductsRestriction.objects.filter(
-            student__bracelet=bracelet)
-        payment_restriction = PaymentRestriction.objects.filter(
-            student__bracelet=bracelet)
-        payment_restriction_serializer = PaymentRestrictionSerializer(
-            payment_restriction)
-        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
-            catـrestriction, many=True)
-        product_restriction_serializer = ProductRestrictionSerializer(
-            product_restriction, many=True)
-        return Response({
-            "payment_restriction": payment_restriction_serializer.data,
-            "category_restriction": cat_restriction_serializer.data,
-            "product_restriction": product_restriction_serializer.data
-        }, status=status.HTTP_200_OK)
-
-    def post(self, request, student_id):
-        
-        bracelet = Guardian.objects.get(
-            user=request.user).student.get(id=student_id).bracelet
-        catـrestriction = CategoryRestriction.objects.filter(
-            student__bracelet=bracelet)
-        product_restriction = ProductsRestriction.objects.filter(
-            student__bracelet=bracelet)
-        payment_restriction = PaymentRestriction.objects.filter(
-            student__bracelet=bracelet)
-        payment_restriction_serializer = PaymentRestrictionSerializer(
-            payment_restriction)
-        cat_restriction_serializer = CategoryPurchaseRestrictionSerializer(
-            catـrestriction, many=True)
-        product_restriction_serializer = ProductRestrictionSerializer(
-            product_restriction, many=True)
-        return Response({
-            "payment_restriction": payment_restriction_serializer.data,
-            "category_restriction": cat_restriction_serializer.data,
-            "product_restriction": product_restriction_serializer.data
-        }, status=status.HTTP_200_OK)
-
 class GuardianStudentAddView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
