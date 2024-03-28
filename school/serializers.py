@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from cafe.serializers import CafeSerializer
 from school.models import Student
 from wallet.models import Wallet
 from .models import Attendance, School
@@ -12,9 +13,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class SchoolSerializer(serializers.ModelSerializer):
+    cafe_information = serializers.SerializerMethodField('get_cafe_name')
+
+    def get_cafe_name(self, obj):
+        return CafeSerializer(obj.cafe).data if hasattr(obj, 'cafe') else None
+
     class Meta:
         model = School
-        fields = ['id', 'name', 'address']
+        fields = ['id', 'name', 'address', 'cafe_information']
 
 
 class StudentSerializer(serializers.ModelSerializer):

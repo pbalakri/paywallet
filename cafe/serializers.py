@@ -9,7 +9,7 @@ from .models import Cafe
 class CafeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cafe
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class CafeProductSerializer(serializers.ModelSerializer):
