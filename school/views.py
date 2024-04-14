@@ -6,16 +6,17 @@ from rest_framework.permissions import IsAuthenticated
 
 from paywallet.permissions import IsGuardian, IsSchoolAdmin
 from .models import Student, Attendance, School
-from .serializers import AttendanceSerializer, SchoolSerializer
+from .serializers import AttendanceSerializer, AttendanceViewSerializer, SchoolSerializer
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 
 class CheckInView(APIView):
     permission_classes = [IsAuthenticated, IsSchoolAdmin]
 
-    def post(self, request, pk):
+    def post(self, request, registration_number):
         try:
-            student_obj = Student.objects.get(registration_number=pk)
+            student_obj = Student.objects.get(
+                registration_number=registration_number)
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -32,9 +33,10 @@ class CheckInView(APIView):
 class CheckoutView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
+    def post(self, request, registration_number):
         try:
-            student_obj = Student.objects.get(registration_number=pk)
+            student_obj = Student.objects.get(
+                registration_number=registration_number)
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -59,3 +61,19 @@ class SchoolView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except School.DoesNotExist:
             return Response({'error': 'School not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AttendanceView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def get(self, request, registration_number):
+        try:
+            student_obj = Student.objects.get(
+                registration_number=registration_number)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        attendance_obj = Attendance.objects.filter(
+            student_id=student_obj.id).order_by('-in_time')
+        serializer = AttendanceViewSerializer(attendance_obj, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

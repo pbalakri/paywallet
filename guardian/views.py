@@ -74,10 +74,10 @@ class GuardianRegisterView(APIView):
 class GuardianStudentTransactionsView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
-    def get(self, request, student_id):
+    def get(self, request, registration_number):
         try:
             bracelet = Guardian.objects.get(
-                user=request.user).student.get(id=student_id).bracelet
+                user=request.user).student.get(registration_number=registration_number).bracelet
             transactions = Transaction.objects.filter(
                 wallet__bracelet=bracelet).order_by('-date')
         except Guardian.DoesNotExist:

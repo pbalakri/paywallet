@@ -3,6 +3,7 @@ from rest_framework import serializers
 from cafe.serializers import CafeSerializer
 
 from .models import Wallet, Transaction
+from django.utils import timezone
 
 
 class WalletSerializer(serializers.ModelSerializer):
@@ -18,9 +19,13 @@ class TransactionPostSerializer(serializers.ModelSerializer):
 
 
 class TransactionGetSerializer(serializers.ModelSerializer):
-    merchant_name = CafeSerializer(source='merchant')
+    merchant_information = CafeSerializer(source='merchant')
+    transaction_date = serializers.SerializerMethodField('get_date')
+
+    def get_date(self, obj):
+        return timezone.localtime(obj.date).date()
 
     class Meta:
         model = Transaction
-        fields = ['id', 'type', 'amount',
-                  'reference', 'wallet', 'merchant_name', 'order']
+        fields = ['id', 'type', 'amount', 'transaction_date',
+                  'reference', 'wallet', 'merchant_information', 'order']

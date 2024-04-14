@@ -12,6 +12,30 @@ class AttendanceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AttendanceViewSerializer(serializers.ModelSerializer):
+    checkin_date = serializers.SerializerMethodField('get_in_date')
+    checkin_time = serializers.SerializerMethodField('get_in_time')
+    checkout_date = serializers.SerializerMethodField('get_out_date')
+    checkout_time = serializers.SerializerMethodField('get_out_time')
+
+    def get_in_date(self, obj):
+        return obj.in_time.date()
+
+    def get_in_time(self, obj):
+        return obj.in_time.strftime('%H:%M')
+
+    def get_out_date(self, obj):
+        return obj.out_time.date() if obj.out_time else None
+
+    def get_out_time(self, obj):
+        return obj.out_time.strftime('%H:%M') if obj.out_time else None
+
+    class Meta:
+        model = Attendance
+        fields = ['checkin_date', 'checkin_time',
+                  'checkout_time', 'checkout_date']
+
+
 class SchoolSerializer(serializers.ModelSerializer):
     cafe_information = serializers.SerializerMethodField('get_cafe_name')
 
@@ -37,4 +61,4 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'first_name', 'last_name', 'image',
-                  'school_name', 'balance']
+                  'school_name', 'balance', 'registration_number']
