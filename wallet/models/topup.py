@@ -12,12 +12,19 @@ class TopUp(models.Model):
         Guardian, on_delete=models.RESTRICT)
     wallet = models.ForeignKey(
         Wallet, on_delete=models.RESTRICT)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.FloatField(default=0)
     reference = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # On save, increment wallet balance by amount
+
+    def save(self, *args, **kwargs):
+        wallet = Wallet.objects.get(bracelet_id=self.wallet.bracelet_id)
+        wallet.balance += self.amount
+        wallet.save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.user} - {self.amount}'
+        return f' {self.amount}'
 
 
 class TopUpAdmin(admin.ModelAdmin):
