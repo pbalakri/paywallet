@@ -23,9 +23,12 @@ class Order(models.Model):
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
 
-    def __str__(self):
-        order_total = '%.3f KWD' % sum(
+    def get_total(self):
+        return sum(
             [item.product.price * item.quantity for item in self.orderitem_set.all()])
+
+    def __str__(self):
+        order_total = '%.3f KWD' % self.get_total()
         return str(self.date) + " - " + str(order_total)
 
 
