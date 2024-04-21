@@ -9,6 +9,8 @@ urlpatterns = [
          views.CheckoutView.as_view(), name="checkout"),
     path(r"students/<str:registration_number>/attendance",
          views.AttendanceView.as_view(), name="attendance"),
+    path(r"students/<str:registration_number>/attendance/month/<str:month>",
+         views.AttendanceMonthView.as_view(), name="attendance"),
     path(r"",
          views.SchoolView.as_view(), name="school"),
 ]
