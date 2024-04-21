@@ -3,8 +3,9 @@ from cafe.models import Cafe
 from product.models.product import Product
 from product.serializers import RestrictedProductSerializer
 from restriction.models import CategoryRestriction, ProductsRestriction
-from .serializers import TransactionGetSerializer, TransactionPostSerializer
-from .models import Wallet, Transaction
+from wallet.models.topup import TopUp
+from .serializers import TopupGetSerializer, TransactionGetSerializer, TransactionPostSerializer
+from .models import Wallet, Transaction, TopUp
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +21,21 @@ class BalanceView(APIView):
     def get(self, request, rfid):
         wallet = Wallet.objects.get(rfid=rfid)
         return Response({"balance": wallet.balance})
+
+
+class TopupsView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+    pagination_class = PageNumberPagination
+
+    def get(self, request, rfid):
+        paginator = PageNumberPagination()
+        topups = TopUp.objects.filter(
+            wallet__bracelet__rfid=rfid).order_by('-created_at')
+        page = paginator.paginate_queryset(topups, request)
+        if page is not None:
+            topup_serializer = TopupGetSerializer(
+                page, many=True)
+            return paginator.get_paginated_response(topup_serializer.data)
 
 
 class TransactionsView(APIView):

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from cafe.serializers import CafeOrderSerializer, CafeSerializer
 
-from .models import Wallet, Transaction
+from .models import Wallet, Transaction, TopUp
 from django.utils import timezone
 
 
@@ -31,3 +31,14 @@ class TransactionGetSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = ['id', 'type', 'amount', 'transaction_date',
                   'reference', 'wallet', 'merchant_information', 'order_information']
+
+
+class TopupGetSerializer(serializers.ModelSerializer):
+    transaction_date = serializers.SerializerMethodField('get_date')
+
+    def get_date(self, obj):
+        return timezone.localtime(obj.created_at).date()
+
+    class Meta:
+        model = TopUp
+        fields = ['id', 'amount', 'transaction_date']
