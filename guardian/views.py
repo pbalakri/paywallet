@@ -13,8 +13,8 @@ from paywallet.permissions import IsGuardian
 from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
 from restriction.serializers import CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer, ProductRestrictionSerializer
 from school.models import Student, School
-from wallet.models import Transaction
-from wallet.serializers import TransactionGetSerializer
+from wallet.models import Transaction, TopUp
+from wallet.serializers import TopupGetSerializer, TransactionGetSerializer
 from .models import Device, Guardian
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
 
@@ -90,6 +90,28 @@ class GuardianStudentTransactionsView(APIView):
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
         if page is not None:
             serializer = TransactionGetSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+
+
+class GuardianStudentTopupsView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+    pagination_class = PageNumberPagination
+
+    def get(self, request, registration_number):
+        try:
+            paginator = PageNumberPagination()
+            bracelet = Guardian.objects.get(
+                user=request.user).student.get(registration_number=registration_number).bracelet
+            topups = TopUp.objects.filter(
+                wallet__bracelet=bracelet).order_by('-created_at')
+            page = paginator.paginate_queryset(topups, request)
+        except Guardian.DoesNotExist:
+            return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        if page is not None:
+            serializer = TopupGetSerializer(
+                page, many=True)
             return paginator.get_paginated_response(serializer.data)
 
 
