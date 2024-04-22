@@ -1,13 +1,14 @@
 from rest_framework import serializers
+from product.models.allergy import Allergy
 from product.serializers import CategorySerializer, ProductSerializer
 
-from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
+from restriction.models import CategoryRestriction, DietRestriction, PaymentRestriction, ProductsRestriction
 
 
 class PaymentRestrictionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentRestriction
-        fields = ['count_per_period', 'frequency']
+        fields = ['total_per_period', 'frequency']
 
 
 class CategoryPurchaseRestrictionSerializer(serializers.ModelSerializer):
@@ -16,7 +17,7 @@ class CategoryPurchaseRestrictionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryRestriction
         fields = ['category_information',
-                  'count_per_period', 'frequency']
+                  'total_per_period', 'frequency']
 
 
 class CategoryViewRestrictionSerializer(serializers.ModelSerializer):
@@ -25,7 +26,7 @@ class CategoryViewRestrictionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryRestriction
         fields = ['category_id',
-                  'count_per_period', 'frequency']
+                  'total_per_period', 'frequency']
 
 
 class ProductRestrictionSerializer(serializers.ModelSerializer):
@@ -33,4 +34,18 @@ class ProductRestrictionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductsRestriction
-        fields = ['product_information', 'count_per_period', 'frequency']
+        fields = ['product_information', 'total_per_period', 'frequency']
+
+
+class AllergySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergy
+        fields = ['name', 'image']
+
+
+class DietRestrictionSerializer(serializers.ModelSerializer):
+    allergy_information = AllergySerializer(source='allergies', many=True)
+
+    class Meta:
+        model = DietRestriction
+        fields = ['allergy_information']

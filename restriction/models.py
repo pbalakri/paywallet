@@ -11,7 +11,7 @@ class FrequencyRestriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, default=None)
-    count_per_period = models.IntegerField(default=3)
+    total_per_period = models.FloatField(default=3)
     restriction_frequency = (
         ('Weekly', 'Weekly'),
         ('Daily', 'Daily'),
@@ -64,8 +64,8 @@ class CategoryRestriction(FrequencyRestriction):
 
 
 class CategoryRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'category', 'count_per_period', 'frequency')
-    fields = ('student', 'category', 'count_per_period', 'frequency')
+    list_display = ('student', 'category', 'total_per_period', 'frequency')
+    fields = ('student', 'category', 'total_per_period', 'frequency')
     search_fields = ('student',)
 
 
@@ -79,8 +79,8 @@ class PaymentRestriction(FrequencyRestriction):
 
 
 class PaymentRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'count_per_period', 'frequency')
-    fields = ('student', 'count_per_period', 'frequency')
+    list_display = ('student', 'total_per_period', 'frequency')
+    fields = ('student', 'total_per_period', 'frequency')
     search_fields = ('student',)
 
 
@@ -97,6 +97,6 @@ class ProductsRestriction(FrequencyRestriction):
 
 
 class ProductsRestrictionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'product', 'count_per_period', 'frequency')
-    fields = ('student', 'product', 'count_per_period', 'frequency')
+    list_display = ('student', 'product', 'total_per_period', 'frequency')
+    fields = ('student', 'product', 'total_per_period', 'frequency')
     search_fields = ('student',)

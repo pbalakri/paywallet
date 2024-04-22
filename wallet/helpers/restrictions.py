@@ -1,6 +1,7 @@
 from restriction.models import PaymentRestriction, ProductsRestriction, CategoryRestriction
 from datetime import datetime
 from wallet.models import Transaction
+from django.db.models import Sum
 
 
 def get_restrictions(txn_bracelet):
@@ -32,27 +33,33 @@ def get_restrictions(txn_bracelet):
     return returnable_data
 
 
+def get_sum_of_transaction_amounts(transations):
+    total_amount = transations.aggregate(Sum('amount'))[
+        'amount__sum'] or 0
+
+    return total_amount
+
+
 def get_payment_restrictions(rfid):
     restrictions = PaymentRestriction.objects.filter(
         student__bracelet__rfid=rfid)
     for restriction in restrictions:
         # check if frequency of restriction is weekly
         if restriction.frequency == 'Weekly':
-            # get total count of transactions this week of year
             transactions_this_week = Transaction.objects.filter(
                 bracelet__rfid=rfid, date__week=datetime.today().isocalendar()[1])
-            if transactions_this_week.count() > restriction.count_per_period:
+            if get_sum_of_transaction_amounts(transactions_this_week) > restriction.total_per_period:
                 return False
         elif restriction.frequency == 'Monthly':
             # get total count of transactions this month
             transactions_this_month = Transaction.objects.filter(
                 bracelet__rfid=rfid, date__month=datetime.now().month)
-            if transactions_this_month.count() > restriction.count_per_period:
+            if get_sum_of_transaction_amounts(transactions_this_month) > restriction.total_per_period:
                 return False
         elif restriction.frequency == 'Daily':
             # get total count of transactions today
             transactions_today = Transaction.objects.filter(
                 bracelet__rfid=rfid, date__day=datetime.now().day)
-            if transactions_today.count() > restriction.count_per_period:
+            if get_sum_of_transaction_amounts(transactions_today) > restriction.total_per_period:
                 return False
     return True
