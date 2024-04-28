@@ -1,10 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Case, When, BooleanField
 
 from paywallet.permissions import IsGuardian
 from product.models import Category, Product
+from product.models.allergy import Allergy
 from restriction.models import CategoryRestriction, DietRestriction, PaymentRestriction, ProductsRestriction
 from school.models import Student
-from .serializers import DietRestrictionSerializer, ProductRestrictionSerializer, CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer
+from .serializers import AllergySerializer, DietRestrictionSerializer, ProductRestrictionSerializer, CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -16,10 +18,16 @@ class StudentRestrictionsView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request, registration_number):
-        # bracelet = Guardian.objects.get(
-        #     user=request.user).student.get(registration_number=registration_number).bracelet
-        diet_restriction = DietRestriction.objects.filter(
+        diet_restriction = DietRestriction.objects.get(
             student__registration_number=registration_number)
+        all_allergies = Allergy.objects.all()
+        all_allergies = all_allergies.annotate(
+            state=Case(
+                When(dietrestriction__in=[diet_restriction], then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
         catـrestriction = CategoryRestriction.objects.filter(
             student__registration_number=registration_number)
         product_restriction = ProductsRestriction.objects.filter(
@@ -32,13 +40,13 @@ class StudentRestrictionsView(APIView):
             catـrestriction, many=True)
         product_restriction_serializer = ProductRestrictionSerializer(
             product_restriction, many=True)
-        diet_restriction_serializer = DietRestrictionSerializer(
-            diet_restriction, many=True)
+        diet_restriction_serializer = AllergySerializer(
+            all_allergies, many=True)
         return Response({
-            "diet_restriction": diet_restriction_serializer.data,
             "payment_restriction": payment_restriction_serializer.data,
             "category_restriction": cat_restriction_serializer.data,
-            "product_restriction": product_restriction_serializer.data
+            "product_restriction": product_restriction_serializer.data,
+            "diet_restriction": diet_restriction_serializer.data
         }, status=status.HTTP_200_OK)
 
         # elif restriction_type == 'category':
@@ -82,10 +90,8 @@ class StudentProductRestrictionView(APIView):
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 
-@authentication_classes([])
-@permission_classes([])
 class GuardianRestrictionView(APIView):
-    # permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request):
         rfid = request.query_params['rfid']
@@ -106,3 +112,27 @@ class GuardianRestrictionView(APIView):
             "category_restriction": cat_restriction_serializer.data,
             "product_restriction": product_restriction_serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class AllergiesView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def post(self, request):
+        registration_number = request.data['registration_number']
+        # From allergy objects, create an array of allergy names where state is true
+
+        allergies = [allergy['name'] for allergy in request.data['allergies']
+                     if allergy['state'] == True]
+
+        student = Student.objects.get(registration_number=registration_number)
+        allergies = Allergy.objects.filter(name__in=allergies)
+        # Check if the student already has a diet restriction
+        diet_restriction = DietRestriction.objects.filter(
+            student=student)
+        if diet_restriction:
+            diet_restriction = diet_restriction[0]
+            diet_restriction.allergies.set(allergies)
+        else:
+            DietRestriction.objects.create(
+                student=student, allergies=allergies)
+        return Response({'status': 'success'}, status=status.HTTP_201_CREATED)

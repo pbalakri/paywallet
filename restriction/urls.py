@@ -11,5 +11,6 @@ urlpatterns = [
          views.StudentCategoryRestrictionView.as_view(), name="category_restrictions"),
     path(r"student/<str:registration_number>/product",
          views.StudentProductRestrictionView.as_view(), name="product_restrictions"),
+    path(r"", views.AllergiesView.as_view(), name="allergies"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

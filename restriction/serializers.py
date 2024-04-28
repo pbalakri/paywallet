@@ -38,9 +38,11 @@ class ProductRestrictionSerializer(serializers.ModelSerializer):
 
 
 class AllergySerializer(serializers.ModelSerializer):
+    state = serializers.BooleanField()
+
     class Meta:
         model = Allergy
-        fields = ['name', 'image']
+        fields = ['name', 'image', 'state']
 
 
 class DietRestrictionSerializer(serializers.ModelSerializer):
