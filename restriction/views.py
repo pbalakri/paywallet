@@ -18,8 +18,11 @@ class StudentRestrictionsView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
     def get(self, request, registration_number):
-        diet_restriction = DietRestriction.objects.get(
-            student__registration_number=registration_number)
+        try:
+            diet_restriction = DietRestriction.objects.get(
+                student__registration_number=registration_number)
+        except DietRestriction.DoesNotExist:
+            diet_restriction = None
         all_allergies = Allergy.objects.all()
         all_allergies = all_allergies.annotate(
             state=Case(
@@ -133,6 +136,7 @@ class AllergiesView(APIView):
             diet_restriction = diet_restriction[0]
             diet_restriction.allergies.set(allergies)
         else:
-            DietRestriction.objects.create(
-                student=student, allergies=allergies)
+            diet_restriction = DietRestriction.objects.create(
+                student=student)
+            diet_restriction.allergies.set(allergies)
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
