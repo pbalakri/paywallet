@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import authentication_classes, permission_classes
-# Create your views here.
+from django.db.models import Exists, OuterRef
 
 
 class StudentRestrictionsView(APIView):
@@ -25,10 +25,8 @@ class StudentRestrictionsView(APIView):
             diet_restriction = None
         all_allergies = Allergy.objects.all()
         all_allergies = all_allergies.annotate(
-            state=Case(
-                When(dietrestriction__in=[diet_restriction], then=True),
-                default=False,
-                output_field=BooleanField()
+            state=Exists(
+                diet_restriction.allergies.filter(pk=OuterRef('pk'))
             )
         )
         catـrestriction = CategoryRestriction.objects.filter(
