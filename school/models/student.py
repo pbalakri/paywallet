@@ -41,7 +41,7 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
                     'date_of_birth', 'current_status', 'bracelet')
     fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), ('school', 'bracelet'))
+              ('date_of_birth', 'registration_number'), ('school', 'bracelet'), 'image')
     search_fields = ('first_name', 'last_name', 'registration_number')
 
     formfield_overrides = {
