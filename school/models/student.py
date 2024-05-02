@@ -40,8 +40,6 @@ class Student(models.Model):
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('registration_number', 'first_name', 'last_name',
                     'date_of_birth', 'current_status', 'bracelet')
-    fields = (('first_name', 'last_name'),
-              ('date_of_birth', 'registration_number'), ('school', 'bracelet'), 'image')
     search_fields = ('first_name', 'last_name', 'registration_number')
 
     formfield_overrides = {
@@ -58,10 +56,10 @@ class StudentAdmin(admin.ModelAdmin):
         # Show bracelet field only if bracelet is not assigned
         if obj is not None and obj.bracelet is not None:
             return (('first_name', 'last_name'),
-                    ('date_of_birth', 'registration_number'), 'school')
+                    ('date_of_birth', 'registration_number'), 'school', 'image')
         else:
             return (('first_name', 'last_name'),
-                    ('date_of_birth', 'registration_number'), ('school', 'bracelet'))
+                    ('date_of_birth', 'registration_number'), ('school', 'bracelet'), 'image')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
