@@ -26,11 +26,12 @@ class StudentRestrictionsView(APIView):
         all_allergies = Allergy.objects.all()
         # Annotate all allergies with a boolean field set to False
         all_allergies = all_allergies.annotate(state=Value(False))
-        all_allergies = all_allergies.annotate(
-            state=Exists(
-                diet_restriction.allergies.filter(pk=OuterRef('pk'))
+        if diet_restriction:
+            all_allergies = all_allergies.annotate(
+                state=Exists(
+                    diet_restriction.allergies.filter(pk=OuterRef('pk'))
+                )
             )
-        )
         catـrestriction = CategoryRestriction.objects.filter(
             student__registration_number=registration_number)
         product_restriction = ProductsRestriction.objects.filter(
