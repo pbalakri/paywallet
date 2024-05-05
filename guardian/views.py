@@ -17,6 +17,7 @@ from wallet.models import Transaction, TopUp
 from wallet.serializers import TopupGetSerializer, TransactionGetSerializer
 from .models import Device, Guardian
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
+from wallet.helpers.gateway import create_top_up_request
 
 
 class GuardianView(APIView):
@@ -114,6 +115,22 @@ class GuardianStudentTopupsView(APIView):
                 page, many=True)
             return paginator.get_paginated_response(serializer.data)
 
+    def post(self, request, registration_number):
+        try:
+            topup_amount = request.data['amount']
+            guardian = Guardian.objects.get(user=request.user)
+            student = guardian.student.get(
+                registration_number=registration_number)
+            bracelet = student.bracelet
+            top_up_link_response = create_top_up_request(
+                guardian=guardian, student=student, amount=topup_amount)
+
+        except Guardian.DoesNotExist:
+            return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(top_up_link_response, status=status.HTTP_200_OK)
+
 
 class GuardianStudentAddView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
@@ -135,22 +152,3 @@ class GuardianStudentAddView(APIView):
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
-
-# class GuardianUpdateView(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request):
-#         try:
-#             guardian_obj = Guardian.objects.get(user=request.user)
-#         except Guardian.DoesNotExist:
-#             return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
-
-#         serializer = GuardianSerializer(guardian_obj, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({'status': 'success'}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
-
-# Create your views here.
