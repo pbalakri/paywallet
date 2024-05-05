@@ -1,5 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Case, When, BooleanField
+from django.db.models import Value
 
 from paywallet.permissions import IsGuardian
 from product.models import Category, Product
@@ -24,6 +24,8 @@ class StudentRestrictionsView(APIView):
         except DietRestriction.DoesNotExist:
             diet_restriction = None
         all_allergies = Allergy.objects.all()
+        # Annotate all allergies with a boolean field set to False
+        all_allergies = all_allergies.annotate(state=Value(False))
         all_allergies = all_allergies.annotate(
             state=Exists(
                 diet_restriction.allergies.filter(pk=OuterRef('pk'))
