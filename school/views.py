@@ -6,9 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from paywallet.permissions import IsGuardian, IsSchoolAdmin
 from wallet.models import Wallet, Transaction
-from .models import Student, Attendance, School
-from .serializers import AttendanceSerializer, AttendanceViewSerializer, SchoolSerializer
+from .models import Student, Attendance, School, Announcement
+from .serializers import AnnouncementSerializer, AttendanceSerializer, AttendanceViewSerializer, SchoolSerializer
 from django.db.models import Sum
+from rest_framework.pagination import PageNumberPagination
 
 
 class CheckInView(APIView):
@@ -149,3 +150,32 @@ class StudentBalanceView(APIView):
             return Response({'balance': balance, 'spend': spend}, status=status.HTTP_200_OK)
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AllAnnouncementsView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+    pagination_class = PageNumberPagination
+
+    def get(self, request, school_id):
+        try:
+            paginator = PageNumberPagination()
+            announcements = Announcement.objects.filter(school__id=school_id)
+            page = paginator.paginate_queryset(announcements, request)
+            if page is not None:
+                serializer = AnnouncementSerializer(page, many=True)
+                return paginator.get_paginated_response(serializer.data)
+        except School.DoesNotExist:
+            return Response({'error': 'School not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AnnouncementView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def get(self, request, school_id, announcement_id):
+        try:
+            announcement = Announcement.objects.get(
+                school__id=school_id, id=announcement_id)
+            announcement_serializer = AnnouncementSerializer(announcement)
+            return Response(announcement_serializer.data, status=status.HTTP_200_OK)
+        except Announcement.DoesNotExist:
+            return Response({'error': 'Announcement not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -9,7 +9,7 @@ from paywallet.storage_backends import PublicMediaStorage
 
 class Announcement(models.Model):
     def get_image_folder(instance, filename):
-        return "school_{0}/{1}".format(instance.school.id, filename)
+        return "announcements/school_{0}/{1}".format(instance.school.id, filename)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image = models.ImageField(

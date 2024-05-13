@@ -11,7 +11,13 @@ urlpatterns = [
          views.AttendanceView.as_view(), name="attendance"),
     path(r"students/<str:registration_number>/attendance/month/<str:month>",
          views.AttendanceMonthView.as_view(), name="attendance"),
+    path(r"students/<str:registration_number>/balance",
+         views.StudentBalanceView.as_view(), name="student_balance"),
     path(r"",
          views.SchoolView.as_view(), name="school"),
+    path(r"<str:school_id>/annoucements",
+         views.AllAnnouncementsView.as_view(), name="school"),
+    path(r"<str:school_id>/annoucements/<str:annoucement_id>",
+         views.AnnouncementView.as_view(), name="school"),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)
