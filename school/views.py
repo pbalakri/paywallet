@@ -5,8 +5,10 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from paywallet.permissions import IsGuardian, IsSchoolAdmin
+from wallet.models import Wallet, Transaction
 from .models import Student, Attendance, School
 from .serializers import AttendanceSerializer, AttendanceViewSerializer, SchoolSerializer
+from django.db.models import Sum
 
 
 class CheckInView(APIView):
@@ -103,5 +105,47 @@ class AttendanceMonthView(APIView):
             serializer = AttendanceViewSerializer(attendance_list, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class StudentBalanceView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def get(self, request, registration_number):
+        try:
+            # Get period from request
+            period = request.GET.get('period')
+            student_obj = Student.objects.get(
+                registration_number=registration_number)
+            student_wallet = Wallet.objects.get(bracelet=student_obj.bracelet)
+            if period == "week":
+                transaction_sum = Transaction.objects.filter(
+                    wallet=student_wallet, date__week=datetime.now().isocalendar()[1]).aggregate(Sum('amount'))
+                if transaction_sum['amount__sum'] is None:
+                    spend = 0
+                else:
+                    spend = transaction_sum['amount__sum']
+            elif period == "month":
+                transaction_sum = Transaction.objects.filter(
+                    wallet=student_wallet, date__month=datetime.now().month).aggregate(Sum('amount'))
+                if transaction_sum['amount__sum'] is None:
+                    spend = 0
+                else:
+                    spend = transaction_sum['amount__sum']
+            elif period == "year":
+                # From Transactions get sum of all transactions in current year
+                transaction_sum = Transaction.objects.filter(
+                    wallet=student_wallet, date__year=datetime.now().year).aggregate(Sum('amount'))
+                if transaction_sum['amount__sum'] is None:
+                    spend = 0
+                else:
+                    spend = transaction_sum['amount__sum']
+            if transaction_sum['amount__sum'] is None:
+                spend = 0
+            else:
+                spend = transaction_sum['amount__sum']
+            balance = student_wallet.balance
+            return Response({'balance': balance, 'spend': spend}, status=status.HTTP_200_OK)
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)

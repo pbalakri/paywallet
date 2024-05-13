@@ -53,10 +53,10 @@ class StudentRestrictionsView(APIView):
             "diet_restriction": diet_restriction_serializer.data
         }, status=status.HTTP_200_OK)
 
-        # elif restriction_type == 'category':
-
 
 class StudentPaymentRestrictionView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
     def post(self, request, student_id):
         frequency = request.data['frequency']
         total_per_period = request.data['total_per_period']
