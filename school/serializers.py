@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
 from cafe.serializers import CafeSerializer
-from school.models import Student
 from wallet.models import Wallet
-from .models import Attendance, School
+from .models import Attendance, School, Student, Announcement
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -62,3 +61,9 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = ['id', 'first_name', 'last_name', 'image',
                   'school_name', 'balance', 'registration_number']
+
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = '__all__'
