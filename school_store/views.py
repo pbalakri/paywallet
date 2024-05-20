@@ -22,7 +22,8 @@ class GetProductsPerCategoryView(APIView):
 
 
 class GetProducts(APIView):
-    # Get products per school
+    permission_classes = [IsAuthenticated, IsGuardian]
+
     def get(self, request, school_id):
         try:
             products = Product.objects.filter(school__id=school_id)
@@ -34,7 +35,8 @@ class GetProducts(APIView):
 
 
 class GetProduct(APIView):
-    # Get product details
+    permission_classes = [IsAuthenticated, IsGuardian]
+
     def get(self, request, school_id, product_id):
         try:
             product = Product.objects.get(
@@ -47,7 +49,8 @@ class GetProduct(APIView):
 
 
 class GetCategories(APIView):
-    # Get categories per school
+    permission_classes = [IsAuthenticated, IsGuardian]
+
     def get(self, request, school_id):
         try:
             categories = Category.objects.filter(school_id=school_id)
