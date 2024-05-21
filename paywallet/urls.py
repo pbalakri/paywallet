@@ -19,6 +19,8 @@ from django.urls import path, include, re_path
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken import views
+from django.views import defaults
+
 admin.site.site_url = ''
 admin.site.site_header = _("PayWay Admin")
 admin.site.site_title = _("PayWay Admin")
@@ -39,3 +41,9 @@ urlpatterns = i18n_patterns(
     path('i18n/', include('django.conf.urls.i18n')),
     path('api/auth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     prefix_default_language=False)
+
+
+handler500 = defaults.server_error
+handler404 = defaults.page_not_found
+handler403 = defaults.permission_denied
+handler400 = defaults.bad_request
