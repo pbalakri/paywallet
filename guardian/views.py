@@ -13,11 +13,12 @@ from paywallet.permissions import IsGuardian
 from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
 from restriction.serializers import CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer, ProductRestrictionSerializer
 from school.models import Student, School
+from school_store.models import Product
 from wallet.models import Transaction, TopUp
 from wallet.serializers import TopupGetSerializer, TransactionGetSerializer
 from .models import Device, Guardian
 from .serializers import ReadGuardianSerializer, WriteGuardianSerializer, WriteUserSerializer
-from wallet.helpers.gateway import create_top_up_request
+from wallet.helpers.gateway import create_buy_request, create_top_up_request
 
 
 class GuardianView(APIView):
@@ -92,6 +93,27 @@ class GuardianStudentTransactionsView(APIView):
         if page is not None:
             serializer = TransactionGetSerializer(page, many=True)
             return paginator.get_paginated_response(serializer.data)
+
+
+class GuardianStudentOrdersView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+    pagination_class = PageNumberPagination
+
+    def post(self, request, registration_number):
+        try:
+            product_id = request.data['product_id']
+            quantity = request.data['quantity']
+            product = Product.objects.get(id=product_id)
+            guardian = Guardian.objects.get(user=request.user)
+            student = guardian.student.get(
+                registration_number=registration_number)
+            order_link_response = create_buy_request(
+                guardian=guardian, student=student, product=product, quantity=quantity)
+        except Guardian.DoesNotExist:
+            return Response({'error': 'Guardian not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(order_link_response, status=status.HTTP_200_OK)
 
 
 class GuardianStudentTopupsView(APIView):
