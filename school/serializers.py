@@ -3,6 +3,8 @@ from rest_framework import serializers
 from cafe.serializers import CafeSerializer
 from wallet.models import Wallet
 from .models import Attendance, School, Student, Announcement
+import datetime
+from django.db.models import Sum
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -48,6 +50,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 class StudentSerializer(serializers.ModelSerializer):
     balance = serializers.SerializerMethodField('get_balance')
+    spend = serializers.SerializerMethodField('get_spend')
     school_name = serializers.CharField(source='school.name')
 
     def get_balance(self, obj):
@@ -57,10 +60,31 @@ class StudentSerializer(serializers.ModelSerializer):
         except Wallet.DoesNotExist:
             return 0
 
+    def get_spend(self, obj):
+        try:
+            wallet = Wallet.objects.get(bracelet=obj.bracelet)
+            monthly_spend = wallet.transaction_set.filter(
+                date__month=datetime.datetime.now().month).aggregate(Sum('amount'))
+            weekly_spend = wallet.transaction_set.filter(
+                date__week=datetime.datetime.now().isocalendar()[1]).aggregate(Sum('amount'))
+            daily_spend = wallet.transaction_set.filter(
+                date__day=datetime.datetime.now().day).aggregate(Sum('amount'))
+            return {
+                monthly_spend: monthly_spend['amount__sum'],
+                weekly_spend: weekly_spend['amount__sum'],
+                daily_spend: daily_spend['amount__sum']
+            }
+        except Wallet.DoesNotExist:
+            return {
+                monthly_spend: 0,
+                weekly_spend: 0,
+                daily_spend: 0
+            }
+
     class Meta:
         model = Student
         fields = ['id', 'first_name', 'last_name', 'image', 'school',
-                  'school_name', 'balance', 'registration_number']
+                  'school_name', 'balance', 'spend', 'registration_number']
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
