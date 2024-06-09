@@ -65,20 +65,22 @@ class StudentSerializer(serializers.ModelSerializer):
             wallet = Wallet.objects.get(bracelet=obj.bracelet)
             monthly_spend = wallet.transaction_set.filter(
                 date__month=datetime.datetime.now().month).aggregate(Sum('amount'))
+
             weekly_spend = wallet.transaction_set.filter(
                 date__week=datetime.datetime.now().isocalendar()[1]).aggregate(Sum('amount'))
             daily_spend = wallet.transaction_set.filter(
                 date__day=datetime.datetime.now().day).aggregate(Sum('amount'))
+
             return {
-                monthly_spend: monthly_spend['amount__sum'],
-                weekly_spend: weekly_spend['amount__sum'],
-                daily_spend: daily_spend['amount__sum']
+                'monthly_spend': monthly_spend['amount__sum'] if monthly_spend['amount__sum'] else 0,
+                'weekly_spend': weekly_spend['amount__sum'] if weekly_spend['amount__sum'] else 0,
+                'daily_spend': daily_spend['amount__sum'] if daily_spend['amount__sum'] else 0
             }
         except Wallet.DoesNotExist:
             return {
-                monthly_spend: 0,
-                weekly_spend: 0,
-                daily_spend: 0
+                "monthly_spend": 0,
+                "weekly_spend": 0,
+                "daily_spend": 0
             }
 
     class Meta:
