@@ -28,9 +28,10 @@ class OTPGenerateView(APIView):
 class OTPValidateView(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number')
+        clean_phone_number = re.sub('[^0-9]', '', phone_number)
         otp = request.data.get('otp')
         otp_obj = OTP.objects.filter(
-            phone_number=phone_number, otp=otp, validated=False, expires_at__gt=datetime.datetime.now()).first()
+            phone_number=clean_phone_number, otp=otp, validated=False, expires_at__gt=datetime.datetime.now()).first()
         if otp_obj:
             otp_obj.validated = True
             otp_obj.save()
