@@ -8,10 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-
 from paywallet.permissions import IsGuardian
-from restriction.models import CategoryRestriction, PaymentRestriction, ProductsRestriction
-from restriction.serializers import CategoryPurchaseRestrictionSerializer, PaymentRestrictionSerializer, ProductRestrictionSerializer
 from school.models import Student, School
 from school_store.models import Product
 from wallet.models import Transaction, TopUp
@@ -29,7 +26,6 @@ class GuardianView(APIView):
             guardians = Guardian.objects.get(user=request.user)
         except Guardian.DoesNotExist:
             return Response({'error': 'Guardians not found'}, status=status.HTTP_404_NOT_FOUND)
-
         serializer = ReadGuardianSerializer(guardians)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -38,7 +34,6 @@ class GuardianView(APIView):
 @permission_classes([])
 class GuardianRegisterView(APIView):
     def post(self, request):
-        # Check if user with Guardian role exists
         try:
             User.objects.get(username=request.data['email'])
             return Response({'error': 'User already exists'}, status=status.HTTP_400_BAD_REQUEST)
@@ -72,6 +67,21 @@ class GuardianRegisterView(APIView):
                 return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
             else:
                 return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@authentication_classes([])
+@permission_classes([])
+class GuardianResetPasswordView(APIView):
+    def post(self, request):
+        try:
+            guardian = Guardian.objects.get(
+                phone_number=request.data['phone_number'])
+            user = guardian.user
+            user.set_password(request.data['password'])
+            user.save()
+        except Guardian.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 
 class GuardianStudentTransactionsView(APIView):
@@ -143,7 +153,6 @@ class GuardianStudentTopupsView(APIView):
             guardian = Guardian.objects.get(user=request.user)
             student = guardian.student.get(
                 registration_number=registration_number)
-            bracelet = student.bracelet
             top_up_link_response = create_top_up_request(
                 guardian=guardian, student=student, amount=topup_amount)
 
