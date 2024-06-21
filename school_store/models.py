@@ -6,6 +6,8 @@ from school.models import School
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
 
+from school.models.operator import Operator
+
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
@@ -88,12 +90,24 @@ class ProductAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
-            kwargs["queryset"] = School.objects.filter(
-                school_admin=request.user)
+            if request.user.groups.filter(name='School Admin').exists():
+                kwargs["queryset"] = School.objects.filter(
+                    school_admin=request.user)
+            elif request.user.groups.filter(name='School Operator').exists():
+                kwargs["queryset"] = Operator.objects.filter(
+                    user=request.user).values('school')
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "category":
-            kwargs["queryset"] = Category.objects.filter(
-                school__school_admin=request.user)
+            if request.user.groups.filter(name='School Admin').exists():
+                kwargs["queryset"] = Category.objects.filter(
+                    school__school_admin=request.user)
+            elif request.user.groups.filter(name='School Operator').exists():
+                operator = Operator.objects.get(user=request.user)
+                if operator:
+                    kwargs["queryset"] = Category.objects.filter(
+                        school=operator.school)
+                else:
+                    kwargs["queryset"] = Category.objects.none()
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
