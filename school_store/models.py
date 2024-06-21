@@ -32,8 +32,16 @@ class CategoryAdmin(admin.ModelAdmin):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "school":
-            kwargs["queryset"] = School.objects.filter(
-                school_admin=request.user)
+            if request.user.groups.filter(name='School Admin').exists():
+                kwargs["queryset"] = School.objects.filter(
+                    school_admin=request.user)
+            elif request.user.groups.filter(name='School Operator').exists():
+                operator = Operator.objects.get(user=request.user)
+                if operator:
+                    kwargs["queryset"] = School.objects.filter(
+                        id=operator.school.id)
+                else:
+                    kwargs["queryset"] = School.objects.none()
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         else:
             return super(CategoryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
@@ -200,5 +208,11 @@ class OrderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return super().get_queryset(request)
-        else:
+        elif request.user.groups.filter(name='School Admin').exists():
             return super().get_queryset(request).filter(school__school_admin=request.user)
+        elif request.user.groups.filter(name='School Operator').exists():
+            operator = Operator.objects.get(user=request.user)
+            if operator:
+                return super().get_queryset(request).filter(school=operator.school)
+            else:
+                return super().get_queryset(request).none()
