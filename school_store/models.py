@@ -94,8 +94,12 @@ class ProductAdmin(admin.ModelAdmin):
                 kwargs["queryset"] = School.objects.filter(
                     school_admin=request.user)
             elif request.user.groups.filter(name='School Operator').exists():
-                kwargs["queryset"] = Operator.objects.filter(
-                    user=request.user).values('school')
+                operator = Operator.objects.get(user=request.user)
+                if operator:
+                    kwargs["queryset"] = School.objects.filter(
+                        id=operator.school.id)
+                else:
+                    kwargs["queryset"] = School.objects.none()
             return super(ProductAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
         elif db_field.name == "category":
             if request.user.groups.filter(name='School Admin').exists():
