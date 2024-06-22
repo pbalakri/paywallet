@@ -163,6 +163,34 @@ class GuardianStudentTopupsView(APIView):
         return Response(top_up_link_response, status=status.HTTP_200_OK)
 
 
+class GuardianBraceletActivateView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def post(self, request, registration_number):
+        try:
+            student = Student.objects.get(
+                registration_number=registration_number)
+            student.bracelet.status = 'ACTIVE'
+            student.bracelet.save()
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+class GuardianBraceletDeActivateView(APIView):
+    permission_classes = [IsAuthenticated, IsGuardian]
+
+    def post(self, request, registration_number):
+        try:
+            student = Student.objects.get(
+                registration_number=registration_number)
+            student.bracelet.status = 'DEACTIVATED'
+            student.bracelet.save()
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
 class GuardianStudentAddView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
