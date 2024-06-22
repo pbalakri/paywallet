@@ -30,8 +30,8 @@ class WalletAdmin(admin.ModelAdmin):
         returnable_value = "Unassigned"
         # Get student record filter by bracelet object
         try:
-            student = obj.bracelet.student_set.first()
-            teacher = obj.bracelet.teacher_set.first()
+            student = obj.bracelet.student
+            teacher = obj.bracelet.teacher
             if student:
                 returnable_value = f'{student.first_name} {student.last_name}'
             elif teacher:
