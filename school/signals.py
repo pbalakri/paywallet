@@ -9,8 +9,13 @@ from wallet.models.wallet import Wallet
 @receiver(post_save, sender=Bracelet)
 def update_wallet(sender, instance, created, **kwargs):
     if instance.status == Bracelet.ACTIVE:
-        Wallet.objects.create(bracelet=instance)
-        instance.wallet.save()
+        try:
+            wallet = Wallet.objects.get(bracelet=instance)
+            wallet.active = True
+            wallet.save()
+        except Wallet.DoesNotExist:
+            Wallet.objects.create(bracelet=instance)
+            instance.wallet.save()
     elif instance.status == Bracelet.DEACTIVATED:
         try:
             wallet = instance.wallet
