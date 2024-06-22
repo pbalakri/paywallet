@@ -31,14 +31,16 @@ class WalletAdmin(admin.ModelAdmin):
         # Get student record filter by bracelet object
         try:
             student = obj.bracelet.student
-            teacher = obj.bracelet.teacher
             if student:
-                returnable_value = f'{student.first_name} {student.last_name}'
-            elif teacher:
-                returnable_value = f'{teacher.first_name} {teacher.last_name}'
+                return f'{student.first_name} {student.last_name}'
         except:
-            returnable_value = "Unassigned"
-
+            pass
+        try:
+            teacher = obj.bracelet.teacher
+            if teacher:
+                return f'{teacher.first_name} {teacher.last_name}'
+        except:
+            pass
         return returnable_value
 
     def get_list_display(self, request):
