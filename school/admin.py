@@ -33,37 +33,6 @@ class BraceletAdmin(ImportExportModelAdmin):
     autocomplete_fields = ['school']
     list_filter = ('status', 'school')
 
-    def deactivate_bracelet(self, request, queryset):
-        if 'apply' in request.POST:
-            updated_count = 0
-            # Get total records to be updated
-            total_count = queryset.count()
-            for bracelet in queryset:
-                with transaction.atomic():
-                    bracelet.status = Bracelet.DEACTIVATED
-                    bracelet.save()
-                    wallet = bracelet.wallet
-                    wallet.active = False
-                    wallet.save()
-                updated_count += 1
-
-            self.message_user(
-                request,
-                ngettext(
-                    '%(updated_count)d/%(total_count)d bracelet was successfully deactivated.',
-                    '%(updated_count)d/%(total_count)d students were successfully deactivated.',
-                    updated_count
-                )
-                % {"updated_count": updated_count, "total_count": total_count},
-                messages.SUCCESS,
-            )
-            return HttpResponseRedirect(request.get_full_path())
-        return render(request,
-                      'admin/confirm_bracelet_deactivation.html',
-                      context={'bracelets': queryset})
-
-    actions = [deactivate_bracelet]
-
     def get_list_filter(self, request):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
             return ('status', 'school')
@@ -114,34 +83,6 @@ class BraceletAdmin(ImportExportModelAdmin):
             return qs
         else:
             return qs.filter(school__school_admin=request.user)
-
-    def save_form(self, request, form, change):
-        def remove_bracelet_from_user(bracelet):
-            try:
-                student = Student.objects.get(bracelet=bracelet)
-                student.bracelet = None
-                student.save()
-            except Student.DoesNotExist:
-                pass
-            try:
-                teacher = Teacher.objects.get(bracelet=bracelet)
-                teacher.bracelet = None
-                teacher.save()
-            except Teacher.DoesNotExist:
-                pass
-        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
-            if form.instance.status == Bracelet.UNASSIGNED:
-                remove_bracelet_from_user(form.instance)
-            return super().save_form(request, form, change)
-        school = School.objects.get(school_admin=request.user)
-        if school is None:
-            raise Exception("You are not an admin of any school")
-        else:
-            form.instance.school = school
-            # If bracelet is being unassigned, then set the bracelet field of Student and Teacher to None
-            if form.instance.status == Bracelet.UNASSIGNED:
-                remove_bracelet_from_user(form.instance)
-            return super().save_form(request, form, change)
 
 
 admin.site.register(Student, StudentAdmin)

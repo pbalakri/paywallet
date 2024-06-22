@@ -115,7 +115,6 @@ class StudentBalanceView(APIView):
 
     def get(self, request, registration_number):
         try:
-            # Get period from request
             period = request.GET.get('period')
             student_obj = Student.objects.get(
                 registration_number=registration_number)

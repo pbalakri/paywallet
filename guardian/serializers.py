@@ -32,9 +32,3 @@ class ReadGuardianSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guardian
         fields = ['user', 'phone_number', 'student']
-
-
-class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Student
-        fields = ['registration_number', 'school', 'image']
