@@ -28,15 +28,21 @@ def update_wallet(sender, instance, created, **kwargs):
             with transaction.atomic():
                 student = Student.objects.get(bracelet=instance)
                 student.bracelet = None
-                student.save()
-                teacher = Teacher.objects.get(bracelet=instance)
-                teacher.bracelet = None
-                teacher.save()
-                wallet = instance.wallet
+                wallet = Wallet.objects.get(bracelet=instance)
                 wallet.delete()
+                student.save()
         except Student.DoesNotExist:
             pass
         except Wallet.DoesNotExist:
             pass
+        try:
+            with transaction.atomic():
+                teacher = Teacher.objects.get(bracelet=instance)
+                teacher.bracelet = None
+                wallet = Wallet.objects.get(bracelet=instance)
+                wallet.delete()
+                teacher.save()
         except Teacher.DoesNotExist:
+            pass
+        except Wallet.DoesNotExist:
             pass
