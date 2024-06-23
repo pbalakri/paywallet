@@ -56,7 +56,6 @@ class StudentSerializer(serializers.ModelSerializer):
         try:
             wallet = Wallet.objects.get(bracelet=obj.bracelet)
             balance = wallet.balance
-
             monthly_spend = wallet.transaction_set.filter(
                 date__month=datetime.datetime.now().month).aggregate(Sum('amount'))
             weekly_spend = wallet.transaction_set.filter(
