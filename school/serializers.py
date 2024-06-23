@@ -66,17 +66,21 @@ class StudentSerializer(serializers.ModelSerializer):
             return {
                 "active": wallet.active,
                 "balance": balance,
-                'monthly_spend': monthly_spend['amount__sum'] if monthly_spend['amount__sum'] else 0,
-                'weekly_spend': weekly_spend['amount__sum'] if weekly_spend['amount__sum'] else 0,
-                'daily_spend': daily_spend['amount__sum'] if daily_spend['amount__sum'] else 0
+                "spend": {
+                    'monthly': monthly_spend['amount__sum'] if monthly_spend['amount__sum'] else 0,
+                    'weekly': weekly_spend['amount__sum'] if weekly_spend['amount__sum'] else 0,
+                    'daily': daily_spend['amount__sum'] if daily_spend['amount__sum'] else 0
+                }
             }
         except Wallet.DoesNotExist:
             return {
                 "active": False,
                 "balance": 0,
-                "monthly_spend": 0,
-                "weekly_spend": 0,
-                "daily_spend": 0
+                "spend": {
+                    "monthly": 0,
+                    "weekly": 0,
+                    "daily": 0
+                }
             }
 
     class Meta:
