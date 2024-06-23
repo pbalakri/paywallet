@@ -51,7 +51,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     balance = serializers.SerializerMethodField('get_balance')
     spend = serializers.SerializerMethodField('get_spend')
-    school_name = serializers.CharField(source='school.name')
+    school_information = SchoolSerializer(source='school')
 
     def get_balance(self, obj):
         try:
@@ -85,8 +85,8 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id', 'first_name', 'last_name', 'image', 'school',
-                  'school_name', 'balance', 'spend', 'registration_number']
+        fields = ['id', 'first_name', 'last_name', 'image',
+                  'school_information', 'balance', 'spend', 'registration_number']
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
