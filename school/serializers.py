@@ -49,35 +49,31 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    balance = serializers.SerializerMethodField('get_balance')
-    spend = serializers.SerializerMethodField('get_spend')
     school_information = SchoolSerializer(source='school')
+    wallet_information = serializers.SerializerMethodField('get_wallet')
 
-    def get_balance(self, obj):
+    def get_wallet(self, obj):
         try:
             wallet = Wallet.objects.get(bracelet=obj.bracelet)
-            return wallet.balance
-        except Wallet.DoesNotExist:
-            return 0
+            balance = wallet.balance
 
-    def get_spend(self, obj):
-        try:
-            wallet = Wallet.objects.get(bracelet=obj.bracelet)
             monthly_spend = wallet.transaction_set.filter(
                 date__month=datetime.datetime.now().month).aggregate(Sum('amount'))
-
             weekly_spend = wallet.transaction_set.filter(
                 date__week=datetime.datetime.now().isocalendar()[1]).aggregate(Sum('amount'))
             daily_spend = wallet.transaction_set.filter(
                 date__day=datetime.datetime.now().day).aggregate(Sum('amount'))
-
             return {
+                "active": wallet.active,
+                "balance": balance,
                 'monthly_spend': monthly_spend['amount__sum'] if monthly_spend['amount__sum'] else 0,
                 'weekly_spend': weekly_spend['amount__sum'] if weekly_spend['amount__sum'] else 0,
                 'daily_spend': daily_spend['amount__sum'] if daily_spend['amount__sum'] else 0
             }
         except Wallet.DoesNotExist:
             return {
+                "active": False,
+                "balance": 0,
                 "monthly_spend": 0,
                 "weekly_spend": 0,
                 "daily_spend": 0
@@ -86,7 +82,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'first_name', 'last_name', 'image',
-                  'school_information', 'balance', 'spend', 'registration_number']
+                  'school_information', 'wallet_information', 'registration_number']
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):
