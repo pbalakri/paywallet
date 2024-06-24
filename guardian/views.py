@@ -173,7 +173,7 @@ class GuardianBraceletActivateView(APIView):
                 registration_number=registration_number)
             bracelet = Bracelet.objects.get(student=student)
             bracelet.status = 'ACTIVE'
-            bracelet.update()
+            bracelet.save()
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
