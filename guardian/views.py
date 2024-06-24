@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from paywallet.permissions import IsGuardian
 from school.models import Student, School
+from school.models.bracelet import Bracelet
 from school_store.models import Product
 from wallet.models import Transaction, TopUp
 from wallet.serializers import TopupGetSerializer, TransactionGetSerializer
@@ -170,8 +171,9 @@ class GuardianBraceletActivateView(APIView):
         try:
             student = Student.objects.get(
                 registration_number=registration_number)
-            student.bracelet.status = 'ACTIVE'
-            student.bracelet.save()
+            bracelet = Bracelet.objects.get(student=student)
+            bracelet.status = 'ACTIVE'
+            bracelet.update()
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
@@ -209,5 +211,4 @@ class GuardianStudentAddView(APIView):
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
         except Student.DoesNotExist:
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
