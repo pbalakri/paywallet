@@ -61,8 +61,15 @@ class StudentPaymentRestrictionView(APIView):
         frequency = request.data['frequency']
         total_per_period = request.data['total_per_period']
         student = Student.objects.get(registration_number=registration_number)
-        PaymentRestriction.objects.create(
-            student=student, frequency=frequency, total_per_period=total_per_period)
+        # Check to see if there is already a payment restriction for the student
+        try:
+            payment_restriction = PaymentRestriction.objects.get(
+                student=student, frequency=frequency)
+            payment_restriction.total_per_period = total_per_period
+            payment_restriction.save()
+        except:
+            PaymentRestriction.objects.create(
+                student=student, frequency=frequency, total_per_period=total_per_period)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
     def get(self, request, registration_number):
