@@ -205,9 +205,9 @@ class GuardianStudentAddView(APIView):
             guardian_obj.student.add(student)
             guardian_obj.save()
         except Guardian.DoesNotExist:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Guardian Not found'}, status=status.HTTP_404_NOT_FOUND)
         except School.DoesNotExist:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'School Not found'}, status=status.HTTP_404_NOT_FOUND)
         except Student.DoesNotExist:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Student Not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
