@@ -57,11 +57,12 @@ class StudentRestrictionsView(APIView):
 class StudentPaymentRestrictionView(APIView):
     permission_classes = [IsAuthenticated, IsGuardian]
 
-    def post(self, request, student_id):
+    def post(self, request, registration_number):
         frequency = request.data['frequency']
         total_per_period = request.data['total_per_period']
+        student = Student.objects.get(registration_number=registration_number)
         PaymentRestriction.objects.create(
-            student=Student.objects.get(id=student_id), frequency=frequency, total_per_period=total_per_period)
+            student=student, frequency=frequency, total_per_period=total_per_period)
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
     def get(self, request, registration_number):
