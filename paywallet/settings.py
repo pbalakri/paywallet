@@ -214,6 +214,7 @@ REST_FRAMEWORK = {
 OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }
+ACCESS_TOKEN_EXPIRE_SECONDS = 360000
 
 IMPORT_EXPORT_IMPORT_PERMISSION_CODE = 'import'
 IMPORT_EXPORT_EXPORT_PERMISSION_CODE = 'export'
