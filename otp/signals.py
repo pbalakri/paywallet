@@ -25,6 +25,7 @@ def send_sms(sender, instance, created, **kwargs):
             "password": password,
             "sender": "KWT-SMS",
             "mobile": instance.phone_number,
+            "test": "0",
             "lang": "1",
             "message": f"Your OTP is {code}",
         }
