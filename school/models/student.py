@@ -64,9 +64,18 @@ class StudentAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "bracelet":
             # Show bracelets with status unassigned
-            kwargs["queryset"] = Bracelet.objects.filter(
-                status="unassigned")
-            return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+            if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+                kwargs["queryset"] = Bracelet.objects.filter(
+                    status="unassigned")
+                return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+            else:
+                available_schools = School.objects.filter(
+                    school_admin=request.user)
+                kwargs["queryset"] = Bracelet.objects.filter(
+                    status="unassigned", school__in=available_schools)
+                return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
         elif db_field.name == "school":
             if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
                 return super(StudentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
