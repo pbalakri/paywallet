@@ -11,7 +11,8 @@ from rest_framework.pagination import PageNumberPagination
 from paywallet.permissions import IsGuardian
 from school.models import Student, School
 from school.models.bracelet import Bracelet
-from school_store.models import Product
+from school_store.models import Order, Product
+from school_store.serializers import OrderSerializer
 from wallet.models import Transaction, TopUp
 from wallet.serializers import TopupGetSerializer, TransactionGetSerializer
 from .models import Device, Guardian
@@ -125,6 +126,18 @@ class GuardianStudentOrdersView(APIView):
         except Student.DoesNotExist:
             return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response(order_link_response, status=status.HTTP_200_OK)
+
+
+class GuardianOrdersView(APIView):
+    def get(self, request):
+        try:
+            orders = Order.objects.filter(
+                customer__user=request.user
+            )
+            serializer = OrderSerializer(orders, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': 'Orders not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class GuardianStudentTopupsView(APIView):
