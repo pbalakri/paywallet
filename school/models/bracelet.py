@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Bracelet(models.Model):
-    rfid = models.CharField(primary_key=True, max_length=100, unique=True,
+    rfid = models.CharField(primary_key=True, max_length=6, unique=True,
                             verbose_name=_("RFID"))
     model_name = models.CharField(
         max_length=100, verbose_name=_("Bracelet Model"))

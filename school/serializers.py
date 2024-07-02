@@ -64,6 +64,7 @@ class StudentSerializer(serializers.ModelSerializer):
                 date__day=datetime.datetime.now().day).aggregate(Sum('amount'))
             return {
                 "active": wallet.active,
+                "bracelet_id": wallet.bracelet.rfid,
                 "balance": balance,
                 "spend": {
                     'monthly': monthly_spend['amount__sum'] if monthly_spend['amount__sum'] else 0,
@@ -74,6 +75,7 @@ class StudentSerializer(serializers.ModelSerializer):
         except Wallet.DoesNotExist:
             return {
                 "active": False,
+                "bracelet_id": "",
                 "balance": 0,
                 "spend": {
                     "monthly": 0,
