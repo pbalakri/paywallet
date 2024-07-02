@@ -133,7 +133,7 @@ class GuardianOrdersView(APIView):
         try:
             orders = Order.objects.filter(
                 customer__user=request.user
-            )
+            ).order_by('-date')
             serializer = OrderSerializer(orders, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:

@@ -26,7 +26,7 @@ class Student(models.Model):
     bracelet = models.OneToOneField(
         Bracelet, on_delete=models.RESTRICT, default=None, verbose_name=_("Bracelet"), null=True, blank=True)
     image = models.ImageField(
-        storage=PublicMediaStorage(), upload_to='students/', verbose_name=_("Image"))
+        storage=PublicMediaStorage(), upload_to='students/', verbose_name=_("Image"), null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name + " (" + str(self.date_of_birth) + ")"

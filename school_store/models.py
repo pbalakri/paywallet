@@ -140,6 +140,7 @@ class Order(models.Model):
     customer = models.ForeignKey(
         Guardian, on_delete=models.RESTRICT, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     status_choices = [('Pending', 'Pending'),
                       ('Ready for Pickup', 'Ready for Pickup'),
                       ('Completed', 'Completed'),
@@ -177,6 +178,19 @@ class OrderItem(models.Model):
 class OrderItemInlines(admin.TabularInline):
     model = OrderItem
     extra = 0
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return super(OrderItemInlines, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        elif db_field.name == "product":
+            if request.user.groups.filter(name='School Admin').exists():
+                kwargs["queryset"] = Product.objects.filter(
+                    school__school_admin=request.user)
+            else:
+                kwargs["queryset"] = Product.objects.none()
+            return super(OrderItemInlines, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        else:
+            return super(OrderItemInlines, self).formfield_for_foreignkey(db_field, request, **kwargs)
     # readonly_fields = ['unit_price', 'quantity', 'product']
 
 
