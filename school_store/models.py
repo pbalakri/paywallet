@@ -142,6 +142,7 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     status_choices = [('Pending', 'Pending'),
+                      ('Accepted', 'Accepted'),
                       ('Ready for Pickup', 'Ready for Pickup'),
                       ('Completed', 'Completed'),
                       ('Cancelled', 'Cancelled')]
