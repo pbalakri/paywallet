@@ -140,7 +140,7 @@ class Order(models.Model):
     customer = models.ForeignKey(
         Guardian, on_delete=models.RESTRICT, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    order_updated_date = models.DateTimeField(auto_now=True)
     status_choices = [('Pending', 'Pending'),
                       ('Ready for Pickup', 'Ready for Pickup'),
                       ('Completed', 'Completed'),
