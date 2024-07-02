@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Product, ProductAdmin, Category, CategoryAdmin, Order, OrderAdmin
+from .models import Product, ProductAdmin, Category, CategoryAdmin, Order, OrderAdmin, SchoolOrder, SchoolOrderAdmin
 from modeltranslation.admin import TabbedDjangoJqueryTranslationAdmin
 
 
@@ -15,4 +15,5 @@ class ProductAdminTranslationOptions(ProductAdmin, TabbedDjangoJqueryTranslation
 
 
 # admin.site.register(Category, CategoryAdmin)
-admin.site.register(Order, OrderAdmin)
+# admin.site.register(Order, OrderAdmin)
+admin.site.register(SchoolOrder, SchoolOrderAdmin)

@@ -155,12 +155,37 @@ class Order(models.Model):
         verbose_name_plural = _("Orders")
 
 
+class SchoolOrder(models.Model):
+    id = models.UUIDField(primary_key=True,
+                          default=uuid.uuid4,
+                          editable=False)
+    school = models.ForeignKey(
+        School, on_delete=models.RESTRICT, blank=True, null=True)
+    customer = models.ForeignKey(
+        Guardian, on_delete=models.RESTRICT, blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status_choices = [('Pending', 'Pending'),
+                      ('Ready for Pickup', 'Ready for Pickup'),
+                      ('Completed', 'Completed'),
+                      ('Cancelled', 'Cancelled')]
+    status = models.CharField(
+        max_length=20, choices=status_choices, default='Pending')
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = _("School Order")
+        verbose_name_plural = _("School Orders")
+
+
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True,
                           default=uuid.uuid4,
                           editable=False)
     order = models.ForeignKey(
-        Order, on_delete=models.RESTRICT, blank=True, null=True, related_name='orderitem_set')
+        SchoolOrder, on_delete=models.RESTRICT, blank=True, null=True, related_name='orderitem_set')
     product = models.ForeignKey(
         Product, on_delete=models.RESTRICT, blank=True, null=True)
     quantity = models.IntegerField(default=0)
@@ -217,6 +242,44 @@ class OrderAdmin(admin.ModelAdmin):
             kwargs["queryset"] = School.objects.filter(
                 school_admin=request.user)
             return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return super().get_queryset(request)
+        elif request.user.groups.filter(name='School Admin').exists():
+            return super().get_queryset(request).filter(school__school_admin=request.user)
+        elif request.user.groups.filter(name='School Operator').exists():
+            operator = Operator.objects.get(user=request.user)
+            if operator:
+                return super().get_queryset(request).filter(school=operator.school)
+            else:
+                return super().get_queryset(request).none()
+
+
+class SchoolOrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemInlines]
+    list_display = ('id', 'customer', 'date', 'status',
+                    'total_sku_count', 'order_total')
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return ('school', 'date', 'status')
+        else:
+            return ('date', 'status')
+
+    def order_total(self, obj):
+        return '%.3f KWD' % sum([item.unit_price * item.quantity for item in obj.orderitem_set.all()])
+
+    def total_sku_count(self, obj):
+        return len(obj.orderitem_set.all())
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
+            return super(SchoolOrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        elif db_field.name == "school":
+            kwargs["queryset"] = School.objects.filter(
+                school_admin=request.user)
+            return super(SchoolOrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
         if request.user.is_superuser or request.user.groups.filter(name='Payway Admin').exists():
